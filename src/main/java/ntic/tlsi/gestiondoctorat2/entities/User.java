@@ -27,4 +27,32 @@ public abstract class User {
         this.prenom = prenom;
         this.typeRole = typeRole;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public Role getTypeRole() {
+        return typeRole;
+    }
 }

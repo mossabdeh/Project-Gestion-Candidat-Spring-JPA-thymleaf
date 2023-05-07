@@ -42,6 +42,7 @@ private IserviceImpl iservice;
     @Override
     public void run(String... args) throws Exception {
         iservice.InitUsers();
+        iservice.InitInfoC();
 
     }
 }

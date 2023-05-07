@@ -5,8 +5,7 @@ import ntic.tlsi.gestiondoctorat2.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -21,6 +20,9 @@ public class IserviceImpl implements Iservice {
     private CandidatRepo candidatRepo;
     @Autowired
     private EnseignantRepo enseignantRepo;
+    @Autowired
+    private InfoConRepo conRepo;
+
     @Override
     public void InitUsers() {
         //---------------------- Admin -----------------------------------------
@@ -53,6 +55,24 @@ public class IserviceImpl implements Iservice {
                 .forEach(nameUser ->{
         User ens = new Enseignant(nameUser,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.ENSEIGNANT,"Professor","EDL");
         enseignantRepo.save(ens);});
+
+    }
+
+
+
+
+    @Override
+    public void InitInfoC() {
+        VD vd = vdRepo.findByNom("vd");
+        InfoConcour concour = new InfoConcour(3,"TLSI","ALGO","EDL",new Date());
+        List<InfoConcour> concours = Arrays.asList(concour);
+        vd.setConcours(concours);
+        vd.setLogDate(new Date());
+        vdRepo.save(vd);
+        // if we delete VD all his infos Concours deleted
+        //vdRepo.delete(vd);
+
+
 
     }
 }
