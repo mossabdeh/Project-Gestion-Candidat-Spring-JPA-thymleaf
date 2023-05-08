@@ -43,6 +43,7 @@ private IserviceImpl iservice;
     public void run(String... args) throws Exception {
         iservice.InitUsers();
         iservice.InitInfoC();
+        iservice.InitCopie();
 
     }
 }

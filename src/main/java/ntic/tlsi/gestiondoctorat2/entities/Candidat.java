@@ -1,10 +1,11 @@
 package ntic.tlsi.gestiondoctorat2.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
@@ -15,6 +16,10 @@ public class Candidat extends User{
     private long code;
     private double moyenneGeneral;
 
+    @OneToMany(mappedBy = "candidat",cascade = CascadeType.ALL,orphanRemoval = true)
+    //@Size(max =2, message = "The maximum size of the copies is 2 , one for every matier")
+    private Collection<Copie> copies = new ArrayList<>();
+
     public Candidat() {
     }
 
@@ -23,5 +28,28 @@ public class Candidat extends User{
         this.dateNaissance = dateNaissance;
         this.code = code;
         this.moyenneGeneral = moyenneGeneral;
+    }
+
+
+
+    public Collection<Copie> getCopies() {
+        return copies;
+    }
+
+    public void setCode(long code) {
+        this.code = code;
+    }
+
+    public void setMoyenneGeneral(double moyenneGeneral) {
+        this.moyenneGeneral = moyenneGeneral;
+    }
+
+    // The maximum size of the copies is 2, one for every matier
+    public void setCopies(Collection<Copie> copies) {
+        if (copies.size() <= 2) {
+            this.copies = copies;
+        } else {
+            throw new IllegalArgumentException("The maximum size of the copies is 2, one for every matier");
+        }
     }
 }

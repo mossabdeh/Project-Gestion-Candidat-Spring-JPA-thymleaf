@@ -5,4 +5,6 @@ public interface Iservice {
 
     public void InitInfoC();
 
+     void InitCopie();
+
 }

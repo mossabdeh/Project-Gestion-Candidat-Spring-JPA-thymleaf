@@ -1,6 +1,7 @@
 package ntic.tlsi.gestiondoctorat2.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
 
 import java.util.ArrayList;
@@ -9,15 +10,18 @@ import java.util.Date;
 
 @Entity
 public class InfoConcour {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id ;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
 
-    @Max(3)
+    @Max(value = 3, message = "The maximum number of the Postes is 3")
     private Integer NbrPostes; // nbrPostes availailbe for doctorat
-    private String  Specialite;
-    private String Matier1;
-    private String Matier2;
+    private String Specialite;
+    @Enumerated(EnumType.STRING)
+    private Matier Matier1;
+    @Enumerated(EnumType.STRING)
+    private Matier Matier2;
 
     @Temporal(TemporalType.DATE)
     private Date DateConcour;
@@ -28,12 +32,16 @@ public class InfoConcour {
     }
 
 
-
-    public InfoConcour(Integer nbrPostes, String specialite, String matier1, String matier2, Date dateConcour) {
+    public InfoConcour(Integer nbrPostes, String specialite, Matier matier1, Matier matier2, Date dateConcour) {
         NbrPostes = nbrPostes;
         Specialite = specialite;
         Matier1 = matier1;
         Matier2 = matier2;
         DateConcour = dateConcour;
+    }
+
+    @AssertTrue(message = "matier1 and matier2 should have different values")
+    private boolean isMatier1DifferentFromMatier2() {
+        return Matier1 != Matier2;
     }
 }

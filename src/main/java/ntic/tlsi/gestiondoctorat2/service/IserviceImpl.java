@@ -22,6 +22,8 @@ public class IserviceImpl implements Iservice {
     private EnseignantRepo enseignantRepo;
     @Autowired
     private InfoConRepo conRepo;
+    @Autowired
+    private CopieRepo copieRepo;
 
     @Override
     public void InitUsers() {
@@ -64,7 +66,7 @@ public class IserviceImpl implements Iservice {
     @Override
     public void InitInfoC() {
         VD vd = vdRepo.findByNom("vd");
-        InfoConcour concour = new InfoConcour(3,"TLSI","ALGO","EDL",new Date());
+        InfoConcour concour = new InfoConcour(3,"TLSI",Matier.ALGO,Matier.EDL,new Date());
         List<InfoConcour> concours = Arrays.asList(concour);
         vd.setConcours(concours);
         vd.setLogDate(new Date());
@@ -73,6 +75,23 @@ public class IserviceImpl implements Iservice {
         //vdRepo.delete(vd);
 
 
+
+    }
+
+    @Override
+    public void InitCopie() {
+      Optional<Candidat> candidatOptional  =  candidatRepo.findById(4L).map(u -> (Candidat)u);
+
+
+        candidatOptional.ifPresent(candidat -> {
+
+            Copie copie1 = new Copie(Matier.ALGO,candidat);
+            Copie copie2 = new Copie(Matier.EDL,candidat);
+            //Copie copie3 = new Copie(Matier.EDL,candidat);
+            List<Copie>  copies = Arrays.asList(copie1,copie2);
+            candidat.setCopies(copies);
+            candidatRepo.save(candidat);
+        });
 
     }
 }
