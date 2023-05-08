@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 @Service
@@ -53,9 +54,11 @@ public class IserviceImpl implements Iservice {
 
 
         //---------------------- Enseingants -----------------------------------------
-        Stream.of("prof","doctor","masterr","shifou","maitre yi","zed","shadow")
+        Matier[] specialites = Matier.values();
+
+        Stream.of("prof","doctor","master","shifou","maitre yi","zed","shadow")
                 .forEach(nameUser ->{
-        User ens = new Enseignant(nameUser,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.ENSEIGNANT,"Professor","EDL");
+        User ens = new Enseignant(nameUser,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.ENSEIGNANT,"Professor",specialites[random.nextInt(specialites.length)]);
         enseignantRepo.save(ens);});
 
     }
@@ -80,18 +83,26 @@ public class IserviceImpl implements Iservice {
 
     @Override
     public void InitCopie() {
-      Optional<Candidat> candidatOptional  =  candidatRepo.findById(4L).map(u -> (Candidat)u);
-
-
-        candidatOptional.ifPresent(candidat -> {
-
+          /* final Logger LOGGER = Logger.getLogger(IserviceImpl.class.getName());
+         candidatRepo.findAllBy().forEach(c ->{
+             LOGGER.info("Candidat: " + c.getNom());
+         });*/
+        candidatRepo.findAllBy().forEach(candidat -> {
             Copie copie1 = new Copie(Matier.ALGO,candidat);
             Copie copie2 = new Copie(Matier.EDL,candidat);
             //Copie copie3 = new Copie(Matier.EDL,candidat);
             List<Copie>  copies = Arrays.asList(copie1,copie2);
             candidat.setCopies(copies);
             candidatRepo.save(candidat);
+
         });
+       //Optional<Candidat> candidatOptional  =  candidatRepo.findById(4L).map(u -> (Candidat)u);
+
+        //candidatOptional.ifPresent(candidat -> {
+
+
+
+
 
     }
 }
