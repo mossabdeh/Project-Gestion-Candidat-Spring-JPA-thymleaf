@@ -25,6 +25,8 @@ public class IserviceImpl implements Iservice {
     private InfoConRepo conRepo;
     @Autowired
     private CopieRepo copieRepo;
+    @Autowired
+    private CorrectionRepo correctionRepo;
 
     @Override
     public void InitUsers() {
@@ -105,4 +107,73 @@ public class IserviceImpl implements Iservice {
 
 
     }
+
+    @Override
+
+    public void InitCorrection() {
+        List<Enseignant> enseignants = enseignantRepo.findAllBy();
+        double[] notes = new double[] {17, 10, 15, 9, 8, 5, 2, 13.5};
+
+        copieRepo.findAll().forEach(copie -> {
+            Enseignant enseignant1 = null;
+            Enseignant enseignant2 = null;
+            Enseignant enseignant3 = null;
+
+            // Find two teachers with the same specialty as the copy
+            for (Enseignant enseignant : enseignants) {
+                if (enseignant.getSpecialite() == copie.getMatier()) {
+                    if (enseignant1 == null) {
+                        enseignant1 = enseignant;
+                    } else if (enseignant2 == null) {
+                        enseignant2 = enseignant;
+                        break;
+                    }
+                }
+            }
+
+            // If there are not two teachers with the same specialty as the copy, skip the correction
+            if (enseignant1 == null || enseignant2 == null) {
+                return;
+            }
+
+            // Assign two random notes to the first two teachers
+            double note1 = notes[new Random().nextInt(notes.length)];
+            double note2 = notes[new Random().nextInt(notes.length)];
+
+            // If the difference between the two notes is more than 3, assign a third teacher
+            if ((Math.abs(note1 - note2) >= 3.0) || (Math.abs(note2 - note1) >= 3.0)) {
+                for (Enseignant enseignant : enseignants) {
+                    if (enseignant.getSpecialite() == copie.getMatier() && enseignant != enseignant1 && enseignant != enseignant2) {
+                        enseignant3 = enseignant;
+                        break;
+                    }
+                }
+            }
+
+            // Create and save corrections for each teacher
+            Correction correction1 = new Correction();
+            correction1.setCopie(copie);
+            correction1.setEnseignant(enseignant1);
+            correction1.setNote(note1);
+            correctionRepo.save(correction1);
+
+            Correction correction2 = new Correction();
+            correction2.setCopie(copie);
+            correction2.setEnseignant(enseignant2);
+            correction2.setNote(note2);
+            correctionRepo.save(correction2);
+
+            if (enseignant3 != null) {
+                Correction correction3 = new Correction();
+                correction3.setCopie(copie);
+                correction3.setEnseignant(enseignant3);
+                correction3.setNote(notes[new Random().nextInt(notes.length)]);
+                correctionRepo.save(correction3);
+            }
+        });
+    }
+
+
+
 }
+

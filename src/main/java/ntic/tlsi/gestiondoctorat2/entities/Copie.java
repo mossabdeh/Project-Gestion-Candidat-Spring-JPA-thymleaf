@@ -2,6 +2,10 @@ package ntic.tlsi.gestiondoctorat2.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 @Entity
 public class Copie {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,6 +16,13 @@ public class Copie {
     @JoinColumn(name = "Candidat_id")
     private Candidat candidat;
 
+    @ManyToMany(mappedBy = "CorrectionCopies",cascade = CascadeType.ALL)
+    private Collection<Enseignant>  enseignantsAtt = new ArrayList<>();
+
+    @OneToMany(mappedBy = "copie")
+    private List<Correction> corrections = new ArrayList<>();
+
+
     public Copie() {
     }
 
@@ -21,6 +32,13 @@ public class Copie {
         this.matier = matier;
         this.candidat = candidat;
     }
+
+    // methode for enseignant
+    /*public  void CorrectedBy(Enseignant enseignant){
+        enseignantsAtt.add(enseignant);
+    }*/
+
+
 
     public Matier getMatier() {
         return matier;

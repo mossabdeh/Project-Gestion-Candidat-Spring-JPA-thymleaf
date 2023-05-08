@@ -1,9 +1,10 @@
 package ntic.tlsi.gestiondoctorat2.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 
@@ -12,6 +13,15 @@ public class Enseignant extends User{
     @Enumerated(EnumType.STRING)
     private Matier specialite;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable( name = "Correction",
+            joinColumns = @JoinColumn(name = "Enseignant_id"),
+            inverseJoinColumns = @JoinColumn(name = "Copie_id")
+    )
+    private Collection<Copie> CorrectionCopies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "enseignant")
+    private List<Correction> corrections = new ArrayList<>();
     public Enseignant() {
     }
 
@@ -20,4 +30,12 @@ public class Enseignant extends User{
         this.grade = grade;
         this.specialite = specialite;
     }
+
+    public Matier getSpecialite() {
+        return specialite;
+    }
+
+    /* public void SelectedCopie(Copie copie){
+        CorrectionCopies.add(copie);
+    }*/
 }
