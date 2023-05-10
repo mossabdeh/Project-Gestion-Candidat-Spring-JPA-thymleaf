@@ -1,12 +1,14 @@
 package ntic.tlsi.gestiondoctorat2.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
+@Data
 public class Copie {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;

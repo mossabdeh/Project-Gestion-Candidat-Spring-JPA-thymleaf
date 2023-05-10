@@ -2,11 +2,12 @@ package ntic.tlsi.gestiondoctorat2.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 import java.util.Date;
 
 @Entity
-
+@Data
 public class CFD extends User{
     private Date LogDate;
 
