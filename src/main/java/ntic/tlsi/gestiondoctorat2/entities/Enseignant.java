@@ -1,13 +1,16 @@
 package ntic.tlsi.gestiondoctorat2.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
+import ntic.tlsi.gestiondoctorat2.entities.DTO.EnseignantDTO;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
-
+@Data
 public class Enseignant extends User{
     private String grade ;
     @Enumerated(EnumType.STRING)
@@ -35,7 +38,15 @@ public class Enseignant extends User{
         return specialite;
     }
 
-    /* public void SelectedCopie(Copie copie){
-        CorrectionCopies.add(copie);
-    }*/
-}
+    public static Enseignant from(EnseignantDTO enseignantDTO){
+        Enseignant enseignant =new Enseignant();
+        enseignant.setGrade(enseignantDTO.getGrade());
+        enseignant.setSpecialite(enseignantDTO.getSpecialite());
+        enseignant.setUsername(enseignantDTO.getUsername());
+        enseignant.setPassword(enseignantDTO.getPassword());
+        enseignant.setEmail(enseignantDTO.getEmail());
+        enseignant.setNom(enseignantDTO.getNom());
+        enseignant.setPrenom(enseignantDTO.getPrenom());
+        enseignant.setTypeRole(Role.ENSEIGNANT);
+        return enseignant;
+}}

@@ -190,5 +190,47 @@ public class serviceUser {
         vdToEdit.setEmail(vd.getEmail());
         return vdToEdit;
     }
+    // ------------------------------ ENSEIGNANT  CRUD OPERATION -------------------------------------------------
+    public Enseignant addEnseignant(Enseignant enseignant){
+        return enseignantRepo.save(enseignant);
+    }
+
+    public List<Enseignant> getEnseignants(){
+        Iterable<User> users = enseignantRepo.findAll();
+
+        List<Enseignant> enseignants = new ArrayList<>();
+        for (User user : users) {
+            if (user instanceof Enseignant) {
+                enseignants.add((Enseignant) user);
+            }
+        }
+        return enseignants;
+    }
+
+    public Enseignant getEnseignant(Long id){
+        return (Enseignant) enseignantRepo.findById(id).orElseThrow(()->{
+            new RuntimeException();
+            return null;
+        });
+    }
+
+    public Enseignant deleteEnseignant(Long id){
+        Enseignant enseignant = getEnseignant(id);
+        enseignantRepo.delete(enseignant);
+        return enseignant;
+    }
+
+    @Transactional
+    public Enseignant editEnseignant(Long id , Enseignant enseignant){
+        Enseignant enseignantToEdit = getEnseignant(id);
+        enseignantToEdit.setSpecialite(enseignant.getSpecialite());
+        enseignantToEdit.setGrade(enseignant.getGrade());
+        enseignantToEdit.setUsername(enseignant.getUsername());
+        enseignantToEdit.setPassword(enseignant.getPassword());
+        enseignantToEdit.setNom(enseignant.getNom());
+        enseignantToEdit.setPrenom(enseignant.getPrenom());
+        enseignantToEdit.setEmail(enseignant.getEmail());
+        return enseignantToEdit;
+    }
 
 }
