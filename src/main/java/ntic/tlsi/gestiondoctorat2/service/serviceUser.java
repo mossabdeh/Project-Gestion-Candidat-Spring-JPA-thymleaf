@@ -2,6 +2,7 @@ package ntic.tlsi.gestiondoctorat2.service;
 
 import jakarta.transaction.Transactional;
 import ntic.tlsi.gestiondoctorat2.entities.Admin;
+import ntic.tlsi.gestiondoctorat2.entities.CFD;
 import ntic.tlsi.gestiondoctorat2.entities.Candidat;
 import ntic.tlsi.gestiondoctorat2.entities.User;
 import ntic.tlsi.gestiondoctorat2.repo.*;
@@ -107,6 +108,49 @@ public class serviceUser {
         candidatToEdit.setNom(candidat.getNom());
         candidatToEdit.setEmail(candidat.getEmail());
         return candidatToEdit;
+    }
+
+
+    // ------------------------------ CFD  CRUD OPERATION -------------------------------------------------
+    public CFD addCFD(CFD cfd){
+        return cfdRepo.save(cfd);
+    }
+
+    public List<CFD> getCFDs(){
+        Iterable<User> users = cfdRepo.findAll();
+        //return StreamSupport.stream(admins.spliterator(),false).collect(Collectors.toList());
+        List<CFD> cfds = new ArrayList<>();
+        for (User user : users) {
+            if (user instanceof CFD) {
+                cfds.add((CFD) user);
+            }
+        }
+        return cfds;
+    }
+
+    public CFD getCFD(Long id){
+        return (CFD) cfdRepo.findById(id).orElseThrow(()->{
+            new RuntimeException();
+            return null;
+        });
+    }
+
+    public CFD deleteCfd(Long id){
+        CFD cfd = getCFD(id);
+        cfdRepo.delete(cfd);
+        return cfd;
+    }
+
+    @Transactional
+    public CFD editCFD(Long id , CFD cfd){
+        CFD cfdToEdit = getCFD(id);
+        cfdToEdit.setLogDate(cfd.getLogDate());
+        cfdToEdit.setUsername(cfd.getUsername());
+        cfdToEdit.setPassword(cfd.getPassword());
+        cfdToEdit.setNom(cfd.getNom());
+        cfdToEdit.setPrenom(cfd.getPrenom());
+        cfdToEdit.setEmail(cfd.getEmail());
+        return cfdToEdit;
     }
 
 }
