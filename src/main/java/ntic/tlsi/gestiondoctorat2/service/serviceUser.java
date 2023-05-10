@@ -1,10 +1,7 @@
 package ntic.tlsi.gestiondoctorat2.service;
 
 import jakarta.transaction.Transactional;
-import ntic.tlsi.gestiondoctorat2.entities.Admin;
-import ntic.tlsi.gestiondoctorat2.entities.CFD;
-import ntic.tlsi.gestiondoctorat2.entities.Candidat;
-import ntic.tlsi.gestiondoctorat2.entities.User;
+import ntic.tlsi.gestiondoctorat2.entities.*;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -151,6 +148,47 @@ public class serviceUser {
         cfdToEdit.setPrenom(cfd.getPrenom());
         cfdToEdit.setEmail(cfd.getEmail());
         return cfdToEdit;
+    }
+    // ------------------------------ VD  CRUD OPERATION -------------------------------------------------
+    public VD addVD(VD vd){
+        return vdRepo.save(vd);
+    }
+
+    public List<VD> getVDs(){
+        Iterable<User> users = vdRepo.findAll();
+        //return StreamSupport.stream(admins.spliterator(),false).collect(Collectors.toList());
+        List<VD> vds = new ArrayList<>();
+        for (User user : users) {
+            if (user instanceof VD) {
+                vds.add((VD) user);
+            }
+        }
+        return vds;
+    }
+
+    public VD getVD(Long id){
+        return (VD) vdRepo.findById(id).orElseThrow(()->{
+            new RuntimeException();
+            return null;
+        });
+    }
+
+    public VD deleteVD(Long id){
+        VD vd = getVD(id);
+        vdRepo.delete(vd);
+        return vd;
+    }
+
+    @Transactional
+    public VD editVD(Long id , VD vd){
+        VD vdToEdit = getVD(id);
+        vdToEdit.setLogDate(vd.getLogDate());
+        vdToEdit.setUsername(vd.getUsername());
+        vdToEdit.setPassword(vd.getPassword());
+        vdToEdit.setNom(vd.getNom());
+        vdToEdit.setPrenom(vd.getPrenom());
+        vdToEdit.setEmail(vd.getEmail());
+        return vdToEdit;
     }
 
 }

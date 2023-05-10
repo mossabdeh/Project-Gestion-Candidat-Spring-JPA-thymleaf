@@ -69,26 +69,3 @@ public class CfdController extends BaseController{
 
 
 
-  /*  @Autowired
-    private serviceUser userService;
-
-    @PostMapping("/user")
-    public String addUser(@ModelAttribute("user") User user, Model model) {
-        User newUser = userService.addUser(user);
-        model.addAttribute("message", "New user added with id: " + newUser.getId());
-        return "success";
-    }
-
-    @GetMapping("/users")
-    public ResponseEntity<Page<User>> getAllUsers(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size) {
-        Pageable paging = PageRequest.of(page, size);
-        Page<User> users = userService.getUsers();
-
-        if (users.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(users, HttpStatus.OK);
-        }
-    }*/
-

@@ -1,13 +1,16 @@
 package ntic.tlsi.gestiondoctorat2.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
+import ntic.tlsi.gestiondoctorat2.entities.DTO.VdDTO;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
 @Entity
-
+@Data
 public class VD extends User{
      private Date LogDate;
      @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
@@ -34,11 +37,20 @@ public class VD extends User{
         return concours;
     }
 // Setters
-    public void setLogDate(Date logDate) {
-        LogDate = logDate;
-    }
+
 
     public void setConcours(Collection<InfoConcour> concours) {
         this.concours = concours;
     }
-}
+    public static VD from(VdDTO vdDTO){
+        VD vd =new VD();
+        vd.setLogDate(vdDTO.getLogDate());
+        vd.setUsername(vdDTO.getUsername());
+        vd.setPassword(vdDTO.getPassword());
+        vd.setEmail(vdDTO.getEmail());
+        vd.setNom(vdDTO.getNom());
+        vd.setPrenom(vdDTO.getPrenom());
+        vd.setTypeRole(Role.VD);
+        return vd;
+
+}}
