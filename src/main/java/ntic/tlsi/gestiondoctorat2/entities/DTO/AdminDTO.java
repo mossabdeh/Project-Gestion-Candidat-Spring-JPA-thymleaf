@@ -2,6 +2,7 @@ package ntic.tlsi.gestiondoctorat2.entities.DTO;
 
 import lombok.Data;
 import ntic.tlsi.gestiondoctorat2.entities.Admin;
+import ntic.tlsi.gestiondoctorat2.entities.Role;
 
 import java.util.Date;
 
@@ -18,6 +19,7 @@ public class AdminDTO extends UserDTO{
         adminDTO.setEmail(admin.getEmail());
         adminDTO.setNom(admin.getNom());
         adminDTO.setPrenom(admin.getPrenom());
+        adminDTO.setTypeRole(Role.ADMIN);
         return adminDTO;
     }
 }

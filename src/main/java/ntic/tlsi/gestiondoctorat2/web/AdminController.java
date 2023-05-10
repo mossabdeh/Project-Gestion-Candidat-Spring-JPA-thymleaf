@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/admin")
 public class AdminController extends BaseController{
     private final serviceUser serviceUser;

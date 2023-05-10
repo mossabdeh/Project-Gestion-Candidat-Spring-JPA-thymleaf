@@ -28,6 +28,7 @@ public class Admin extends User{
         admin.setEmail(adminDTO.getEmail());
         admin.setNom(adminDTO.getNom());
         admin.setPrenom(adminDTO.getPrenom());
+        admin.setTypeRole(Role.ADMIN);
         return admin;
 
     }
