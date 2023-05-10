@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
+import ntic.tlsi.gestiondoctorat2.entities.DTO.CandidatDTO;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,4 +50,19 @@ public class Candidat extends User{
             throw new IllegalArgumentException("The maximum size of the copies is 2, one for every matier");
         }
     }
-}
+
+    public static Candidat from(CandidatDTO candidatDTO){
+        Candidat candidat  = new Candidat();
+        candidat.setDateNaissance(candidatDTO.getDateNaissance());
+        candidat.setCode(candidatDTO.getCode());
+        candidat.setMoyMatier1(candidatDTO.getMoyMatier1());
+        candidat.setMoyMatier2(candidatDTO.getMoyMatier2());
+        candidat.setMoyenneGeneral(candidatDTO.getMoyenneGeneral());
+        candidat.setUsername(candidatDTO.getUsername());
+        candidat.setPassword(candidatDTO.getPassword());
+        candidat.setEmail(candidatDTO.getEmail());
+        candidat.setNom(candidatDTO.getNom());
+        candidat.setPrenom(candidatDTO.getPrenom());
+        candidat.setTypeRole(Role.CANDIDAT);
+        return candidat;
+}}

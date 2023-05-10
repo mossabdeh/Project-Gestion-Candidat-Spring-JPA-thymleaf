@@ -1,5 +1,6 @@
 package ntic.tlsi.gestiondoctorat2.service;
 
+import jakarta.transaction.Transactional;
 import ntic.tlsi.gestiondoctorat2.entities.Admin;
 import ntic.tlsi.gestiondoctorat2.entities.Candidat;
 import ntic.tlsi.gestiondoctorat2.entities.User;
@@ -54,6 +55,7 @@ public class serviceUser {
         return admin;
     }
 
+    @Transactional
     public Admin editAdmin(Long id , Admin admin){
         Admin adminToEdit = getAdmin(id);
         adminToEdit.setLogDate(admin.getLogDate());
@@ -75,7 +77,7 @@ public class serviceUser {
         //return StreamSupport.stream(admins.spliterator(),false).collect(Collectors.toList());
         List<Candidat> candidats = new ArrayList<>();
         for (User user : users) {
-            if (user instanceof Admin) {
+            if (user instanceof Candidat) {
                 candidats.add((Candidat) user);
             }
         }
@@ -95,6 +97,7 @@ public class serviceUser {
         return candidat;
     }
 
+    @Transactional
     public Candidat editCandidat(Long id, Candidat candidat) {
         Candidat candidatToEdit = getCandidat(id);
         candidatToEdit.setDateNaissance(candidat.getDateNaissance());
