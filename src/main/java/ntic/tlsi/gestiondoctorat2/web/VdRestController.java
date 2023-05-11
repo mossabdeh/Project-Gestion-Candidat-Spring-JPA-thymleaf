@@ -1,8 +1,6 @@
 package ntic.tlsi.gestiondoctorat2.web;
 
 
-import ntic.tlsi.gestiondoctorat2.entities.Admin;
-import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.VdDTO;
 import ntic.tlsi.gestiondoctorat2.entities.VD;
 import ntic.tlsi.gestiondoctorat2.service.serviceUser;
@@ -16,11 +14,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/vd")
-public class VdController extends BaseController{
+public class VdRestController extends BaseController{
     private final serviceUser serviceUser;
 
     @Autowired
-    public VdController(ntic.tlsi.gestiondoctorat2.service.serviceUser serviceUser) {
+    public VdRestController(ntic.tlsi.gestiondoctorat2.service.serviceUser serviceUser) {
         this.serviceUser = serviceUser;
     }
 
