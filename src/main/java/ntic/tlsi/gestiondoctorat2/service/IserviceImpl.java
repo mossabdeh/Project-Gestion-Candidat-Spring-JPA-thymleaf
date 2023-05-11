@@ -34,6 +34,9 @@ public class IserviceImpl implements Iservice {
         User admin = new Admin("admin","admin","admin@gmail.com"
                 ,"admin","admin", Role.ADMIN,new Date());
         adminRepo.save(admin);
+        User admin1 = new Admin("admin1","admin1","admin1@gmail.com"
+                ,"admin1","admin1", Role.ADMIN,new Date());
+        adminRepo.save(admin1);
         //---------------------- VD -----------------------------------------
         User vd = new VD("vd","vd","vd@gmail.com"
                 ,"vd","vd", Role.VD,new Date());

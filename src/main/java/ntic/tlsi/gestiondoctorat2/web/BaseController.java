@@ -9,4 +9,9 @@ public class BaseController {
     public String homePage() {
         return "HomePage"; // index.html is your home page template file
     }
+
+    @GetMapping("/adminPage")
+    public String AdminPage(){
+        return"AdminPage";
+    }
 }
