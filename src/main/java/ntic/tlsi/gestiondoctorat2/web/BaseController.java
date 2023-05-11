@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class BaseController {
     @GetMapping("/")
     public String homePage() {
-        return "index"; // index.html is your home page template file
+        return "HomePage"; // index.html is your home page template file
     }
 }
