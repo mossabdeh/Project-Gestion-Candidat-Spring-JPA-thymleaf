@@ -3,6 +3,7 @@ package ntic.tlsi.gestiondoctorat2.repo;
 import ntic.tlsi.gestiondoctorat2.entities.Candidat;
 import ntic.tlsi.gestiondoctorat2.entities.Enseignant;
 import ntic.tlsi.gestiondoctorat2.entities.Matier;
+import ntic.tlsi.gestiondoctorat2.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,6 @@ public interface EnseignantRepo extends UserRepo{
 
 
     Enseignant findEnseignantById(Long id);
+
+    User findByUsername(String username);
 }

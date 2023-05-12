@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -71,11 +71,18 @@
         <div class="card">
             <div class="card-header"> <h3> List des Admin</h3> </div>
             <div class="card-body">
-                <form method="get" th:action="@{getAdmins}">
-                    <label> Keyword</label>
-                    <input type="text" name="keyword" th:value="${keyword}">
-                    <button type="submit" class="btn btn-secondary">Chercher</button>
-                </form>
+                <div class="row align-items-center">
+                    <div class="col-6">
+                      <form method="get" th:action="@{getAdmins}">
+                      <label> Keyword</label>
+                      <input type="text" name="keyword" th:value="${keyword}">
+                      <button type="submit" class="btn btn-secondary">Chercher</button>
+                      </form>
+                    </div>
+                    <div class="col-6 d-flex justify-content-lg-end m-auto ">
+                       <a th:href="@{AdminAdd}"> <button  type="button"  class="btn btn-outline-primary">Add</button>  </a>
+                    </div>
+                </div>
                 <table class="table" th:if="${not #lists.isEmpty(ListAdmins)}">
                     <thead>
                     <tr>

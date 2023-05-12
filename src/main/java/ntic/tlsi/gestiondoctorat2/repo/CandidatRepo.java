@@ -3,6 +3,7 @@ package ntic.tlsi.gestiondoctorat2.repo;
 import jakarta.persistence.Id;
 import ntic.tlsi.gestiondoctorat2.entities.Admin;
 import ntic.tlsi.gestiondoctorat2.entities.Candidat;
+import ntic.tlsi.gestiondoctorat2.entities.User;
 import ntic.tlsi.gestiondoctorat2.entities.VD;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,4 +23,5 @@ public interface CandidatRepo extends UserRepo{
     Candidat findCandidatById(Long id);
 
 
+    User findByUsername(String username);
 }
