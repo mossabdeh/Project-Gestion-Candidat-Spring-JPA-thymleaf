@@ -12,5 +12,5 @@ public interface AdminRepo extends UserRepo{
 
     Page<Admin> findByNomContains(String keyword, PageRequest of);
 
-    User findByUsername(String username);
+
 }

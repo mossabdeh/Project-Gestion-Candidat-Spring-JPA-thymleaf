@@ -22,5 +22,5 @@ public interface EnseignantRepo extends UserRepo{
 
     Enseignant findEnseignantById(Long id);
 
-    User findByUsername(String username);
+
 }

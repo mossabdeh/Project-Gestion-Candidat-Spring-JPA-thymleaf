@@ -9,15 +9,20 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
 @SpringBootApplication
 public class GestionDoctorat2Application implements CommandLineRunner {
-@Autowired
-private IserviceImpl iservice;
+    @Autowired
+    private IserviceImpl iservice;
+
     public static void main(String[] args) {
-       // ConfigurableApplicationContext configurableApplicationContext =
+        // ConfigurableApplicationContext configurableApplicationContext =
         SpringApplication.run(GestionDoctorat2Application.class, args);
         /*
         UserRepo adminRepo = configurableApplicationContext.getBean(AdminRepo.class);
@@ -37,7 +42,8 @@ private IserviceImpl iservice;
         vdRepo.save(vd);
         candidatRepo.save(candidat);
         ensRepo.save(ens);
-    */}
+    */
+    }
 
     @Override
     public void run(String... args) throws Exception {
@@ -45,6 +51,5 @@ private IserviceImpl iservice;
         iservice.InitInfoC();
         iservice.InitCopie();
         iservice.InitCorrection();
-
     }
 }

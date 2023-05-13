@@ -9,9 +9,11 @@ import ntic.tlsi.gestiondoctorat2.entities.Role;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 import ntic.tlsi.gestiondoctorat2.service.serviceUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,6 +50,13 @@ public class CandidatController extends BaseController{
         model.addAttribute("keyword",keyword);
 
         return "AdminCandidat";
+    }
+
+    @GetMapping("/test")
+    public String test(Authentication authentication,Model model){
+        model.addAttribute("username",authentication.getName());
+        return "Test";
+
     }
 
     @GetMapping("/CandidatAdd")

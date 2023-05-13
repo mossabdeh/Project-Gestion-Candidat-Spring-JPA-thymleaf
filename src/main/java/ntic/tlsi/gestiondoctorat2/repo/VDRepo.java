@@ -9,5 +9,5 @@ public interface VDRepo extends UserRepo{
 
     VD findByNom(String vd);
 
-    User findByUsername(String username);
+
 }

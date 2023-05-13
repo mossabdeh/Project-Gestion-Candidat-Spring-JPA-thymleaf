@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CFDRepo extends UserRepo{
-    User findByUsername(String username);
+
 }

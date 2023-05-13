@@ -23,5 +23,5 @@ public interface CandidatRepo extends UserRepo{
     Candidat findCandidatById(Long id);
 
 
-    User findByUsername(String username);
+
 }

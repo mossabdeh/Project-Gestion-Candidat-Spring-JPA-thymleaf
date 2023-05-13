@@ -4,6 +4,10 @@ import jakarta.transaction.Transactional;
 import ntic.tlsi.gestiondoctorat2.entities.*;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +27,8 @@ public class serviceUser {
     private CandidatRepo candidatRepo;
     @Autowired
     private EnseignantRepo enseignantRepo;
+
+
 // ------------------------------ ADMIN  CRUD OPERATION -------------------------------------------------
     public Admin addAdmin(Admin admin){
         return adminRepo.save(admin);

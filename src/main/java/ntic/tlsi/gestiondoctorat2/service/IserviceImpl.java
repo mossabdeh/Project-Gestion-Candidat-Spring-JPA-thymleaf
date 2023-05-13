@@ -1,32 +1,37 @@
 package ntic.tlsi.gestiondoctorat2.service;
 
+import lombok.AllArgsConstructor;
 import ntic.tlsi.gestiondoctorat2.entities.*;
 import ntic.tlsi.gestiondoctorat2.repo.*;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.logging.Logger;
+
 import java.util.stream.Stream;
 
 @Service
+@AllArgsConstructor
 public class IserviceImpl implements Iservice {
-    @Autowired
+
      private AdminRepo adminRepo;
-    @Autowired
+
     private CFDRepo cfdRepo;
-    @Autowired
+
     private VDRepo vdRepo;
-    @Autowired
+
     private CandidatRepo candidatRepo;
-    @Autowired
+
     private EnseignantRepo enseignantRepo;
-    @Autowired
+
     private InfoConRepo conRepo;
-    @Autowired
+
     private CopieRepo copieRepo;
-    @Autowired
+
     private CorrectionRepo correctionRepo;
+
 
     @Override
     public void InitUsers() {
@@ -47,11 +52,12 @@ public class IserviceImpl implements Iservice {
         cfdRepo.save(cfd);
         //---------------------- Candidats -----------------------------------------
         Random random = new Random();
-        for (int i = 0;i<7;i++){
+        for ( int  i = 0;i<7;i++){
+            final int index = i;
         Stream.of("Mossab","Seif","Islme","Didou","nadjib","Kobi","Ammar","yahia","hakim")
                 .forEach(nameUser ->{
 
-        User candidat = new Candidat(nameUser,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.CANDIDAT
+        User candidat = new Candidat(nameUser+index,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.CANDIDAT
                 ,new Date(),random.nextInt(1001) + 1000,10.00);
 
         candidatRepo.save(candidat);
@@ -95,15 +101,11 @@ public class IserviceImpl implements Iservice {
         candidatRepo.findAllBy().forEach(candidat -> {
             Copie copie1 = new Copie(Matier.ALGO,candidat);
             Copie copie2 = new Copie(Matier.EDL,candidat);
-            //Copie copie3 = new Copie(Matier.EDL,candidat);
             List<Copie>  copies = Arrays.asList(copie1,copie2);
             candidat.setCopies(copies);
             candidatRepo.save(candidat);
 
         });
-       //Optional<Candidat> candidatOptional  =  candidatRepo.findById(4L).map(u -> (Candidat)u);
-
-        //candidatOptional.ifPresent(candidat -> {
 
 
 
@@ -175,6 +177,38 @@ public class IserviceImpl implements Iservice {
             }
         });
     }
+
+  //  private UserRepo userRepo;
+    @Override
+    public Optional<User> loadUserByUsername(String username) {
+            Optional<User> user = adminRepo.findByUsername(username);
+            if (user == null) {
+                Optional<User> optionalUser = cfdRepo.findByUsername(username);
+                if (optionalUser.isPresent()) {
+                    user = optionalUser;
+                } else {
+                    optionalUser = vdRepo.findByUsername(username);
+                    if (optionalUser.isPresent()) {
+                        user = optionalUser;
+                    } else {
+                        optionalUser = candidatRepo.findByUsername(username);
+                        if (optionalUser.isPresent()) {
+                            user = optionalUser;
+                        } else {
+                            optionalUser = enseignantRepo.findByUsername(username);
+                            if (optionalUser.isPresent()) {
+                                user = optionalUser;
+                            }
+                        }
+                    }
+                }
+            }
+            if (user == null) {
+                throw new UsernameNotFoundException(String.format("User %s not found ",username));
+            }
+            return user;
+        }
+
 
 
 

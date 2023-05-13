@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,14 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/admin")
 public class AdminController extends BaseController{
+
+    @GetMapping("/test")
+    public String test(Authentication authentication, Model model){
+        model.addAttribute("username",authentication.getName());
+        model.addAttribute("roles",authentication.getAuthorities());
+        return "Test";
+
+    }
     private final serviceUser serviceUser;
     @Autowired
     private AdminRepo adminRepo ;
