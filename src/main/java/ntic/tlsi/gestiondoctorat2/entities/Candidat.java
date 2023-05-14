@@ -51,5 +51,20 @@ public class Candidat extends User{
         }
     }
 
+     public static Candidat from(CandidatDTO candidatDTO){
+         Candidat candidat =new Candidat();
+         candidat.setDateNaissance(candidatDTO.getDateNaissance());
+         candidat.setCode(candidatDTO.getCode());
+         candidat.setMoyenneGeneral(candidatDTO.getMoyenneGeneral());
+         candidat.setMoyMatier1(candidatDTO.getMoyMatier1());
+         candidat.setMoyMatier2(candidatDTO.getMoyMatier2());
+         candidat.setUsername(candidatDTO.getUsername());
+         candidat.setPassword(candidatDTO.getPassword());
+         candidat.setEmail(candidatDTO.getEmail());
+         candidat.setNom(candidatDTO.getNom());
+         candidat.setPrenom(candidatDTO.getPrenom());
+         candidat.setTypeRole(Role.CANDIDAT);
+         return candidat;
+     }
 
 }

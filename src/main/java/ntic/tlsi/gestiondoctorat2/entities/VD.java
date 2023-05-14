@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 public class VD extends User{
      private Date LogDate;
-     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
      // if VD deleted every Concour is deleted
      // if you want delete VD alone u should replcae cascade = CascadeType.ALL with cascade = CascadeType.REMOVE
      @JoinColumn(name = "VD_id")
