@@ -2,6 +2,7 @@ package ntic.tlsi.gestiondoctorat2.service;
 
 import lombok.AllArgsConstructor;
 import ntic.tlsi.gestiondoctorat2.entities.*;
+import ntic.tlsi.gestiondoctorat2.entities.DTO.VdDTO;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -83,8 +84,8 @@ public class IserviceImpl implements Iservice {
         InfoConcour concour = new InfoConcour(3,"TLSI",Matier.ALGO,Matier.EDL,new Date());
         List<InfoConcour> concours = Arrays.asList(concour);
         vd.setConcours(concours);
-        vd.setLogDate(new Date());
-        vdRepo.save(vd);
+        concour.setVd(vd);
+        conRepo.save(concour);
         // if we delete VD all his infos Concours deleted
         //vdRepo.delete(vd);
 
@@ -183,15 +184,20 @@ public class IserviceImpl implements Iservice {
     public Optional<User> loadUserByUsername(String username) {
             Optional<User> user = adminRepo.findByUsername(username);
             if (user == null) {
-                Optional<User> optionalUser = cfdRepo.findByUsername(username);
+                Optional<User> optionalUser = candidatRepo.findByUsername(username);
                 if (optionalUser.isPresent()) {
                     user = optionalUser;
                 } else {
-                    optionalUser = vdRepo.findByUsername(username);
+
+
+
+                    Optional<VdDTO> optionalVdDTO = vdRepo.findDTOByUsername(username);
+
                     if (optionalUser.isPresent()) {
-                        user = optionalUser;
+                        VD vd = VD.from(optionalVdDTO.get());
+                        user = Optional.of(vd);
                     } else {
-                        optionalUser = candidatRepo.findByUsername(username);
+                        optionalUser = cfdRepo.findByUsername(username);
                         if (optionalUser.isPresent()) {
                             user = optionalUser;
                         } else {

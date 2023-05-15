@@ -3,12 +3,14 @@ package ntic.tlsi.gestiondoctorat2.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
 @Entity
+@Data
 public class InfoConcour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +28,8 @@ public class InfoConcour {
     @Temporal(TemporalType.DATE)
     private Date DateConcour;
     // No place because it happen only in one departelent NTIC
-
+    @ManyToOne
+    private VD vd ;
 
     public InfoConcour() {
     }
