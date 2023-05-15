@@ -2,6 +2,7 @@ package ntic.tlsi.gestiondoctorat2.service;
 
 import lombok.AllArgsConstructor;
 import ntic.tlsi.gestiondoctorat2.entities.*;
+import ntic.tlsi.gestiondoctorat2.entities.DTO.CandidatDTO;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.VdDTO;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 
@@ -55,7 +56,7 @@ public class IserviceImpl implements Iservice {
         Random random = new Random();
         for ( int  i = 0;i<7;i++){
             final int index = i;
-        Stream.of("Mossab","Seif","Islme","Didou","nadjib","Kobi","Ammar","yahia","hakim")
+        Stream.of("mossab","Seif","Islme","Didou","nadjib","Kobi","Ammar","yahia","hakim")
                 .forEach(nameUser ->{
 
         User candidat = new Candidat(nameUser+index,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.CANDIDAT
@@ -95,16 +96,17 @@ public class IserviceImpl implements Iservice {
 
     @Override
     public void InitCopie() {
-          /* final Logger LOGGER = Logger.getLogger(IserviceImpl.class.getName());
-         candidatRepo.findAllBy().forEach(c ->{
-             LOGGER.info("Candidat: " + c.getNom());
-         });*/
+
         candidatRepo.findAllBy().forEach(candidat -> {
             Copie copie1 = new Copie(Matier.ALGO,candidat);
             Copie copie2 = new Copie(Matier.EDL,candidat);
             List<Copie>  copies = Arrays.asList(copie1,copie2);
             candidat.setCopies(copies);
-            candidatRepo.save(candidat);
+            copie1.setCandidat(candidat);
+            copie2.setCandidat(candidat);
+            //candidatRepo.save(candidat);
+            copieRepo.save(copie1);
+            copieRepo.save(copie2);
 
         });
 
@@ -184,22 +186,20 @@ public class IserviceImpl implements Iservice {
     public Optional<User> loadUserByUsername(String username) {
             Optional<User> user = adminRepo.findByUsername(username);
             if (user == null) {
-                Optional<User> optionalUser = candidatRepo.findByUsername(username);
+                Optional<User> optionalUser = cfdRepo.findByUsername(username);
                 if (optionalUser.isPresent()) {
                     user = optionalUser;
                 } else {
-
-
-
                     Optional<VdDTO> optionalVdDTO = vdRepo.findDTOByUsername(username);
 
-                    if (optionalUser.isPresent()) {
+                    if (optionalVdDTO.isPresent()) {
                         VD vd = VD.from(optionalVdDTO.get());
                         user = Optional.of(vd);
                     } else {
-                        optionalUser = cfdRepo.findByUsername(username);
-                        if (optionalUser.isPresent()) {
-                            user = optionalUser;
+                        Optional<CandidatDTO> optionalCandidatDTO = candidatRepo.findDTOByUsername(username);
+                        if (optionalCandidatDTO.isPresent()) {
+                            Candidat candidat = Candidat.from(optionalCandidatDTO.get());
+                            user = Optional.of(candidat);
                         } else {
                             optionalUser = enseignantRepo.findByUsername(username);
                             if (optionalUser.isPresent()) {

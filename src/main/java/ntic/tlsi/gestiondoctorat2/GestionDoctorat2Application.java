@@ -50,6 +50,6 @@ public class GestionDoctorat2Application implements CommandLineRunner {
         iservice.InitUsers();
         iservice.InitInfoC();
         iservice.InitCopie();
-        iservice.InitCorrection();
+        //iservice.InitCorrection();
     }
 }
