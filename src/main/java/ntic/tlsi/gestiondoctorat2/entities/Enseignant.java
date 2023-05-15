@@ -16,7 +16,7 @@ public class Enseignant extends User{
     @Enumerated(EnumType.STRING)
     private Matier specialite;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable( name = "Correction",
             joinColumns = @JoinColumn(name = "Enseignant_id"),
             inverseJoinColumns = @JoinColumn(name = "Copie_id")

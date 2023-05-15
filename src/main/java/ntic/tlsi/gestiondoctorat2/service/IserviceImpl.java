@@ -3,6 +3,7 @@ package ntic.tlsi.gestiondoctorat2.service;
 import lombok.AllArgsConstructor;
 import ntic.tlsi.gestiondoctorat2.entities.*;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.CandidatDTO;
+import ntic.tlsi.gestiondoctorat2.entities.DTO.EnseignantDTO;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.VdDTO;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 
@@ -201,9 +202,10 @@ public class IserviceImpl implements Iservice {
                             Candidat candidat = Candidat.from(optionalCandidatDTO.get());
                             user = Optional.of(candidat);
                         } else {
-                            optionalUser = enseignantRepo.findByUsername(username);
-                            if (optionalUser.isPresent()) {
-                                user = optionalUser;
+                            Optional<EnseignantDTO> optionalEnseignantDTO = enseignantRepo.findDTOByUsername(username);
+                            if (optionalEnseignantDTO.isPresent()) {
+                                Enseignant enseignant = Enseignant.from(optionalEnseignantDTO.get());
+                                user = Optional.of(enseignant);
                             }
                         }
                     }
