@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,11 +45,14 @@ public class AdminController extends BaseController{
     }
 
     @GetMapping("/AdminAdd")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String AdminAdminAdd(Model model){
         model.addAttribute("admin",new Admin());
         return "AdminAdminAdd";
     }
     @PostMapping("/saveAdmin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     public String saveAdmin(Model model , @Valid Admin admin , BindingResult bindingResult){
         if (bindingResult.hasErrors()) return "AdminAdminAdd";
         admin.setTypeRole(Role.ADMIN);
@@ -57,7 +61,9 @@ public class AdminController extends BaseController{
         return "redirect:/admin/getAdmins";
     }
 
+
     @GetMapping("/getAdmins")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getAdmins(Model model,
                             @RequestParam(name = "page",defaultValue = "0") int page,
                             @RequestParam(name = "size",defaultValue = "5") int size,
@@ -78,12 +84,14 @@ public class AdminController extends BaseController{
     }*/
 
     @GetMapping("/delete")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteAdmin(final Long id,String keyword,int page){
        adminRepo.deleteById(id);
         return "redirect:/admin/getAdmins?page="+page+"&keyword="+keyword;
     }
 
    @GetMapping("/editAdmin")
+   @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editAdmin(Model model,Long id,String keyword,int page){
 
         Admin editAdmin = adminRepo.findAdminById(id);

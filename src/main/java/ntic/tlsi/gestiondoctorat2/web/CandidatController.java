@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +40,7 @@ public class CandidatController extends BaseController{
 
 
     @GetMapping("/getCandidats")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getCandidats(Model model,
                             @RequestParam(name = "page",defaultValue = "0") int page,
                             @RequestParam(name = "size",defaultValue = "5") int size,
@@ -60,12 +62,14 @@ public class CandidatController extends BaseController{
     }
 
     @GetMapping("/CandidatAdd")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String AdminCandidatAdd(Model model){
         model.addAttribute("candidat",new Candidat());
         return "AdminCandidatAdd";
     }
 
     @PostMapping("/saveCandidat")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String saveCandidat(Model model , @Valid Candidat candidat , BindingResult bindingResult){
         if (bindingResult.hasErrors()) return "AdminCandidatAdd";
         candidat.setTypeRole(Role.CANDIDAT);
@@ -75,6 +79,7 @@ public class CandidatController extends BaseController{
     }
 
     @GetMapping("/delete")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteCandidat(final Long id,String keyword,int page){
         candidatRepo.deleteById(id);
         return "redirect:/candidat/getCandidats?page="+page+"&keyword="+keyword;
@@ -82,6 +87,7 @@ public class CandidatController extends BaseController{
 
 
     @GetMapping("/editCandidat")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editCandidat(Model model,Long id,String keyword,int page){
 
         Candidat editCandidat = candidatRepo.findCandidatById(id);

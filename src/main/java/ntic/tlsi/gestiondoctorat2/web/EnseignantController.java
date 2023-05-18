@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,6 +40,7 @@ public class EnseignantController extends BaseController{
 
 
     @GetMapping("/getEnseignants")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getEnseignants(Model model,
                             @RequestParam(name = "page",defaultValue = "0") int page,
                             @RequestParam(name = "size",defaultValue = "5") int size,
@@ -53,12 +55,14 @@ public class EnseignantController extends BaseController{
     }
 
     @GetMapping("/EnseignantAdd")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String AdminEnseignantAdd(Model model){
         model.addAttribute("enseignant",new Enseignant());
         return "AdminEnseignantAdd";
     }
 
     @PostMapping("/saveEnseignant")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String saveEnseignant(Model model , @Valid Enseignant enseignant , BindingResult bindingResult){
         if (bindingResult.hasErrors()) return "AdminEnseignantAdd";
         enseignant.setTypeRole(Role.ENSEIGNANT);
@@ -68,6 +72,7 @@ public class EnseignantController extends BaseController{
     }
 
     @GetMapping("/delete")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteEnseignant(final Long id,String keyword,int page){
         enseignantRepo.deleteById(id);
         return "redirect:/enseignant/getEnseignants?page="+page+"&keyword="+keyword;
@@ -75,6 +80,7 @@ public class EnseignantController extends BaseController{
 
 
     @GetMapping("/editEnseignant")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editEnseignant(Model model,Long id,String keyword,int page){
 
         Enseignant editEnseignant = enseignantRepo.findEnseignantById(id);
