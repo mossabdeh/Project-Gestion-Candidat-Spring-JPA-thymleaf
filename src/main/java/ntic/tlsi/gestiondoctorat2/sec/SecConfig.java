@@ -37,7 +37,7 @@ public class SecConfig  {
           httpSecurity.formLogin();
           //httpSecurity.authorizeHttpRequests().requestMatchers("/**").hasRole(Role.CANDIDAT.name());
           httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
-
+          httpSecurity.exceptionHandling().accessDeniedPage("/notAuthorized");
 
           httpSecurity.userDetailsService(userDetailServiceImpl);
 
