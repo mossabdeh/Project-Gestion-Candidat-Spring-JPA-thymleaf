@@ -14,4 +14,9 @@ public class BaseController {
     public String AdminPage(){
         return"AdminPage";
     }
+/*
+    @GetMapping("/loginPage")
+    public String login(){
+        return "Login";
+    }*/
 }

@@ -29,7 +29,10 @@ public class SecConfig  {
     }
 @Bean
  SecurityFilterChain  securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-          httpSecurity.formLogin().permitAll();
+          httpSecurity.authorizeHttpRequests().
+                  requestMatchers("/").permitAll().
+                  requestMatchers("/css/**","/js/**", "/img/**","/vendor/**").permitAll();
+          httpSecurity.formLogin();
           //httpSecurity.authorizeHttpRequests().requestMatchers("/**").hasRole(Role.CANDIDAT.name());
           httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
 

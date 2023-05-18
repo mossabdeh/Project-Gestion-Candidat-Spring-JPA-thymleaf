@@ -50,7 +50,12 @@
 
 
                 <li><a href="">Contact</a></li>
-                <li><a href="" class="btn-get-started animate__animated animate__fadeInUp disabled">Admin</a></li>
+                <li><a th:text="${#authentication.name}" class="btn-get-started animate__animated animate__fadeInUp disabled"></a></li>
+                <li>
+                    <form method="post" th:action="@{/logout}">
+                        <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">Logout</button>
+                    </form>
+                </li>
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>
         </nav><!-- .navbar -->
