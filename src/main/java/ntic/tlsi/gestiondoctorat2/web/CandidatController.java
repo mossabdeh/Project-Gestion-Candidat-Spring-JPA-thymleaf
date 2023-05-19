@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 
 import ntic.tlsi.gestiondoctorat2.entities.Candidat;
 
+import ntic.tlsi.gestiondoctorat2.entities.InfoConcour;
 import ntic.tlsi.gestiondoctorat2.entities.Role;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 import ntic.tlsi.gestiondoctorat2.service.serviceUser;
@@ -21,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Controller
@@ -31,11 +33,24 @@ public class CandidatController extends BaseController{
     private final serviceUser serviceUser;
     @Autowired
     private CandidatRepo candidatRepo;
+    @Autowired
+    private InfoConRepo conRepo;
 
 
     @Autowired
     public CandidatController(ntic.tlsi.gestiondoctorat2.service.serviceUser serviceUser) {
         this.serviceUser = serviceUser;
+    }
+
+    @GetMapping("/getConcourInfo")
+    public String GetConcourInfo(Model  model){
+        List<InfoConcour> concours = conRepo.findAll();
+        // return only the last Concour Information
+        if (!concours.isEmpty()) {
+            InfoConcour lastConcour = concours.get(concours.size() - 1);
+            model.addAttribute("lastConcour", lastConcour);
+        }
+        return "CandidatConcourInfo";
     }
 
 

@@ -62,75 +62,59 @@
 
   </div>
 </header><!-- End Header -->
+<!-- ======= About Section ======= -->
+<section id="about" class="about">
+  <div class="container">
 
-  <main id="main">
-
- 
-
-    <!-- ======= Blog Single Section ======= -->
-    <section id="blog" class="blog">
-      <div class="container" data-aos="fade-up">
-
-        <div class="row">
-
-          <div class="col-lg-12 entries">
-
-
-            <div class="blog-author d-flex align-items-center">
-              <img src="/img/team/profile.png" class="rounded-circle float-left" alt="">
-              <div>
-                <h4 th:text="${#authentication.name}"></h4>
-                <div class="social-links">
-                  <a th:text="${candidat.get().email}"><i class="bi bi-envelope"></i> </a>
-                </div>
-                <p>
-                  Doctorat University 2 Participant: Our candidat is actively involved in Doctorat University 2, furthering their academic pursuits.
-                </p>
-              </div>
-            </div><!-- End blog author bio -->
-            <!-- ======= Services Section ======= -->
-            <section id="services" class="services">
-              <div class="container">
-
-                <div class="row">
-                  <div class="col-lg-6 col-md-6 d-flex align-items-stretch">
-                    <div class="icon-box">
-                      <div class="icon"><i class="bx bxl-dribbble"></i></div>
-                      <h4><a th:href="@{candidat/getConcourInfo}">Information About the Competion</a></h4>
-                      <p>
-                        The competition showcases diverse talents, fosters creativity, and opens doors to new opportunities.</p>
-                    </div>
-                  </div>
-
-                  <div class="col-lg-6 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
-                    <div class="icon-box">
-                      <div class="icon"><i class="bx bx-file"></i></div>
-                      <h4><a >Result</a></h4>
-                      <p>Check your result here and see your performance</p>
-                    </div>
-                  </div>
-
-                </div>
-
-              </div>
-            </section><!-- End Services Section -->
-
-            <!-- End blog comments -->
-
-          </div><!-- End blog entries list -->
-
-
-
-        </div>
-
+    <div class="row">
+      <div class="col-lg-6">
+        <img src="/img/about.jpg" class="img-fluid" alt="">
       </div>
-    </section><!-- End Blog Single Section -->
+      <div class="col-lg-6 pt-4 pt-lg-0 content">
+        <div class="container mt-2">
+          <div class="card">
+            <div class="card-header">
+              <h3>Information Concour</h3>
+            </div>
+            <div class="card-body">
 
-  </main><!-- End #main -->
+              <table class="table" th:if="${lastConcour != null}">
+                <tbody>
+                <tr>
+                  <th>ID</th>
+                  <td th:text="${lastConcour.id}"></td>
+                </tr>
+                <tr>
+                  <th>Nombre de Postes</th>
+                  <td th:text="${lastConcour.nbrPostes}"></td>
+                </tr>
+                <tr>
+                  <th>Specialite</th>
+                  <td th:text="${lastConcour.specialite}"></td>
+                </tr>
+                <tr>
+                  <th>Matier commune</th>
+                  <td th:text="${lastConcour.matier1}"></td>
+                </tr>
+                <tr>
+                  <th>Matier Specialite</th>
+                  <td th:text="${lastConcour.matier2}"></td>
+                </tr>
+                <tr>
+                  <th>Date</th>
+                  <td th:text="${lastConcour.dateConcour}"></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End About Section -->
 
-
-
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
   <script src="/vendor/purecounter/purecounter_vanilla.js"></script>
