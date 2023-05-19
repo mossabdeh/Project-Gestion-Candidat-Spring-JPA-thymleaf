@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -25,16 +26,23 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecConfig  {
     private UserDetailServiceImpl userDetailServiceImpl;
+    //private AuthenticationSuccessHandler authenticationSuccessHandler;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-@Bean
+
+    @Bean
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
+    }
+
+    @Bean
  SecurityFilterChain  securityFilterChain(HttpSecurity httpSecurity) throws Exception {
           httpSecurity.authorizeHttpRequests().
                   requestMatchers("/").permitAll().
                   requestMatchers("/css/**","/js/**", "/img/**","/vendor/**").permitAll();
-          httpSecurity.formLogin();
+          httpSecurity.formLogin().successHandler(customAuthenticationSuccessHandler());
           //httpSecurity.authorizeHttpRequests().requestMatchers("/**").hasRole(Role.CANDIDAT.name());
           httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
           httpSecurity.exceptionHandling().accessDeniedPage("/notAuthorized");
