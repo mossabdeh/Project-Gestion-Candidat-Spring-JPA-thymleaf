@@ -39,7 +39,13 @@ public class BaseController {
         model.addAttribute("candidat", candidat);
         return"CandidatPage";}
 
+    @GetMapping("/vdPage")
+    public String VDPage(){
+        return"vdPage";
     }
+
+
+}
 /*
     @GetMapping("/loginPage")
     public String login(){

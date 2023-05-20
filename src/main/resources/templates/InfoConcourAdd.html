@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Form Admin</title>
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<!-- mossab -->
+
+
+    <div class="col-md-6 offset-3">
+        <form method="post" th:action="@{saveInfoConcour}">
+            <div >
+                <label> Number of Postes </label>
+                <input class="form-control" type="number" name="nbrPostes" th:value="${infoConcour.nbrPostes}">
+                <span class="text-danger" th:errors="${infoConcour.nbrPostes}"></span>
+
+            </div>
+            <div >
+                <label> Specialite </label>
+                <input class="form-control" type="text" name="specialite" th:value="${infoConcour.specialite}">
+                <span class="text-danger" th:errors="${infoConcour.specialite}"></span>
+
+            </div>
+
+            <div>
+                <label> Matier Commune </label>
+                <select class="form-control" name="matier1">
+                    <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}"></option>
+                </select>
+                <span class="text-danger" th:errors="${infoConcour.matier1}"></span>
+            </div>
+
+            <div>
+                <label> Matier Specialite </label>
+                <select class="form-control" name="matier2">
+                    <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}"></option>
+                </select>
+                <span class="text-danger" th:errors="${infoConcour.matier2}"></span>
+
+            </div>
+
+
+
+            <div>
+                <label> Date </label>
+                <input class="form-control" type="date" name="dateConcour" th:value="${infoConcour.dateConcour != null ? #dates.format(infoConcour.dateConcour, 'yyyy-MM-dd') : ''}">
+                <span th:errors="${infoConcour.dateConcour}"></span>
+            </div>
+
+
+
+
+            <button type="submit" class="btn btn-secondary">Save</button>
+        </form>
+    </div>
+
+
+
+
+</body>
+</html>
