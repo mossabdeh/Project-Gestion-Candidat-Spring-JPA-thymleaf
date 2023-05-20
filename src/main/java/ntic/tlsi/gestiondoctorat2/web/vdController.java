@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 
 import ntic.tlsi.gestiondoctorat2.entities.InfoConcour;
 
+import ntic.tlsi.gestiondoctorat2.entities.VD;
 import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
 import ntic.tlsi.gestiondoctorat2.repo.VDRepo;
 import ntic.tlsi.gestiondoctorat2.service.serviceUser;
@@ -39,8 +40,13 @@ public class vdController extends BaseController{
     @PostMapping("/saveInfoConcour")
     public String saveInfoConcour(Model model , @Valid InfoConcour infoConcour , BindingResult bindingResult, Authentication authentication){
         if (bindingResult.hasErrors()) return "InfoConcourAdd";
+        // getting VD name from authentication
+        String nameVD = authentication.getName();
 
-        //infoConcour.setDateConcour(new Date());
+        VD vd = vdRepo.findByNom(nameVD);
+        // set vd into infoConcour
+        infoConcour.setVd(vd);
+
         conRepo.save(infoConcour);
         return "redirect:/vdPage";
     }
