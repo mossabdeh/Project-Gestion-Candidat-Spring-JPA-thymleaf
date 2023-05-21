@@ -61,7 +61,7 @@ public class IserviceImpl implements Iservice {
                 .forEach(nameUser ->{
 
         User candidat = new Candidat(nameUser+index,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.CANDIDAT
-                ,new Date(),random.nextInt(1001) + 1000,10.00);
+                ,new Date(),null,10.00);
 
         candidatRepo.save(candidat);
                 });}

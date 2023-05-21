@@ -17,7 +17,7 @@ public class Candidat extends User{
     @Temporal(TemporalType.DATE)
     private Date dateNaissance;
 
-    private long code;
+    private String code;
 
     private double moyMatier1;
     private double moyMatier2;
@@ -33,7 +33,7 @@ public class Candidat extends User{
     public Candidat() {
     }
 
-    public Candidat(String username, String password, String email, String nom, String prenom, Role typeRole, Date dateNaissance, long code, double moyenneGeneral) {
+    public Candidat(String username, String password, String email, String nom, String prenom, Role typeRole, Date dateNaissance, String code, double moyenneGeneral) {
         super(username, password, email, nom, prenom, typeRole);
         this.dateNaissance = dateNaissance;
         this.code = code;

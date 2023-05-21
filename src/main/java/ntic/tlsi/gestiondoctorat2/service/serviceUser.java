@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -238,5 +239,18 @@ public class serviceUser {
         enseignantToEdit.setEmail(enseignant.getEmail());
         return enseignantToEdit;
     }
+// ------------------------------ Generation Code Anonymat -------------------------------------------------
+// Generating unique code for Vice Doyen for candidats concours
+public String generateUniqueCode() {
+    StringBuilder uniqueCode = new StringBuilder();
+    Random random = new Random();
+    while (uniqueCode.length() < 7) {
+        int digit = random.nextInt(10);
+        if (uniqueCode.indexOf(String.valueOf(digit)) == -1) {
+            uniqueCode.append(digit);
+        }
+    }
+    return uniqueCode.toString();
+}
 
 }

@@ -14,7 +14,7 @@ public class CandidatDTO extends UserDTO{
     @Temporal(TemporalType.DATE)
     private Date dateNaissance;
 
-    private long code;
+    private String code;
 
     private double moyMatier1;
     private double moyMatier2;
