@@ -26,7 +26,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecConfig  {
     private UserDetailServiceImpl userDetailServiceImpl;
-    //private AuthenticationSuccessHandler authenticationSuccessHandler;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

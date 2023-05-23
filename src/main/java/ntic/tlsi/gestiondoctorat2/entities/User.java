@@ -26,7 +26,6 @@ public abstract class User {
     public User() {
     }
     @PrePersist
-    @PreUpdate
     private void hashPassword() {
         this.password = passwordEncoder.encode(this.password);
     }

@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import ntic.tlsi.gestiondoctorat2.entities.Candidat;
 import ntic.tlsi.gestiondoctorat2.entities.InfoConcour;
 
+import ntic.tlsi.gestiondoctorat2.entities.User;
 import ntic.tlsi.gestiondoctorat2.entities.VD;
 import ntic.tlsi.gestiondoctorat2.repo.CandidatRepo;
 import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/vd")
@@ -66,30 +68,14 @@ public class vdController extends BaseController{
     @GetMapping("/getCandidatsCode")
     public String getCandidatsCode(Model model,
                                    @RequestParam(name = "page", defaultValue = "0") int page,
-                                   @RequestParam(name = "size", defaultValue = "5") int size,
+                                   @RequestParam(name = "size", defaultValue = "8") int size,
                                    @RequestParam(name = "keyword", defaultValue = "") String keyword) {
         Page<Candidat> pageCandidats = candidatRepo.findByNomContains(keyword, PageRequest.of(page, size));
-
-       // List<Candidat> allCandidats = pageCandidats.getContent();
-
-        // Shuffle the list of candidats randomly
-        //Collections.shuffle(allCandidats);
-
-        //int halfSize = allCandidats.size() / 2;
-        //List<Candidat> randomCandidats = allCandidats.subList(0, halfSize);
-       /* for (Candidat candidat : randomCandidats) {
-            String code = serviceUser.generateUniqueCode(); // Replace with your code generation logic
-            candidat.setCode(code);
-        }*/
-        for (Candidat candidat : pageCandidats) {
+       /* for (Candidat candidat : pageCandidats) {
             String code = serviceUser.generateUniqueCode(); // Replace with your code generation logic
             candidat.setCode(code);
             candidatRepo.save(candidat); // Save the updated Candidat object
-        }
-
-
-        // Create a new PageImpl with the randomCandidats list, pageable, and the total number of elements
-        //Page<Candidat> randomCandidaCode = new PageImpl<>(pageCandidats, PageRequest.of(page, size), randomCandidats.size());
+        }*/
         model.addAttribute("ListCandidats", pageCandidats);
         model.addAttribute("pages", new int[pageCandidats.getTotalPages()]);
         model.addAttribute("currentPage", page);
@@ -98,6 +84,18 @@ public class vdController extends BaseController{
         return "VDCandidatCode";
     }
 
+    @PostMapping("/generateCodes")
+    public String generateCodes(@RequestParam("selectedCandidates") List<Long> selectedCandidates) {
+        for (Long candidateId : selectedCandidates) {
+            Candidat candidat = candidatRepo.findCandidatById(candidateId);
+            if (candidat != null) {
+                String code = serviceUser.generateUniqueCode(); // Replace with your code generation logic
+                candidat.setCode(code);
+                candidatRepo.save(candidat);
+            }
+        }
+        return "vdPage"; // Redirect back to the candidate list page
+    }
 
 
 }

@@ -1,60 +1,63 @@
 package ntic.tlsi.gestiondoctorat2.web;
 
 
-import ntic.tlsi.gestiondoctorat2.entities.Admin;
-import ntic.tlsi.gestiondoctorat2.entities.CFD;
+import ntic.tlsi.gestiondoctorat2.entities.*;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.CfdDTO;
+import ntic.tlsi.gestiondoctorat2.repo.CandidatRepo;
+import ntic.tlsi.gestiondoctorat2.repo.CopieRepo;
+import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
 import ntic.tlsi.gestiondoctorat2.service.serviceUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
+@Controller
 @RequestMapping("/cfd")
 public class CfdController extends BaseController{
     private final serviceUser serviceUser;
+
+    @Autowired
+    private CandidatRepo candidatRepo;
+    @Autowired
+    private CopieRepo copieRepo;
+    @Autowired
+    private InfoConRepo conRepo;
 
     @Autowired
     public CfdController(ntic.tlsi.gestiondoctorat2.service.serviceUser serviceUser) {
         this.serviceUser = serviceUser;
     }
 
-    @PostMapping
-    public ResponseEntity<CfdDTO> addCFD(@RequestBody final CfdDTO cfdDTO){
-        CFD cfd = serviceUser.addCFD(CFD.from(cfdDTO));
-        return new ResponseEntity<>(CfdDTO.from(cfd), HttpStatus.OK);
-    }
+    @GetMapping("/initCopie")
+    public String initializeCopies() {
+        List<InfoConcour> concours = conRepo.findAll();
+        if (concours.isEmpty()) {
+            return "No concour information found.";
+        }
+        InfoConcour lastConcour = concours.get(concours.size() - 1);
 
-    @GetMapping
-    public ResponseEntity<List<CfdDTO>> getCFDs(){
-        List<CFD>  cfds = serviceUser.getCFDs();
-        List<CfdDTO> cfdDTOS = cfds.stream().map(CfdDTO::from).collect(Collectors.toList());
-        return new ResponseEntity<>(cfdDTOS,HttpStatus.OK);
-    }
+        // setting copie for the lastConcour 
+        candidatRepo.findAllBy().forEach(candidat -> {
+            if (candidat.getCode() != null) {
+                Copie copie1 = new Copie(lastConcour.getMatier1(), candidat);
+                Copie copie2 = new Copie(lastConcour.getMatier2(), candidat);
+                List<Copie> copies = Arrays.asList(copie1, copie2);
+                candidat.setCopies(copies);
+                copie1.setCandidat(candidat);
+                copie2.setCandidat(candidat);
+                copieRepo.save(copie1);
+                copieRepo.save(copie2);
+            }
+        });
 
-    @GetMapping(value = "{id}")
-    public ResponseEntity<CfdDTO> getCFD(@PathVariable final Long id){
-        CFD cfd = serviceUser.getCFD(id);
-        return new ResponseEntity<>(CfdDTO.from(cfd),HttpStatus.OK);
-    }
-
-    @DeleteMapping(value = "{id}")
-    public ResponseEntity<CfdDTO> deleteCFD(@PathVariable final Long id){
-        CFD cfd = serviceUser.deleteCfd(id);
-        return new ResponseEntity<>(CfdDTO.from(cfd),HttpStatus.OK);
-    }
-
-   @PutMapping(value = "{id}")
-    public ResponseEntity<CfdDTO> editCFD(@PathVariable final Long id,
-                                              @RequestBody final CfdDTO cfdDTO){
-        CFD editCfd = serviceUser.editCFD(id,CFD.from(cfdDTO));
-        return new ResponseEntity<>(CfdDTO.from(editCfd),HttpStatus.OK);
-
+        return "cfdPage";
     }
 
     }

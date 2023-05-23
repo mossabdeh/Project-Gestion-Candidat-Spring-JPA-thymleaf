@@ -50,7 +50,12 @@
 
 
                 <li><a href="">Contact</a></li>
-                <li><a href="" class="btn-get-started animate__animated animate__fadeInUp disabled">Admin</a></li>
+                <li><a th:text="${#authentication.name}" class="btn-get-started animate__animated animate__fadeInUp disabled"></a></li>
+                <li>
+                    <form method="post" th:action="@{/logout}">
+                        <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">Logout</button>
+                    </form>
+                </li>
             </ul>
             <i class="bi bi-list mobile-nav-toggle"></i>
         </nav><!-- .navbar -->
@@ -81,6 +86,7 @@
                         </form>
                     </div>
                 </div>
+                <form method="post" th:action="@{generateCodes}">
                 <table class="table" th:if="${not #lists.isEmpty(ListCandidats)}">
                     <thead>
                     <tr>
@@ -107,10 +113,15 @@
                         <td th:text="${candidat.username}"></td>
                         <td th:text="${candidat.dateNaissance}"></td>
                         <td th:text="${candidat.code}"></td>
+                        <td>
+                            <input type="checkbox" th:value="${candidat.id}" name="selectedCandidates">
+                        </td>
                     </tr>
                     </tbody>
                 </table>
                 <p th:if="${#lists.isEmpty(ListCandidats)}">Aucun utilisateur trouvé.</p>
+                    <button type="submit" class="btn btn-primary">Generate Codes</button>
+                </form>
 
                 <ul class="nav nav-pills">
                     <li th:each="page,status:${pages}">

@@ -2,15 +2,20 @@ package ntic.tlsi.gestiondoctorat2.entities.DTO;
 
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import lombok.Data;
 import ntic.tlsi.gestiondoctorat2.entities.Admin;
 import ntic.tlsi.gestiondoctorat2.entities.Candidat;
 import ntic.tlsi.gestiondoctorat2.entities.Role;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
 
 @Data
 public class CandidatDTO extends UserDTO{
+
+    @Transient
+    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Temporal(TemporalType.DATE)
     private Date dateNaissance;
 
@@ -33,7 +38,7 @@ public class CandidatDTO extends UserDTO{
         candidatDTO.setDateNaissance(candidat.getDateNaissance());
         candidatDTO.setGetPoste(candidat.isGetPoste());
         candidatDTO.setUsername(candidat.getUsername());
-        candidatDTO.setPassword(candidat.getPassword());
+        candidatDTO.setPassword(passwordEncoder.encode(candidat.getPassword())); // Hash the password
         candidatDTO.setEmail(candidat.getEmail());
         candidatDTO.setNom(candidat.getNom());
         candidatDTO.setPrenom(candidat.getPrenom());

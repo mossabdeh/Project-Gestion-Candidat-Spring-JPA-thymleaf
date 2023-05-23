@@ -31,7 +31,10 @@ public class BaseController {
     public String AdminPage(){
         return"AdminPage";
     }
-
+    @GetMapping("/cfdPage")
+    public String CFDPage(){
+        return"cfdPage";
+    }
     @GetMapping("/candidatPage")
     public String CandidatPage( Authentication authentication, Model model){
         String username = authentication.getName();

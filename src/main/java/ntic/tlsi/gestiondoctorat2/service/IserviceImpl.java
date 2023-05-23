@@ -7,6 +7,8 @@ import ntic.tlsi.gestiondoctorat2.entities.DTO.EnseignantDTO;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.VdDTO;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -181,6 +183,8 @@ public class IserviceImpl implements Iservice {
             }
         });
     }
+    private static final Logger logger = LoggerFactory.getLogger(IserviceImpl.class);
+
 
   //  private UserRepo userRepo;
     @Override
@@ -199,7 +203,9 @@ public class IserviceImpl implements Iservice {
                     } else {
                         Optional<CandidatDTO> optionalCandidatDTO = candidatRepo.findDTOByUsername(username);
                         if (optionalCandidatDTO.isPresent()) {
+                            logger.debug("CandidatDTO --------------: {}", optionalCandidatDTO);
                             Candidat candidat = Candidat.from(optionalCandidatDTO.get());
+                            logger.debug("Candidat---------------: {}", candidat);
                             user = Optional.of(candidat);
                         } else {
                             Optional<EnseignantDTO> optionalEnseignantDTO = enseignantRepo.findDTOByUsername(username);

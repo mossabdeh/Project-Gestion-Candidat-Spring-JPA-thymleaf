@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.CandidatDTO;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +15,7 @@ import java.util.Date;
 
 @Entity
 @Data
+@DynamicUpdate
 public class Candidat extends User{
     @Temporal(TemporalType.DATE)
     private Date dateNaissance;
@@ -26,7 +29,7 @@ public class Candidat extends User{
 
     private double moyenneGeneral;
 
-    @OneToMany(mappedBy = "candidat",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "candidat",cascade = CascadeType.REMOVE,orphanRemoval = true,fetch = FetchType.LAZY)
     //@Size(max =2, message = "The maximum size of the copies is 2 , one for every matier")
     private Collection<Copie> copies = new ArrayList<>();
 
@@ -50,6 +53,9 @@ public class Candidat extends User{
             throw new IllegalArgumentException("The maximum size of the copies is 2, one for every matier");
         }
     }
+    @Transient
+    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
 
      public static Candidat from(CandidatDTO candidatDTO){
          Candidat candidat =new Candidat();
@@ -59,7 +65,7 @@ public class Candidat extends User{
          candidat.setMoyMatier1(candidatDTO.getMoyMatier1());
          candidat.setMoyMatier2(candidatDTO.getMoyMatier2());
          candidat.setUsername(candidatDTO.getUsername());
-         candidat.setPassword(candidatDTO.getPassword());
+         candidat.setPassword(passwordEncoder.encode(candidatDTO.getPassword())); // Hash the password
          candidat.setEmail(candidatDTO.getEmail());
          candidat.setNom(candidatDTO.getNom());
          candidat.setPrenom(candidatDTO.getPrenom());
