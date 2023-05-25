@@ -29,7 +29,7 @@ public class Candidat extends User{
 
     private double moyenneGeneral;
 
-    @OneToMany(mappedBy = "candidat",cascade = CascadeType.REMOVE,orphanRemoval = true,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "candidat",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
     //@Size(max =2, message = "The maximum size of the copies is 2 , one for every matier")
     private Collection<Copie> copies = new ArrayList<>();
 

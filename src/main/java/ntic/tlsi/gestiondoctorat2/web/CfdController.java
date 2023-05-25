@@ -48,13 +48,14 @@ public class CfdController extends BaseController{
             if (candidat.getCode() != null) {
                 Copie copie1 = new Copie(lastConcour.getMatier1(), candidat);
                 Copie copie2 = new Copie(lastConcour.getMatier2(), candidat);
-                List<Copie> copies = Arrays.asList(copie1, copie2);
-                candidat.setCopies(copies);
+                candidat.getCopies().add(copie1); // Add copie1 to the collection
+                candidat.getCopies().add(copie2); // Add copie2 to the collection
                 copie1.setCandidat(candidat);
                 copie2.setCandidat(candidat);
                 copieRepo.save(copie1);
                 copieRepo.save(copie2);
             }
+            candidatRepo.save(candidat); // Save the Candidat entity
         });
 
         return "cfdPage";
