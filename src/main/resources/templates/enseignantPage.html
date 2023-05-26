@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>VD Page</title>
+  <title>CandidatPage</title>
 
   <!-- Favicons -->
   <link href="/img/favicon.png" rel="icon">
@@ -56,11 +56,6 @@
             <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">Logout</button>
           </form>
         </li>
-          <li>
-              <form method="get" th:action="@{cfd/initCopie}">
-                  <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">init</button>
-              </form>
-          </li>
       </ul>
       <i class="bi bi-list mobile-nav-toggle"></i>
     </nav><!-- .navbar -->
@@ -70,41 +65,57 @@
 
   <main id="main">
 
+ 
 
-
-
-
-    <!-- ======= Services Section ======= -->
-    <section id="services" class="services">
-      <div class="container pt-5">
+    <!-- ======= Blog Single Section ======= -->
+    <section id="blog" class="blog">
+      <div class="container" data-aos="fade-up">
 
         <div class="row">
 
-          <div class="col-lg-6 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
-            <div class="icon-box">
-              <div class="icon"><i class="bx bx-file"></i></div>
-              <h4><a th:href="@{InitCorrection}">Generate Corrections</a></h4>
-              <p>Check your Code here </p>
-            </div>
-          </div>
+          <div class="col-lg-12 entries">
+
+
+            <div class="blog-author d-flex align-items-center">
+              <img src="/img/team/profile.png" class="rounded-circle float-left" alt="">
+              <div>
+                <h4 th:text="${#authentication.name}"></h4>
+                <div class="social-links">
+                  <a th:text="${enseignant.get().email}"><i class="bi bi-envelope"></i> </a>
+                </div>
+                <p>
+                  Doctorat University 2 Participant: Our candidat is actively involved in Doctorat University 2, furthering their academic pursuits.
+                </p>
+              </div>
+            </div><!-- End blog author bio -->
+            <!-- ======= Services Section ======= -->
+            <section id="services" class="services">
+              <div class="container">
+
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
+                    <div class="icon-box">
+                      <div class="icon"><i class="bx bx-file"></i></div>
+                      <h4><a th:href="@{enseignant/getCorrection}">Set Correction here </a></h4>
+                      <p>Check your result here and see your performance</p>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </section><!-- End Services Section -->
+
+            <!-- End blog comments -->
+
+          </div><!-- End blog entries list -->
+
+
 
         </div>
 
       </div>
-    </section><!-- End Services Section -->
-
-    <!-- End blog comments -->
-
-    </div><!-- End blog entries list -->
-
-
-
-    </div>
-
-    </div>
     </section><!-- End Blog Single Section -->
-
-
 
   </main><!-- End #main -->
 

@@ -5,6 +5,7 @@ import ntic.tlsi.gestiondoctorat2.entities.Candidat;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.CandidatDTO;
 import ntic.tlsi.gestiondoctorat2.entities.User;
 import ntic.tlsi.gestiondoctorat2.repo.CandidatRepo;
+import ntic.tlsi.gestiondoctorat2.repo.EnseignantRepo;
 import ntic.tlsi.gestiondoctorat2.sec.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,8 @@ public class BaseController {
 
     @Autowired
     private CandidatRepo candidatRepo;
+    @Autowired
+    private EnseignantRepo enseignantRepo;
 
     @GetMapping("/")
     public String homePage() {
@@ -46,6 +49,13 @@ public class BaseController {
     public String VDPage(){
         return"vdPage";
     }
+
+    @GetMapping("/enseignantPage")
+    public String EnseignantPage( Authentication authentication, Model model){
+        String username = authentication.getName();
+        Optional<User> enseignant = enseignantRepo.findByUsername(username);
+        model.addAttribute("enseignant", enseignant);
+        return"enseignantPage";}
 
 
 }

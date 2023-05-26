@@ -2,8 +2,10 @@ package ntic.tlsi.gestiondoctorat2.entities;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "Correction")
 public class Correction {
 
