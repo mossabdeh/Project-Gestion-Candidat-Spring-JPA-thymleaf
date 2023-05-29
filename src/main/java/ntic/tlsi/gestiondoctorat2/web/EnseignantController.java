@@ -96,21 +96,27 @@ public class EnseignantController extends BaseController{
 
     }
 
-    @PostMapping("/setNote")
-    public String setNote(@Valid Correction correction
-            ,@RequestParam("note") double note,
-                          @RequestParam("correctionId") Long correctionId,
-                          Authentication authentication) {
+    @PostMapping("/saveNotes")
+    public String saveNotes(@RequestParam("correctionIds") Long[] correctionIds,
+                            @RequestParam("notes") double[] notes,
+                            Authentication authentication) {
         String username = authentication.getName();
         Optional<User> enseignant = enseignantRepo.findByUsername(username);
         Long loggedInEnseignantId = enseignant.get().getId();
 
-        correction = correctionRepo.findByIdAndEnseignantId(correctionId, loggedInEnseignantId);
-        correction.setNote(note);
-        correctionRepo.save(correction);
+        // Update the notes for each correction using the provided IDs
+        for (int i = 0; i < correctionIds.length; i++) {
+            Long correctionId = correctionIds[i];
+            double note = notes[i];
+
+            Correction correction = correctionRepo.findByIdAndEnseignantId(correctionId, loggedInEnseignantId);
+            correction.setNote(note);
+            correctionRepo.save(correction);
+        }
 
         return "redirect:/enseignant/getCorrection";
     }
+
 
     @GetMapping("/getCorrection")
     public String getCorrection(Model model,

@@ -87,7 +87,7 @@
         </div>
 
       </div>
-
+      <form method="post" th:action="@{saveNotes}">
       <table class="table" th:if="${not #lists.isEmpty(corrections)}">
         <thead>
         <tr>
@@ -107,12 +107,8 @@
           <td th:text="${correction.copie.matier}"></td>
           <td th:text="${correction.copie.getCandidat().code}"></td>
           <td>
-            <form method="post" th:action="@{setNote}">
-            <!-- Input field for setting the note -->
-              <input type="hidden" name="correctionId" th:value="${correction.id}">
-            <input type="number"  min="0" max="20" step="0.25" name="note"  placeholder="Note" th:value="${correction.note}" />
-              <button type="submit" class="btn btn-success">Save Notes</button>
-            </form>
+            <input type="hidden" name="correctionIds" th:value="${correction.id}" />
+            <input class="note-input" type="number" min="0" max="20" step="0.25" name="notes" placeholder="Note" th:value="${correction.note}" />
           </td>
           <!--
           <td>
@@ -123,7 +119,8 @@
         </tbody>
       </table>
       <p th:if="${#lists.isEmpty(corrections)}">Aucun utilisateur trouvé.</p>
-
+        <button type="submit" class="btn btn-success">Save Notes</button>
+      </form>
 
       <ul class="nav nav-pills">
         <li th:each="page,status:${pages}">
