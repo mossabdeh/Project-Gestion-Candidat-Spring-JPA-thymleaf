@@ -6,12 +6,17 @@ import ntic.tlsi.gestiondoctorat2.entities.*;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Controller
@@ -94,6 +99,39 @@ public class CfdController extends BaseController{
 
         });
    return "cfdPage" ;
+    }
+
+
+    @GetMapping("/getCorrectionCheck")
+    public String getCorrectionCheck(Model model,
+                                @RequestParam(name = "page", defaultValue = "0") int page,
+                                @RequestParam(name = "size", defaultValue = "5") int size,
+                                @RequestParam(name = "keyword", defaultValue = "") String keyword){
+
+
+        Page<Correction> pageCorrections = correctionRepo.findAll(PageRequest.of(page, size));
+        model.addAttribute("corrections", pageCorrections.getContent());
+        model.addAttribute("pages", new int[pageCorrections.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+
+        return "cfdCheckCorrection"; // Replace "correctionPage" with the actual name of your correction page view
+    }
+
+    @GetMapping("/getCorrectionCopie")
+    public String getCorrectionCopie(Model model,
+                                     @RequestParam(name = "page", defaultValue = "0") int page,
+                                     @RequestParam(name = "size", defaultValue = "5") int size,
+                                     @RequestParam(name = "keyword", defaultValue = "") String keyword){
+
+
+        Page<Copie> copiePage = copieRepo.findAll(PageRequest.of(page, size));
+        model.addAttribute("copies", copiePage.getContent());
+        model.addAttribute("pages", new int[copiePage.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+
+        return "cfdCheckCorrection"; // Replace "correctionPage" with the actual name of your correction page view
     }
 
     }

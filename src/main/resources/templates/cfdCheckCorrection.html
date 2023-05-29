@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>VD Page</title>
+  <title> CFD Page</title>
 
   <!-- Favicons -->
   <link href="/img/favicon.png" rel="icon">
@@ -56,69 +56,90 @@
             <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">Logout</button>
           </form>
         </li>
-          <li>
-              <form method="get" th:action="@{cfd/initCopie}">
-                  <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">init</button>
-              </form>
-          </li>
       </ul>
       <i class="bi bi-list mobile-nav-toggle"></i>
     </nav><!-- .navbar -->
 
   </div>
 </header><!-- End Header -->
+<!-- ======= Clients Section ======= -->
 
-  <main id="main">
+<div class="container">
+
+  <div class="section-title pt-2">
+    <h2>Correction </h2>
+  </div>
+</div>
 
 
+<div class="container mt-2">
+  <div class="card">
+    <div class="card-header"> <h3> Corrections Center</h3> </div>
+    <div class="card-body">
 
-
-
-    <!-- ======= Services Section ======= -->
-    <section id="services" class="services">
-      <div class="container pt-5">
-
-        <div class="row">
-
-          <div class="col-lg-6 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
-            <div class="icon-box">
-              <div class="icon"><i class="bx bx-file"></i></div>
-              <h4><a th:href="@{InitCorrection}">Generate Corrections</a></h4>
-              <p>Check your Code here </p>
-            </div>
-          </div>
-
-          <div class="col-lg-6 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
-            <div class="icon-box">
-              <div class="icon"><i class="bx bx-file"></i></div>
-              <h4><a th:href="@{cfd/getCorrectionCheck}">Check Correction</a></h4>
-              <p>Check your Code here </p>
-            </div>
-          </div>
-
+      <div class="row align-items-center">
+        <div class="col-6">
+          <form method="get" th:action="@{getCorrectionCheck}">
+            <label> Keyword</label>
+            <input type="text" name="keyword" th:value="${keyword}">
+            <button type="submit" class="btn btn-secondary">Chercher</button>
+          </form>
         </div>
 
       </div>
-    </section><!-- End Services Section -->
+      <form method="post" >
+        <table class="table" th:if="${not #lists.isEmpty(corrections)}">
+          <thead>
+          <tr>
+            <th>Copie ID</th>
+            <th>Copie Matier</th>
+            <th>Correction id 1</th>
+            <th>Correction Note 1</th>
+            <th>Correction id 2</th>
+            <th>Correction Note 2</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="correction : ${corrections}">
+            <td th:text="${correction.copie.id}"></td>
+            <td th:text="${correction.copie.matier}"></td>
+            <!-- Retrieve the first correction associated with the copie -->
+            <td>
+              <span th:text="${correction.copie.corrections[0].id}"></span>
+            </td>
+            <td>
+              <span th:text="${correction.copie.corrections[0].note}"></span>
+            </td>
+            <!-- Retrieve the second correction associated with the copie -->
+            <td>
+              <span th:text="${correction.copie.corrections[1].id}"></span>
+            </td>
+            <td>
+              <span th:text="${correction.copie.corrections[1].note}"></span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
 
-    <!-- End blog comments -->
+        <p th:if="${#lists.isEmpty(corrections)}">Aucun utilisateur trouvé.</p>
+        <button type="submit" class="btn btn-success">Save Notes</button>
+      </form>
 
-    </div><!-- End blog entries list -->
+      <ul class="nav nav-pills">
+        <li th:each="page,status:${pages}">
+          <a th:class="${status.index==currentPage?'btn btn-secondary m-1':'btn btn-outline-secondary m-1'}"
+             th:text="${status.index}"
+             th:href="@{getCorrectionCheck(page=${status.index},keyword=${keyword})}"
+          >
 
-
-
+          </a>
+        </li>
+      </ul>
     </div>
+  </div>
+</div>
+<!-- End About Section -->
 
-    </div>
-    </section><!-- End Blog Single Section -->
-
-
-
-  </main><!-- End #main -->
-
-
-
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
   <script src="/vendor/purecounter/purecounter_vanilla.js"></script>
@@ -129,8 +150,11 @@
   <script src="/vendor/waypoints/noframework.waypoints.js"></script>
   <script src="/vendor/php-email-form/validate.js"></script>
 
+
+
   <!-- Template Main JS File -->
   <script src="/js/main.js"></script>
+<!-- Chat GPT javaScript methode  -->
 
 </body>
 
