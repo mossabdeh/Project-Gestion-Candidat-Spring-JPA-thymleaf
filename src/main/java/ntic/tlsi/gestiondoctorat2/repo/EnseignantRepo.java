@@ -26,4 +26,6 @@ public interface EnseignantRepo extends UserRepo{
 
 
     Optional<EnseignantDTO> findDTOByUsername(String username);
+
+    List<Enseignant> findBySpecialite(Matier matier);
 }

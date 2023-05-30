@@ -40,7 +40,7 @@ public class IserviceImpl implements Iservice {
 
     @Override
     public void InitUsers() {
-        //---------------------- Admin -----------------------------------------
+      /*  //---------------------- Admin -----------------------------------------
         User admin = new Admin("admin","admin","admin@gmail.com"
                 ,"admin","admin", Role.ADMIN,new Date());
         adminRepo.save(admin);
@@ -68,11 +68,12 @@ public class IserviceImpl implements Iservice {
         candidatRepo.save(candidat);
                 });}
 
-
+*/
         //---------------------- Enseingants -----------------------------------------
+        Random random = new Random();
         Matier[] specialites = Matier.values();
 
-        Stream.of("prof","doctor","master","shifou","maitre yi","zed","shadow")
+        Stream.of("edl","svs","algo","tbib","yasou")
                 .forEach(nameUser ->{
         User ens = new Enseignant(nameUser,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.ENSEIGNANT,"Professor",specialites[random.nextInt(specialites.length)]);
         enseignantRepo.save(ens);});

@@ -135,7 +135,38 @@ public class CfdController extends BaseController{
         return "redirect:/cfd/getCorrectionCopie";
     }
 
+    @PostMapping("/ThirdCorrectionCheck")
+    public String thirdCorrectionCheck() {
+        List<Copie> copies = copieRepo.findAll();
+
+        for (Copie copie : copies) {
+            Correction correction1 = copie.getCorrections().get(0);
+            Correction correction2 = copie.getCorrections().get(1);
+            double note1 = correction1.getNote();
+            double note2 = correction2.getNote();
+
+            if (Math.abs(note1 - note2) >= 3.0 || Math.abs(note2 - note1) >= 3.0) {
+                List<Enseignant> enseignants = enseignantRepo.findBySpecialite(copie.getMatier());
+
+                for (Enseignant enseignant : enseignants) {
+                    if (enseignant != correction1.getEnseignant() && enseignant != correction2.getEnseignant()) {
+                        Correction correction3 = new Correction();
+                        correction3.setCopie(copie);
+                        correction3.setEnseignant(enseignant);
+
+                        copie.getCorrections().add(correction3);
+                        copieRepo.save(copie);
+                        correctionRepo.save(correction3);
+                        break;  // Stop after assigning the third teacher
+                    }
+                }
+            }
+        }
+
+        return "redirect:/cfd/getCorrectionCopie";
     }
+
+}
 
 
 

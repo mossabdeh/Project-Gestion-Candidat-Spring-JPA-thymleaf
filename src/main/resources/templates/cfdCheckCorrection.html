@@ -90,7 +90,7 @@
         </div>
 
       </div>
-      <form method="post" >
+      <form method="post"  th:action="@{ThirdCorrectionCheck}">
         <table class="table" th:if="${not #lists.isEmpty(copies)}">
           <thead>
           <tr>
@@ -100,6 +100,8 @@
             <th>Correction Note 1</th>
             <th>Correction id 2</th>
             <th>Correction Note 2</th>
+            <th>Correction id 3</th>
+            <th>Correction Note 3</th>
           </tr>
           </thead>
           <tbody>
@@ -120,12 +122,20 @@
             <td>
               <span th:if="${copie.corrections.size() > 1}" th:text="${copie.corrections[1].note}"></span>
             </td>
+            <!-- Retrieve the third correction associated with the copie -->
+            <td>
+              <span th:if="${copie.corrections.size() > 2}" th:text="${copie.corrections[2].id}"></span>
+            </td>
+            <td>
+              <span th:if="${copie.corrections.size() > 2}" th:text="${copie.corrections[2].note}"></span>
+            </td>
           </tr>
           </tbody>
         </table>
 
+
         <p th:if="${#lists.isEmpty(copies)}">Aucun utilisateur trouvé.</p>
-        <button type="submit" class="btn btn-success">Save Notes</button>
+        <button type="submit" class="btn btn-success">Check third Correction</button>
       </form>
 
       <ul class="nav nav-pills">
