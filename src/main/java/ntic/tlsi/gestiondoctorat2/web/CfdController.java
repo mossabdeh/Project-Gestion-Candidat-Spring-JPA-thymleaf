@@ -7,14 +7,16 @@ import ntic.tlsi.gestiondoctorat2.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -165,6 +167,68 @@ public class CfdController extends BaseController{
 
         return "redirect:/cfd/getCorrectionCopie";
     }
+
+    @GetMapping("/ResultatCandidats")
+    public String ResultatCandidats(Model model,
+                                    @RequestParam(name = "page", defaultValue = "0") int page,
+                                    @RequestParam(name = "size", defaultValue = "5") int size,
+                                    @RequestParam(name = "keyword", defaultValue = "") String keyword) {
+        List<Candidat> candidatsWithNonNullCode = new ArrayList<>();
+        candidatRepo.findAllBy().forEach(candidat -> {
+            String code = candidat.getCode();
+            if (code != null) {
+                candidatsWithNonNullCode.add(candidat);
+            }
+        });
+
+        Page<Candidat> pageCandidats = new PageImpl<>(candidatsWithNonNullCode, PageRequest.of(page, size), candidatsWithNonNullCode.size());
+        model.addAttribute("ListCandidats", pageCandidats.getContent());
+        model.addAttribute("pages", new int[pageCandidats.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+
+        return "cfdResultatsCandidats";
+    }
+
+    @PostMapping("/CalculResultat")
+    public String CalculResultat() {
+        List<Candidat> candidatsWithNonNullCode = new ArrayList<>();
+        candidatRepo.findAllBy().forEach(candidat -> {
+            String code = candidat.getCode();
+            if (code != null) {
+                candidatsWithNonNullCode.add(candidat);
+            }
+        });
+
+        for (Candidat candidat : candidatsWithNonNullCode) {
+            List<Copie> copies = (List<Copie>) candidat.getCopies();
+            double moyMatier1 = calculateAverageNoteForCopies(copies, 0);
+            double moyMatier2 = calculateAverageNoteForCopies(copies, 1);
+            double moyGeneral = (moyMatier1+moyMatier2)/2;
+            candidat.setMoyMatier1(moyMatier1);
+            candidat.setMoyMatier2(moyMatier2);
+            candidat.setMoyenneGeneral(moyGeneral);
+            candidatRepo.save(candidat);
+        }
+
+        return "redirect:/cfdPage";
+    }
+
+    private double calculateAverageNoteForCopies(List<Copie> copies, int index) {
+        double sum = 0.0;
+        int count = 0;
+
+        if (index >= 0 && index < copies.size()) {
+            Copie copie = copies.get(index);
+            for (Correction correction : copie.getCorrections()) {
+                sum += correction.getNote();
+                count++;
+            }
+        }
+
+        return count > 0 ? sum / count : 0.0;
+    }
+
 
 }
 
