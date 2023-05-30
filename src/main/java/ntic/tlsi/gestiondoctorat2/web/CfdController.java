@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 
 @Controller
@@ -116,6 +117,22 @@ public class CfdController extends BaseController{
         model.addAttribute("keyword", keyword);
 
         return "cfdCheckCorrection"; // Replace "correctionPage" with the actual name of your correction page view
+    }
+
+    @GetMapping("/testNotes")
+    public String TestNotes(){
+
+        List<Correction> corrections = correctionRepo.findAll();
+        double[] notes = new double[] {17, 10, 15, 9, 8, 5, 2, 13.5};
+        double note = notes[new Random().nextInt(notes.length)];
+        for (Correction correction : corrections){
+            if (correction.getNote()== 0 ){
+                correction.setNote(note);
+                correctionRepo.save(correction);
+            }
+
+        }
+        return "redirect:/cfd/getCorrectionCopie";
     }
 
     }
