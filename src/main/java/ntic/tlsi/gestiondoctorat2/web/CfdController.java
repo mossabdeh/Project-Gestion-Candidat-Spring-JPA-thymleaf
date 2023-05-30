@@ -102,22 +102,6 @@ public class CfdController extends BaseController{
     }
 
 
-    @GetMapping("/getCorrectionCheck")
-    public String getCorrectionCheck(Model model,
-                                @RequestParam(name = "page", defaultValue = "0") int page,
-                                @RequestParam(name = "size", defaultValue = "5") int size,
-                                @RequestParam(name = "keyword", defaultValue = "") String keyword){
-
-
-        Page<Correction> pageCorrections = correctionRepo.findAll(PageRequest.of(page, size));
-        model.addAttribute("corrections", pageCorrections.getContent());
-        model.addAttribute("pages", new int[pageCorrections.getTotalPages()]);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("keyword", keyword);
-
-        return "cfdCheckCorrection"; // Replace "correctionPage" with the actual name of your correction page view
-    }
-
     @GetMapping("/getCorrectionCopie")
     public String getCorrectionCopie(Model model,
                                      @RequestParam(name = "page", defaultValue = "0") int page,

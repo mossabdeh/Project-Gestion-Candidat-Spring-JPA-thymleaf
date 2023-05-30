@@ -79,7 +79,7 @@
 
       <div class="row align-items-center">
         <div class="col-6">
-          <form method="get" th:action="@{getCorrectionCheck}">
+          <form method="get" th:action="@{getCorrectionCopie}">
             <label> Keyword</label>
             <input type="text" name="keyword" th:value="${keyword}">
             <button type="submit" class="btn btn-secondary">Chercher</button>
@@ -88,7 +88,7 @@
 
       </div>
       <form method="post" >
-        <table class="table" th:if="${not #lists.isEmpty(corrections)}">
+        <table class="table" th:if="${not #lists.isEmpty(copies)}">
           <thead>
           <tr>
             <th>Copie ID</th>
@@ -100,28 +100,28 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="correction : ${corrections}">
-            <td th:text="${correction.copie.id}"></td>
-            <td th:text="${correction.copie.matier}"></td>
+          <tr th:each="copie : ${copies}">
+            <td th:text="${copie.id}"></td>
+            <td th:text="${copie.matier}"></td>
             <!-- Retrieve the first correction associated with the copie -->
             <td>
-              <span th:text="${correction.copie.corrections[0].id}"></span>
+              <span th:if="${not #lists.isEmpty(copie.corrections)}" th:text="${copie.corrections[0].id}"></span>
             </td>
             <td>
-              <span th:text="${correction.copie.corrections[0].note}"></span>
+              <span th:if="${not #lists.isEmpty(copie.corrections)}" th:text="${copie.corrections[0].note}"></span>
             </td>
             <!-- Retrieve the second correction associated with the copie -->
             <td>
-              <span th:text="${correction.copie.corrections[1].id}"></span>
+              <span th:if="${copie.corrections.size() > 1}" th:text="${copie.corrections[1].id}"></span>
             </td>
             <td>
-              <span th:text="${correction.copie.corrections[1].note}"></span>
+              <span th:if="${copie.corrections.size() > 1}" th:text="${copie.corrections[1].note}"></span>
             </td>
           </tr>
           </tbody>
         </table>
 
-        <p th:if="${#lists.isEmpty(corrections)}">Aucun utilisateur trouvé.</p>
+        <p th:if="${#lists.isEmpty(copies)}">Aucun utilisateur trouvé.</p>
         <button type="submit" class="btn btn-success">Save Notes</button>
       </form>
 
@@ -129,7 +129,7 @@
         <li th:each="page,status:${pages}">
           <a th:class="${status.index==currentPage?'btn btn-secondary m-1':'btn btn-outline-secondary m-1'}"
              th:text="${status.index}"
-             th:href="@{getCorrectionCheck(page=${status.index},keyword=${keyword})}"
+             th:href="@{getCorrectionCopie(page=${status.index},keyword=${keyword})}"
           >
 
           </a>
