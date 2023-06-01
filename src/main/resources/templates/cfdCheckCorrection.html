@@ -84,8 +84,10 @@
             <input type="text" name="keyword" th:value="${keyword}">
             <button type="submit" class="btn btn-secondary">Chercher</button>
           </form>
-          <div class="col-3 d-flex justify-content-lg-end m-auto ">
-            <a th:href="@{testNotes}"> <button  type="button"  class="btn btn-info">Complete Notes</button>  </a>
+          <div class="d-flex flex-column">
+            <a th:href="@{testNotes}">
+              <button type="button" class="btn custom-button">Complete Notes</button>
+            </a>
           </div>
         </div>
 

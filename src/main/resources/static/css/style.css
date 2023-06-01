@@ -2234,3 +2234,10 @@ section {
   font-size: 13px;
   color: #fff;
 }
+
+.custom-button {
+  background-color: #e9ecef;
+  border-color: #e9ecef;
+  color: #212529;
+}
+
