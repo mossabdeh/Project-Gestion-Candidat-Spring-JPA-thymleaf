@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>VD Page</title>
+  <title>CFD Page</title>
 
   <!-- Favicons -->
   <link href="/img/favicon.png" rel="icon">
@@ -45,7 +45,7 @@
 
     <nav id="navbar" class="navbar">
       <ul>
-        <li><a class="active" href="">Home</a></li>
+        <li><a class="active" th:href="@{/cfdPage}">Home</a></li>
         <li><a href="">About</a></li>
 
 
@@ -80,7 +80,7 @@
 
         <div class="row">
 
-          <div class="col-lg-6 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
             <div class="icon-box">
               <div class="icon"><i class="bx bx-file"></i></div>
               <h4><a th:href="@{InitCorrection}">Generate Corrections</a></h4>
@@ -88,14 +88,14 @@
             </div>
           </div>
 
-          <div class="col-lg-6 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
             <div class="icon-box">
               <div class="icon"><i class="bx bx-file"></i></div>
               <h4><a th:href="@{cfd/getCorrectionCopie}">Check Correction</a></h4>
               <p>Check your Code here </p>
             </div>
           </div>
-          <div class="col-lg-6 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
             <div class="icon-box">
               <div class="icon"><i class="bx bx-file"></i></div>
               <h4><a th:href="@{cfd/ResultatCandidats}">Resultat Candidats</a></h4>

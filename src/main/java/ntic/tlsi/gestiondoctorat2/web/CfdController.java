@@ -16,10 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 
 @Controller
@@ -211,7 +208,7 @@ public class CfdController extends BaseController{
             candidatRepo.save(candidat);
         }
 
-        return "redirect:/cfdPage";
+        return "redirect:/cfd/ResultatCandidats";
     }
 
     private double calculateAverageNoteForCopies(List<Copie> copies, int index) {
@@ -228,6 +225,30 @@ public class CfdController extends BaseController{
 
         return count > 0 ? sum / count : 0.0;
     }
+
+    @PostMapping("/SetPostForTopCandidates")
+    public String setPostForTopCandidates() {
+        List<Candidat> candidatsWithNonNullCode = new ArrayList<>();
+        candidatRepo.findAllBy().forEach(candidat -> {
+            String code = candidat.getCode();
+            if (code != null) {
+                candidatsWithNonNullCode.add(candidat);
+            }
+        });
+
+        // Sort the candidats based on moyGeneral in descending order
+        candidatsWithNonNullCode.sort(Comparator.comparingDouble(Candidat::getMoyenneGeneral).reversed());
+
+        // Set post=true for the top three candidats
+        for (int i = 0; i < Math.min(candidatsWithNonNullCode.size(), 3); i++) {
+            Candidat candidat = candidatsWithNonNullCode.get(i);
+            candidat.setGetPoste(true);
+            candidatRepo.save(candidat);
+        }
+
+        return "redirect:/cfd/ResultatCandidats";
+    }
+
 
 
 }

@@ -45,7 +45,7 @@
 
     <nav id="navbar" class="navbar">
       <ul>
-        <li><a class="active" href="">Home</a></li>
+        <li><a   th:href="@{/cfdPage}">Home</a></li>
         <li><a href="">About</a></li>
 
 
@@ -67,7 +67,7 @@
 <div class="container">
 
   <div class="section-title pt-2">
-    <h2>Correction </h2>
+    <h2>Resultat Center</h2>
   </div>
 </div>
 
@@ -138,6 +138,9 @@
             <td>
               <span th:if="${candidat.copies?.size() > 0}" th:text="${candidat.getMoyenneGeneral()}"></span>
             </td>
+            <td>
+              <span th:if="${candidat.copies?.size() > 0}" th:text="${candidat.isGetPoste()}"></span>
+            </td>
           </tr>
           </tbody>
 
@@ -147,6 +150,12 @@
         <p th:if="${#lists.isEmpty(ListCandidats)}">Aucun utilisateur trouvé.</p>
         <button type="submit" class="btn btn-success">Calcul Resultat</button>
       </form>
+
+      <div class="m-auto">
+      <form method="post" th:action="SetPostForTopCandidates">
+        <button type="submit" class="btn btn-secondary mt-2">Check Postes</button>
+      </form>
+      </div>
 
       <ul class="nav nav-pills">
         <li th:each="page,status:${pages}">

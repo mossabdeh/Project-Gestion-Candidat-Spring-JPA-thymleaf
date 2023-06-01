@@ -1,8 +1,7 @@
 package ntic.tlsi.gestiondoctorat2.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.CandidatDTO;
@@ -22,7 +21,11 @@ public class Candidat extends User{
 
     private String code;
 
+  /*  @Digits(integer = 2, fraction = 2)
+    @DecimalMin(value = "0.00")
+    @DecimalMax(value = "20.00")*/
     private double moyMatier1;
+
     private double moyMatier2;
 
     private boolean getPoste;
