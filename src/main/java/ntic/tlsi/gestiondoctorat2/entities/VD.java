@@ -12,6 +12,7 @@ import java.util.Date;
 @Entity
 @Data
 public class VD extends User{
+    @Temporal(TemporalType.DATE)
      private Date LogDate;
      @OneToMany(cascade = CascadeType.REMOVE,orphanRemoval = true,fetch = FetchType.LAZY)
      // if VD deleted every Concour is deleted

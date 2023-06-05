@@ -100,6 +100,7 @@ public class AdminController extends BaseController{
     }
 
     @GetMapping("/editAdmin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editAdmin(Model model, @RequestParam("id") Long id) {
         User admin = adminRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid admin Id:" + id));
