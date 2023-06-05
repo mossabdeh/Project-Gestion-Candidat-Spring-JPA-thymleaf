@@ -24,17 +24,22 @@
             </div>
             <div >
                 <label> Prenom </label>
-                <input class="form-control" type="text" name="nom" th:value="${admin.prenom}">
-                <span class="text-danger" th:errors="${admin.nom}"></span>
+                <input class="form-control" type="text" name="prenom" th:value="${admin.prenom}">
+                <span class="text-danger" th:errors="${admin.prenom}"></span>
 
             </div>
 
-            <div >
-                <label> UserName </label>
-                <input class="form-control" type="text" name="nom" th:value="${admin.username}">
-                <span class="text-danger" th:errors="${admin.nom}"></span>
-
+            <div>
+                <label>Username</label>
+                <input class="form-control" type="text" name="username" th:value="${admin.username}">
+                <span class="text-danger" th:errors="${admin.username}"></span>
             </div>
+
+            <div>
+                <label>Password</label>
+                <input class="form-control" type="password" name="password" th:value="${admin.username}" readonly>
+            </div>
+
 
 
 

@@ -55,8 +55,16 @@ public class AdminController extends BaseController{
 
     public String saveAdmin(Model model , @Valid Admin admin , BindingResult bindingResult){
         if (bindingResult.hasErrors()) return "AdminAdminAdd";
+
+        // Check if username already exists
+        if (adminRepo.existsByUsername(admin.getUsername())) {
+            bindingResult.rejectValue("username", "error.admin", "Username already exists");
+            return "AdminAdminAdd";
+        }
         admin.setTypeRole(Role.ADMIN);
         admin.setLogDate(new Date());
+        // Set the password as the same value as the username
+        admin.setPassword(admin.getUsername());
         adminRepo.save(admin);
         return "redirect:/admin/getAdmins";
     }
@@ -95,8 +103,10 @@ public class AdminController extends BaseController{
     public String editAdmin(Model model,Long id,String keyword,int page){
 
         Admin editAdmin = adminRepo.findAdminById(id);
+        String existedPassword = editAdmin.getPassword();
         editAdmin.setTypeRole(Role.ADMIN);
         editAdmin.setLogDate(new Date());
+        editAdmin.setPassword(existedPassword);
         model.addAttribute("admin",editAdmin);
        model.addAttribute("page",page);
        model.addAttribute("keyword",keyword);

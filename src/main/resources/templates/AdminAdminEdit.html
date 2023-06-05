@@ -36,6 +36,12 @@
         <span th:errors="${admin.prenom}"></span>
       </div>
 
+      <div >
+        <label> Username </label>
+        <input class="form-control" type="text" name="username" th:value="${admin.username}">
+        <span th:errors="${admin.username}"></span>
+      </div>
+
       <label> Email </label>
       <input class="form-control" type="email" name="email" th:value="${admin.email}">
       <span th:errors="${admin.email}"></span>
