@@ -1,6 +1,7 @@
 package ntic.tlsi.gestiondoctorat2.web;
 
 
+import jakarta.validation.Valid;
 import ntic.tlsi.gestiondoctorat2.entities.*;
 
 import ntic.tlsi.gestiondoctorat2.repo.*;
@@ -13,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -26,6 +28,8 @@ public class CfdController extends BaseController{
 
     @Autowired
     private CandidatRepo candidatRepo;
+    @Autowired
+    private CFDRepo cfdRepo;
     @Autowired
     private CopieRepo copieRepo;
     @Autowired
@@ -249,6 +253,57 @@ public class CfdController extends BaseController{
         return "redirect:/cfd/ResultatCandidats";
     }
 
+
+    @GetMapping("/getCFDs")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String getCFDs(Model model,
+                         @RequestParam(name = "page",defaultValue = "0") int page,
+                         @RequestParam(name = "size",defaultValue = "5") int size,
+                         @RequestParam(name = "keyword",defaultValue = "") String keyword) {
+        Page<CFD> pageCFD=cfdRepo.findByNomContains(keyword, PageRequest.of(page,size));
+        model.addAttribute("ListCFDs",pageCFD.getContent());
+        model.addAttribute("pages",new int[pageCFD.getTotalPages()]);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("keyword",keyword);
+
+        return "AdminCFD";
+    }
+
+    @GetMapping("/editCFD")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String editCFD(Model model, @RequestParam("id") Long id) {
+        User cfd = cfdRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid cfd Id:" + id));
+        model.addAttribute("cfd", cfd);
+        return "AdminCFDEdit";
+    }
+
+    @PostMapping("/saveEditedCFD")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String saveEditedCFD(Model model, @Valid CFD cfd, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "AdminCFDEdit";
+        }
+
+        // Check if username already exists (excluding the current admin being edited)
+        if (cfdRepo.existsByUsernameAndIdNot(cfd.getUsername(), cfd.getId())) {
+            bindingResult.rejectValue("username", "error.cfd", "Username already exists");
+            return "AdminCFDEdit";
+        }
+
+        // Retrieve the existing admin from the database
+        User existingAdmin = cfdRepo.findById(cfd.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid cfd Id:" + cfd.getId()));
+
+        // Set the existing password on the edited admin
+        cfd.setPassword(existingAdmin.getPassword());
+
+        cfd.setTypeRole(Role.CFD);
+        cfd.setLogDate(new Date());
+
+        cfdRepo.save(cfd);
+        return "redirect:/cfd/getCFDs";
+    }
 
 
 }

@@ -2,6 +2,8 @@ package ntic.tlsi.gestiondoctorat2.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.CfdDTO;
@@ -11,6 +13,7 @@ import java.util.Date;
 @Entity
 @Data
 public class CFD extends User{
+    @Temporal(TemporalType.DATE)
     private Date LogDate;
 
     public CFD() {

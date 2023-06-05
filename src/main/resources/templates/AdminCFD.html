@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Admin VD</title>
+    <title>Admin CFD</title>
 
     <!-- <link rel="stylesheet" type="text/css" href="webjars/bootstrap/5.2.3/css/bootstrap.min.css">
       <script src="webjars/bootstrap/5.2.3/js/bootstrap.min.js"></script>
@@ -67,25 +67,25 @@
     <div class="container">
 
         <div class="section-title pt-2">
-            <h2>Admin CRUD</h2>
+            <h2>CFD CRUD</h2>
         </div>
     </div>
 
 
     <div class="container mt-2">
         <div class="card">
-            <div class="card-header"> <h3> List des Vice Doyen</h3> </div>
+            <div class="card-header"> <h3> List des CFDs</h3> </div>
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-6">
-                      <form method="get" th:action="@{getVDs}">
+                      <form method="get" th:action="@{getCFDs}">
                       <label> Keyword</label>
                       <input type="text" name="keyword" th:value="${keyword}">
                       <button type="submit" class="btn btn-secondary">Chercher</button>
                       </form>
                     </div>
                 </div>
-                <table class="table" th:if="${not #lists.isEmpty(ListVDs)}">
+                <table class="table" th:if="${not #lists.isEmpty(ListCFDs)}">
                     <thead>
                     <tr>
                         <th>ID</th>
@@ -103,22 +103,22 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="vd : ${ListVDs}">
-                        <td th:text="${vd.id}"></td>
-                        <td th:text="${vd.nom}"></td>
-                        <td th:text="${vd.prenom}"></td>
-                        <td th:text="${vd.email}"></td>
-                        <td th:text="${vd.username}"></td>
-                        <td th:text="${vd.logDate}"></td>
+                    <tr th:each="cfd : ${ListCFDs}">
+                        <td th:text="${cfd.id}"></td>
+                        <td th:text="${cfd.nom}"></td>
+                        <td th:text="${cfd.prenom}"></td>
+                        <td th:text="${cfd.email}"></td>
+                        <td th:text="${cfd.username}"></td>
+                        <td th:text="${cfd.logDate}"></td>
 
                         <td>
-                            <a onclick="return confirm('Etes vous sure?')" class="btn btn-danger disabled" th:href="@{delete(id=${vd.id},keyword=${keyword},page=${currentPage})}"  >Delete</a>
+                            <a onclick="return confirm('Etes vous sure?')" class="btn btn-danger disabled" th:href="@{delete(id=${cfd.id},keyword=${keyword},page=${currentPage})}"  >Delete</a>
                         </td>
 
 
 
                         <td>
-                            <a  class="btn btn-success" th:href="@{editVD(id=${vd.id},keyword=${keyword},page=${currentPage})}">Edit</a>
+                            <a  class="btn btn-success" th:href="@{editCFD(id=${cfd.id},keyword=${keyword},page=${currentPage})}">Edit</a>
                         </td>
 
 
@@ -126,13 +126,13 @@
                     </tr>
                     </tbody>
                 </table>
-                <p th:if="${#lists.isEmpty(ListVDs)}">Aucun utilisateur trouvé.</p>
+                <p th:if="${#lists.isEmpty(ListCFDs)}">Aucun utilisateur trouvé.</p>
 
                 <ul class="nav nav-pills">
                     <li th:each="page,status:${pages}">
                         <a th:class="${status.index==currentPage?'btn btn-secondary m-1':'btn btn-outline-secondary m-1'}"
                            th:text="${status.index}"
-                           th:href="@{getVDs(page=${status.index},keyword=${keyword})}"
+                           th:href="@{getCFDs(page=${status.index},keyword=${keyword})}"
                         >
 
                         </a>
