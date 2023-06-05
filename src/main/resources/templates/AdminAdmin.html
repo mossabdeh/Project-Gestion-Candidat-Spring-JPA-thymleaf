@@ -115,8 +115,13 @@
                         <td th:text="${admin.logDate}"></td>
 
                         <td>
-                            <a onclick="return confirm('Etes vous sure?')" class="btn btn-danger" th:href="@{delete(id=${admin.id},keyword=${keyword},page=${currentPage})}">Delete</a>
+                            <a onclick="return confirm('Etes vous sûr?')" class="btn btn-danger"
+                               th:unless="${admin.username == #authentication.name}"
+                               th:href="@{delete(id=${admin.id}, keyword=${keyword}, page=${currentPage})}"
+                               th:disabled="${admin.username != #authentication.name}">Delete</a>
                         </td>
+
+
 
                         <td>
                             <a  class="btn btn-success" th:href="@{editAdmin(id=${admin.id},keyword=${keyword},page=${currentPage})}">Edit</a>
