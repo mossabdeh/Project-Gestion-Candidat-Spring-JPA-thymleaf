@@ -14,4 +14,6 @@ public interface AdminRepo extends UserRepo{
 
 
     boolean existsByUsername(String username);
+
+    boolean existsByUsernameAndIdNot(String username, Long id);
 }

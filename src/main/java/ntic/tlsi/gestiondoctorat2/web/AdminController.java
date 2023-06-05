@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import ntic.tlsi.gestiondoctorat2.entities.Admin;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
 import ntic.tlsi.gestiondoctorat2.entities.Role;
+import ntic.tlsi.gestiondoctorat2.entities.User;
 import ntic.tlsi.gestiondoctorat2.repo.AdminRepo;
 import ntic.tlsi.gestiondoctorat2.service.serviceUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,21 +99,39 @@ public class AdminController extends BaseController{
         return "redirect:/admin/getAdmins?page="+page+"&keyword="+keyword;
     }
 
-   @GetMapping("/editAdmin")
-   @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String editAdmin(Model model,Long id,String keyword,int page){
-
-        Admin editAdmin = adminRepo.findAdminById(id);
-        String existedPassword = editAdmin.getPassword();
-        editAdmin.setTypeRole(Role.ADMIN);
-        editAdmin.setLogDate(new Date());
-        editAdmin.setPassword(existedPassword);
-        model.addAttribute("admin",editAdmin);
-       model.addAttribute("page",page);
-       model.addAttribute("keyword",keyword);
-
+    @GetMapping("/editAdmin")
+    public String editAdmin(Model model, @RequestParam("id") Long id) {
+        User admin = adminRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid admin Id:" + id));
+        model.addAttribute("admin", admin);
         return "AdminAdminEdit";
+    }
 
+    @PostMapping("/saveEditedAdmin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String saveEditedAdmin(Model model, @Valid Admin admin, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "AdminAdminEdit";
+        }
+
+        // Check if username already exists (excluding the current admin being edited)
+        if (adminRepo.existsByUsernameAndIdNot(admin.getUsername(), admin.getId())) {
+            bindingResult.rejectValue("username", "error.admin", "Username already exists");
+            return "AdminAdminEdit";
+        }
+
+        // Retrieve the existing admin from the database
+        User existingAdmin = adminRepo.findById(admin.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid admin Id:" + admin.getId()));
+
+        // Set the existing password on the edited admin
+        admin.setPassword(existingAdmin.getPassword());
+
+        admin.setTypeRole(Role.ADMIN);
+        admin.setLogDate(new Date());
+
+        adminRepo.save(admin);
+        return "redirect:/admin/getAdmins";
     }
 
     }
