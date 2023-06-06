@@ -10,6 +10,7 @@ import ntic.tlsi.gestiondoctorat2.service.serviceUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -145,6 +147,31 @@ public class CandidatController extends BaseController{
     }
 
 
+    @GetMapping("/ResultatCandidat")
+    public String ResultatCandidats(Model model,
+                                    @RequestParam(name = "page", defaultValue = "0") int page,
+                                    @RequestParam(name = "size", defaultValue = "5") int size,
+                                    @RequestParam(name = "keyword", defaultValue = "") String keyword ,
+                                    Authentication authentication) {
+        String username = authentication.getName();
+        Optional<User> MyCandidat = candidatRepo.findByUsername(username);
+        List<Candidat> candidatsWithNonNullCode = new ArrayList<>();
+        candidatRepo.findAllBy().forEach(candidat -> {
+            String code = candidat.getCode();
+            if (code != null) {
+                candidatsWithNonNullCode.add(candidat);
+            }
+        });
+
+        Page<Candidat> pageCandidats = new PageImpl<>(candidatsWithNonNullCode, PageRequest.of(page, size), candidatsWithNonNullCode.size());
+        model.addAttribute("ListCandidats", pageCandidats.getContent());
+        model.addAttribute("pages", new int[pageCandidats.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("MyCandidat",MyCandidat);
+
+        return "CandidatResultats";
+    }
 
     }
 

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      >
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title> CFD Page</title>
+
+  <!-- Favicons -->
+  <link href="/img/favicon.png" rel="icon">
+  <link href="/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+
+  ======================================================== -->
+</head>
+
+<body>
+
+
+<!-- ======= Header ======= -->
+<header id="header" class="d-flex align-items-center">
+  <div class="container d-flex justify-content-between align-items-center">
+
+    <div class="logo">
+      <h1><a href="">Doctorat</a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+    </div>
+
+    <nav id="navbar" class="navbar">
+      <ul>
+        <li><a   th:href="@{/candidatPage}">Home</a></li>
+        <li><a href="">About</a></li>
+
+
+        <li><a href="">Contact</a></li>
+        <li><a th:text="${#authentication.name}" class="btn-get-started animate__animated animate__fadeInUp disabled"></a></li>
+        <li>
+          <form method="post" th:action="@{/logout}">
+            <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">Logout</button>
+          </form>
+        </li>
+      </ul>
+      <i class="bi bi-list mobile-nav-toggle"></i>
+    </nav><!-- .navbar -->
+
+  </div>
+</header><!-- End Header -->
+<!-- ======= Clients Section ======= -->
+
+<div class="container">
+
+  <div class="section-title pt-2">
+    <h2>Resultat Center</h2>
+  </div>
+</div>
+
+
+<div class="container mt-2">
+  <div class="card">
+    <div class="card-header"> <h3> Resultat Center</h3> </div>
+    <div class="card-body">
+
+      <div class="row align-items-center">
+        <div class="col-6">
+          <form method="get" th:action="@{ResultatCandidat}">
+            <input type="hidden" name="keyword" th:value="${keyword}">
+          </form>
+        </div>
+
+      </div>
+
+      <table class="table">
+        <thead>
+        <tr>
+          <th>C_ID</th>
+          <th>Code</th>
+          <th>M1 n1</th>
+          <th>M1 n2</th>
+          <th>M1 n3</th>
+          <th>M1 Moy</th>
+          <th>M2 n1</th>
+          <th>M2 n2</th>
+          <th>M2 n3</th>
+          <th>M2 Moye</th>
+          <th>Moyenne</th>
+          <th>Post</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td th:text="${MyCandidat.get().id}"></td>
+          <td th:text="${MyCandidat.get().code}"></td>
+          <td>
+            <span th:if="${MyCandidat.get().copies?.size() > 0 && MyCandidat.get().copies[0].corrections?.size() > 0}" th:text="${MyCandidat.get().copies[0].corrections[0].note}"></span>
+          </td>
+          <td>
+            <span th:if="${MyCandidat.get().copies?.size() > 0 && MyCandidat.get().copies[0].corrections?.size() > 1}" th:text="${MyCandidat.get().copies[0].corrections[1].note}"></span>
+          </td>
+          <td>
+            <span th:if="${MyCandidat.get().copies?.size() > 0 && MyCandidat.get().copies[0].corrections?.size() > 2}" th:text="${MyCandidat.get().copies[0].corrections[2].note}"></span>
+          </td>
+          <td>
+            <span th:if="${MyCandidat.get().copies?.size() > 0}" th:text="${MyCandidat.get().getMoyMatier1()}"></span>
+          </td>
+          <td>
+            <span th:if="${MyCandidat.get().copies?.size() > 1 && MyCandidat.get().copies[1].corrections?.size() > 0}" th:text="${MyCandidat.get().copies[1].corrections[0].note}"></span>
+          </td>
+          <td>
+            <span th:if="${MyCandidat.get().copies?.size() > 1 && MyCandidat.get().copies[1].corrections?.size() > 1}" th:text="${MyCandidat.get().copies[1].corrections[1].note}"></span>
+          </td>
+          <td>
+            <span th:if="${MyCandidat.get().copies?.size() > 1 && MyCandidat.get().copies[1].corrections?.size() > 2}" th:text="${MyCandidat.get().copies[1].corrections[2].note}"></span>
+          </td>
+          <td>
+            <span th:if="${MyCandidat.get().copies?.size() > 1}" th:text="${MyCandidat.get().getMoyMatier2()}"></span>
+          </td>
+          <td>
+            <span th:if="${MyCandidat.get().copies?.size() > 0}" th:text="${MyCandidat.get().getMoyenneGeneral()}"></span>
+          </td>
+          <td>
+            <span th:if="${MyCandidat.get().copies?.size() > 0}" th:text="${MyCandidat.get().isGetPoste()}"></span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+
+
+
+
+
+
+    </div>
+  </div>
+</div>
+<!-- End About Section -->
+
+
+  <!-- Vendor JS Files -->
+  <script src="/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="/vendor/php-email-form/validate.js"></script>
+
+
+
+  <!-- Template Main JS File -->
+  <script src="/js/main.js"></script>
+<!-- Chat GPT javaScript methode  -->
+
+</body>
+
+</html>
