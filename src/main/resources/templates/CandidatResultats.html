@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title> CFD Page</title>
+  <title> Candidat Result</title>
 
   <!-- Favicons -->
   <link href="/img/favicon.png" rel="icon">
@@ -135,8 +135,14 @@
             <span th:if="${MyCandidat.get().copies?.size() > 0}" th:text="${MyCandidat.get().getMoyenneGeneral()}"></span>
           </td>
           <td>
-            <span th:if="${MyCandidat.get().copies?.size() > 0}" th:text="${MyCandidat.get().isGetPoste()}"></span>
+  <span th:if="${MyCandidat.get().copies?.size() > 0}"
+        th:classappend="${MyCandidat.get().isGetPoste() ? 'text-success' : 'text-danger'}">
+  <b th:text="${MyCandidat.get().isGetPoste() ? 'Admis' : 'Rejeté'}"></b>
+</span>
+
           </td>
+
+
         </tr>
         </tbody>
       </table>
