@@ -80,9 +80,9 @@
       <div class="row align-items-center">
         <div class="col-6">
           <form method="get" th:action="@{getCorrectionCopie}">
-            <label> Keyword</label>
-            <input type="text" name="keyword" th:value="${keyword}">
-            <button type="submit" class="btn btn-secondary">Chercher</button>
+
+            <input type="hidden" name="keyword" th:value="${keyword}">
+
           </form>
           <div class="d-flex flex-column">
             <a th:href="@{testNotes}">

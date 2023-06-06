@@ -75,7 +75,7 @@ public class EnseignantController extends BaseController{
         enseignant.setTypeRole(Role.ENSEIGNANT);
         // candidat.setDateNaissance(new Date());
         // Set the password as the same value as the username
-        enseignant.setPassword(enseignant.getUsername());
+        //enseignant.setPassword(enseignant.getUsername());
         enseignantRepo.save(enseignant);
         return "redirect:/enseignant/getEnseignants";
     }

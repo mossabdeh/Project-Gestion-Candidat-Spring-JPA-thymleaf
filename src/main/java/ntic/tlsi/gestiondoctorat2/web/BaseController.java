@@ -8,6 +8,7 @@ import ntic.tlsi.gestiondoctorat2.repo.CandidatRepo;
 import ntic.tlsi.gestiondoctorat2.repo.EnseignantRepo;
 import ntic.tlsi.gestiondoctorat2.sec.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,7 @@ public class BaseController {
     }
 
     @GetMapping("/adminPage")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String AdminPage(){
         return"AdminPage";
     }

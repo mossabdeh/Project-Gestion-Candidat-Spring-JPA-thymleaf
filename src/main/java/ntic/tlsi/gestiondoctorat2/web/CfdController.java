@@ -102,7 +102,7 @@ public class CfdController extends BaseController{
 
 
         });
-   return "cfdPage" ;
+   return "redirect:/cfdPage" ;
     }
 
 
@@ -126,7 +126,7 @@ public class CfdController extends BaseController{
     public String TestNotes(){
 
         List<Correction> corrections = correctionRepo.findAll();
-        double[] notes = new double[] {17, 10, 15, 9, 8, 5, 2, 13.5};
+        double[] notes = new double[] {14, 10, 15, 9, 8, 5, 2, 13.5};
         double note = notes[new Random().nextInt(notes.length)];
         for (Correction correction : corrections){
             if (correction.getNote()== 0 ){

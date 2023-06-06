@@ -92,7 +92,7 @@ public class vdController extends BaseController{
                 candidatRepo.save(candidat);
             }
         }
-        return "vdPage"; // Redirect back to the candidate list page
+        return "redirect:/vd/getCandidatsCode"; // Redirect back to the candidate list page
     }
 
     @GetMapping("/getVDs")

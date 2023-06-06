@@ -94,7 +94,7 @@ public class CandidatController extends BaseController{
         candidat.setTypeRole(Role.CANDIDAT);
        // candidat.setDateNaissance(new Date());
         // Set the password as the same value as the username
-        candidat.setPassword(candidat.getUsername());
+        //candidat.setPassword(candidat.getUsername());
         candidatRepo.save(candidat);
         return "redirect:/candidat/getCandidats";
     }
