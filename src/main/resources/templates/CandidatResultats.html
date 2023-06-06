@@ -135,10 +135,10 @@
             <span th:if="${MyCandidat.get().copies?.size() > 0}" th:text="${MyCandidat.get().getMoyenneGeneral()}"></span>
           </td>
           <td>
-  <span th:if="${MyCandidat.get().copies?.size() > 0}"
-        th:classappend="${MyCandidat.get().isGetPoste() ? 'text-success' : 'text-danger'}">
-  <b th:text="${MyCandidat.get().isGetPoste() ? 'Admis' : 'Rejeté'}"></b>
-</span>
+           <span th:if="${MyCandidat.get().copies?.size() > 0}"
+             th:classappend="${MyCandidat.get().isGetPoste() ? 'text-success' : 'text-danger'}">
+            <b th:text="${MyCandidat.get().isGetPoste() ? 'Admis' : 'Rejeté'}"></b>
+           </span>
 
           </td>
 

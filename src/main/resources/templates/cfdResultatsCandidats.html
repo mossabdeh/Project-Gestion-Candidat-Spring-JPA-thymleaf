@@ -80,9 +80,7 @@
       <div class="row align-items-center">
         <div class="col-6">
           <form method="get" th:action="@{ResultatCandidats}">
-            <label> Keyword</label>
-            <input type="text" name="keyword" th:value="${keyword}">
-            <button type="submit" class="btn btn-secondary">Chercher</button>
+            <input type="hidden" name="keyword" th:value="${keyword}">
           </form>
         </div>
 
@@ -139,8 +137,12 @@
               <span th:if="${candidat.copies?.size() > 0}" th:text="${candidat.getMoyenneGeneral()}"></span>
             </td>
             <td>
-              <span th:if="${candidat.copies?.size() > 0}" th:text="${candidat.isGetPoste()}"></span>
+    <span th:if="${candidat.copies?.size() > 0}"
+          th:classappend="${candidat.isGetPoste() ? 'text-success' : 'text-danger'}">
+        <b th:text="${candidat.isGetPoste() ? 'Admis' : 'Rejeté'}"></b>
+    </span>
             </td>
+
           </tr>
           </tbody>
 

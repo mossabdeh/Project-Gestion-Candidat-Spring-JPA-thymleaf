@@ -248,6 +248,14 @@ public class CfdController extends BaseController{
 
     @PostMapping("/SetPostForTopCandidates")
     public String setPostForTopCandidates() {
+        List<InfoConcour> concours = conRepo.findAll();
+        // return only the last Concour Information
+        int numberOfPostes = 0;
+        if (!concours.isEmpty()) {
+            InfoConcour lastConcour = concours.get(concours.size() - 1);
+            numberOfPostes = lastConcour.getNbrPostes();
+        }
+
         List<Candidat> candidatsWithNonNullCode = new ArrayList<>();
         candidatRepo.findAllBy().forEach(candidat -> {
             String code = candidat.getCode();
@@ -260,7 +268,7 @@ public class CfdController extends BaseController{
         candidatsWithNonNullCode.sort(Comparator.comparingDouble(Candidat::getMoyenneGeneral).reversed());
 
         // Set post=true for the top three candidats
-        for (int i = 0; i < Math.min(candidatsWithNonNullCode.size(), 3); i++) {
+        for (int i = 0; i < Math.min(candidatsWithNonNullCode.size(), numberOfPostes); i++) {
             Candidat candidat = candidatsWithNonNullCode.get(i);
             candidat.setGetPoste(true);
             candidatRepo.save(candidat);
