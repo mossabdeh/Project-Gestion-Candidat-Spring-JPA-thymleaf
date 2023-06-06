@@ -67,11 +67,19 @@ public class EnseignantController extends BaseController{
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String saveEnseignant(Model model , @Valid Enseignant enseignant , BindingResult bindingResult){
         if (bindingResult.hasErrors()) return "AdminEnseignantAdd";
+        // Check if username already exists
+        if (enseignantRepo.existsByUsername(enseignant.getUsername())) {
+            bindingResult.rejectValue("username", "error.enseignant", "Username already exists");
+            return "AdminEnseignantAdd";
+        }
         enseignant.setTypeRole(Role.ENSEIGNANT);
-
+        // candidat.setDateNaissance(new Date());
+        // Set the password as the same value as the username
+        enseignant.setPassword(enseignant.getUsername());
         enseignantRepo.save(enseignant);
         return "redirect:/enseignant/getEnseignants";
     }
+
 
     @GetMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -83,17 +91,40 @@ public class EnseignantController extends BaseController{
 
     @GetMapping("/editEnseignant")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String editEnseignant(Model model,Long id,String keyword,int page){
-
-        Enseignant editEnseignant = enseignantRepo.findEnseignantById(id);
-        editEnseignant.setTypeRole(Role.ENSEIGNANT);
-
-        model.addAttribute("enseignant",editEnseignant);
-        model.addAttribute("page",page);
-        model.addAttribute("keyword",keyword);
-
+    public String editEnseignant(Model model, @RequestParam("id") Long id) {
+        Optional<Enseignant> enseignantOptional = enseignantRepo.findEnseignantOptionalById(id);
+        Enseignant enseignant = enseignantOptional.orElseThrow(() -> new IllegalArgumentException("Invalid enseignant Id:" + id));
+        model.addAttribute("enseignant", enseignant);
         return "AdminEnseignantEdit";
+    }
 
+
+    @PostMapping("/saveEditedEnseignant")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String saveEditedEnseignant(Model model, @Valid Enseignant enseignant, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "AdminEnseignantEdit";
+        }
+
+        // Check if username already exists (excluding the current admin being edited)
+        if (enseignantRepo.existsByUsernameAndIdNot(enseignant.getUsername(), enseignant.getId())) {
+            bindingResult.rejectValue("username", "error.enseignant", "Username already exists");
+            return "AdminEnseignantEdit";
+        }
+
+        // Retrieve the existing admin from the database
+        User existingAdmin = enseignantRepo.findById(enseignant.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid enseignant Id:" + enseignant.getId()));
+
+        // Set the existing password on the edited admin
+        enseignant.setPassword(existingAdmin.getPassword());
+
+        enseignant.setTypeRole(Role.ENSEIGNANT);
+
+
+
+        enseignantRepo.save(enseignant);
+        return "redirect:/enseignant/getEnseignants";
     }
 
     @PostMapping("/saveNotes")

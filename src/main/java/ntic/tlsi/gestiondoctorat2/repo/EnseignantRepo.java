@@ -28,4 +28,10 @@ public interface EnseignantRepo extends UserRepo{
     Optional<EnseignantDTO> findDTOByUsername(String username);
 
     List<Enseignant> findBySpecialite(Matier matier);
+
+    boolean existsByUsername(String username);
+
+    Optional<Enseignant> findEnseignantOptionalById(Long id);
+
+    boolean existsByUsernameAndIdNot(String username, Long id);
 }
