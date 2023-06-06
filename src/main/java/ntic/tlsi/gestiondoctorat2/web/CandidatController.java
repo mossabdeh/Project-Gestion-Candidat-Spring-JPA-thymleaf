@@ -3,10 +3,8 @@ package ntic.tlsi.gestiondoctorat2.web;
 
 import jakarta.validation.Valid;
 
-import ntic.tlsi.gestiondoctorat2.entities.Candidat;
+import ntic.tlsi.gestiondoctorat2.entities.*;
 
-import ntic.tlsi.gestiondoctorat2.entities.InfoConcour;
-import ntic.tlsi.gestiondoctorat2.entities.Role;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 import ntic.tlsi.gestiondoctorat2.service.serviceUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 @Controller
@@ -87,8 +86,15 @@ public class CandidatController extends BaseController{
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String saveCandidat(Model model , @Valid Candidat candidat , BindingResult bindingResult){
         if (bindingResult.hasErrors()) return "AdminCandidatAdd";
+        // Check if username already exists
+        if (candidatRepo.existsByUsername(candidat.getUsername())) {
+            bindingResult.rejectValue("username", "error.candidat", "Username already exists");
+            return "AdminCandidatAdd";
+        }
         candidat.setTypeRole(Role.CANDIDAT);
-        candidat.setDateNaissance(new Date());
+       // candidat.setDateNaissance(new Date());
+        // Set the password as the same value as the username
+        candidat.setPassword(candidat.getUsername());
         candidatRepo.save(candidat);
         return "redirect:/candidat/getCandidats";
     }
@@ -100,20 +106,42 @@ public class CandidatController extends BaseController{
         return "redirect:/candidat/getCandidats?page="+page+"&keyword="+keyword;
     }
 
-
     @GetMapping("/editCandidat")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String editCandidat(Model model,Long id,String keyword,int page){
-
-        Candidat editCandidat = candidatRepo.findCandidatById(id);
-        editCandidat.setTypeRole(Role.CANDIDAT);
-        editCandidat.setDateNaissance(new Date());
-        model.addAttribute("candidat",editCandidat);
-        model.addAttribute("page",page);
-        model.addAttribute("keyword",keyword);
-
+    public String editCandidat(Model model, @RequestParam("id") Long id) {
+        Optional<Candidat> candidatOptional = candidatRepo.findCandidatOptionalById(id);
+        Candidat candidat = candidatOptional.orElseThrow(() -> new IllegalArgumentException("Invalid candidat Id:" + id));
+        model.addAttribute("candidat", candidat);
         return "AdminCandidatEdit";
+    }
 
+
+    @PostMapping("/saveEditedCandidat")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String saveEditedCandidat(Model model, @Valid Candidat candidat, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "AdminCandidatEdit";
+        }
+
+        // Check if username already exists (excluding the current admin being edited)
+        if (candidatRepo.existsByUsernameAndIdNot(candidat.getUsername(), candidat.getId())) {
+            bindingResult.rejectValue("username", "error.candidat", "Username already exists");
+            return "AdminCandidatEdit";
+        }
+
+        // Retrieve the existing admin from the database
+        User existingAdmin = candidatRepo.findById(candidat.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid candidat Id:" + candidat.getId()));
+
+        // Set the existing password on the edited admin
+        candidat.setPassword(existingAdmin.getPassword());
+
+        candidat.setTypeRole(Role.CANDIDAT);
+
+
+
+        candidatRepo.save(candidat);
+        return "redirect:/candidat/getCandidats";
     }
 
 

@@ -6,6 +6,7 @@ import lombok.Data;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.CandidatDTO;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.Date;
 @DynamicUpdate
 public class Candidat extends User{
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateNaissance;
 
     private String code;

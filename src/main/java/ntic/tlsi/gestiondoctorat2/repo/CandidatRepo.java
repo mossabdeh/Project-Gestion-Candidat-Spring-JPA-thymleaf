@@ -26,4 +26,10 @@ public interface CandidatRepo extends UserRepo{
 
 
     Optional<CandidatDTO> findDTOByUsername(String username);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByUsernameAndIdNot(String username, Long id);
+
+    Optional<Candidat> findCandidatOptionalById(Long id);
 }
