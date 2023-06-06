@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 
@@ -191,6 +192,11 @@ public class CfdController extends BaseController{
         return "cfdResultatsCandidats";
     }
 
+
+
+
+
+
     @PostMapping("/CalculResultat")
     public String CalculResultat() {
         List<Candidat> candidatsWithNonNullCode = new ArrayList<>();
@@ -205,10 +211,17 @@ public class CfdController extends BaseController{
             List<Copie> copies = (List<Copie>) candidat.getCopies();
             double moyMatier1 = calculateAverageNoteForCopies(copies, 0);
             double moyMatier2 = calculateAverageNoteForCopies(copies, 1);
-            double moyGeneral = (moyMatier1+moyMatier2)/2;
-            candidat.setMoyMatier1(moyMatier1);
-            candidat.setMoyMatier2(moyMatier2);
-            candidat.setMoyenneGeneral(moyGeneral);
+            double moyGeneral = (moyMatier1 + moyMatier2) / 2;
+
+            // Format moyMatier1 and moyMatier2 to have two decimal places
+            DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+            String formattedMoyMatier1 = decimalFormat.format(moyMatier1).replace(",", ".");
+            String formattedMoyMatier2 = decimalFormat.format(moyMatier2).replace(",", ".");
+            String formattedMoyGeneral = decimalFormat.format(moyGeneral).replace(",", ".");
+
+            candidat.setMoyMatier1(Double.parseDouble(formattedMoyMatier1));
+            candidat.setMoyMatier2(Double.parseDouble(formattedMoyMatier2));
+            candidat.setMoyenneGeneral(Double.parseDouble(formattedMoyGeneral));
             candidatRepo.save(candidat);
         }
 
@@ -229,6 +242,9 @@ public class CfdController extends BaseController{
 
         return count > 0 ? sum / count : 0.0;
     }
+
+
+
 
     @PostMapping("/SetPostForTopCandidates")
     public String setPostForTopCandidates() {
