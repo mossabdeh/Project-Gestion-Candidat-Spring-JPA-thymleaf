@@ -56,45 +56,59 @@
 
 <!-- mossab -->
 <div class="container">
-    <div class="card">
-        <div class="card-body">
-            <div class="col-md-6 offset-3">
-                <form method="post" th:action="@{saveInfoConcour}">
-                    <div class="form-group">
-                        <label>Number of Postes</label>
-                        <input class="form-control" type="number" name="nbrPostes" th:value="${infoConcour.nbrPostes}">
-                        <span class="text-danger" th:errors="${infoConcour.nbrPostes}"></span>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">ADD Information Concour</h2>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-6 offset-3">
+                        <form method="post" th:action="@{saveInfoConcour}" th:object="${infoConcour}">
+                            <div class="form-group mt-1">
+                                <label><b>Number of Postes</b></label>
+                                <input class="form-control" type="number" name="nbrPostes" th:value="${infoConcour.nbrPostes}">
+                                <span class="text-danger" th:if="${#fields.hasErrors('nbrPostes')}" th:errors="*{nbrPostes}"></span>
+                                <span class="text-danger" th:unless="${#fields.hasErrors('nbrPostes')}" th:if="${infoConcour.nbrPostes gt 3}">The maximum number of Postes is 3</span>
+                            </div>
+
+
+                            <div class="form-group mt-1">
+                                <label><b>Specialite</b></label>
+                                <input class="form-control" type="text" name="specialite" th:value="${infoConcour.specialite}">
+                                <span class="text-danger" th:errors="${infoConcour.specialite}"></span>
+                            </div>
+                            <div class="form-group mt-1">
+                                <label><b>Matier Commune</b></label>
+                                <select class="form-control" name="matier1">
+                                    <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}"></option>
+                                </select>
+                                <span class="text-danger" th:errors="${infoConcour.matier1}"></span>
+                            </div>
+                            <div class="form-group mt-1">
+                                <label><b>Matier Specialite</b></label>
+                                <select class="form-control" name="matier2">
+                                    <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}"></option>
+                                </select>
+                                <span class="text-danger" th:errors="${infoConcour.matier2}"></span>
+                            </div>
+                            <div class="form-group mt-1">
+                                <label><b>Date</b></label>
+                                <input class="form-control" type="date" name="dateConcour" th:value="${infoConcour.dateConcour != null ? #dates.format(infoConcour.dateConcour, 'yyyy-MM-dd') : ''}">
+                                <span class="text-danger" th:errors="${infoConcour.dateConcour}"></span>
+                            </div>
+                            <div class="text-center mt-2">
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label>Specialite</label>
-                        <input class="form-control" type="text" name="specialite" th:value="${infoConcour.specialite}">
-                        <span class="text-danger" th:errors="${infoConcour.specialite}"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Matier Commune</label>
-                        <select class="form-control" name="matier1">
-                            <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}"></option>
-                        </select>
-                        <span class="text-danger" th:errors="${infoConcour.matier1}"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Matier Specialite</label>
-                        <select class="form-control" name="matier2">
-                            <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}"></option>
-                        </select>
-                        <span class="text-danger" th:errors="${infoConcour.matier2}"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input class="form-control" type="date" name="dateConcour" th:value="${infoConcour.dateConcour != null ? #dates.format(infoConcour.dateConcour, 'yyyy-MM-dd') : ''}">
-                        <span th:errors="${infoConcour.dateConcour}"></span>
-                    </div>
-                    <button type="submit" class="btn btn-secondary">Save</button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
 <!-- Vendor JS Files -->
 <script src="/vendor/purecounter/purecounter_vanilla.js"></script>
 <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

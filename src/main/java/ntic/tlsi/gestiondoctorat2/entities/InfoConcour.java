@@ -46,7 +46,7 @@ public class InfoConcour {
     }
 
     @AssertTrue(message = "matier1 and matier2 should have different values")
-    private boolean isMatier1DifferentFromMatier2() {
+    public boolean isMatier1DifferentFromMatier2() {
         return Matier1 != Matier2;
     }
 }
