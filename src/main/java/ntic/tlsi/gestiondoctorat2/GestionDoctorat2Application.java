@@ -47,8 +47,8 @@ public class GestionDoctorat2Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-     //  iservice.InitUsers();
-       // --------------- tset   ------------ iservice.InitInfoC();
+       //iservice.InitUsers();
+       //  iservice.InitInfoC();
         //iservice.InitCopie();
        // iservice.InitCorrection();
     }
