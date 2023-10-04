@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -39,12 +40,17 @@ public class SecConfig  {
     @Bean
  SecurityFilterChain  securityFilterChain(HttpSecurity httpSecurity) throws Exception {
           httpSecurity.authorizeHttpRequests().
-                  requestMatchers("/").permitAll().
-                  requestMatchers("/css/**","/js/**", "/img/**","/vendor/**").permitAll();
+                  requestMatchers("/","/css/**","/js/**", "/img/**","/vendor/**","/h2-console/**").permitAll()
+                  .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                  .and().headers(headers -> headers.frameOptions().disable()).csrf(csrf -> csrf
+                          .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")))
+          ;
+
           httpSecurity.formLogin().successHandler(customAuthenticationSuccessHandler());
           //httpSecurity.authorizeHttpRequests().requestMatchers("/**").hasRole(Role.CANDIDAT.name());
           httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
           httpSecurity.exceptionHandling().accessDeniedPage("/notAuthorized");
+          // authorize h2-console
 
           httpSecurity.userDetailsService(userDetailServiceImpl);
 

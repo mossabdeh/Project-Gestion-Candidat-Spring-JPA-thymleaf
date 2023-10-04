@@ -70,13 +70,13 @@ public class IserviceImpl implements Iservice {
 
 
         //---------------------- Enseingants -----------------------------------------
-       // Random random = new Random();
+       /*// Random random = new Random();
         Matier[] specialites = Matier.values();
 
         Stream.of("edl","svs","algo","tbib","yasou","prof","doc","algo")
                 .forEach(nameUser ->{
         User ens = new Enseignant(nameUser,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.ENSEIGNANT,"Professor",specialites[random.nextInt(specialites.length)]);
-        enseignantRepo.save(ens);});
+        enseignantRepo.save(ens);});*/
 
     }
 
