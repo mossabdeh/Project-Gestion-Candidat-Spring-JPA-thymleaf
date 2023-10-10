@@ -154,7 +154,7 @@ https://gestion-doctorat-production.up.railway.app
 ![image2](https://github.com/mossabdeh/Project-Gestion-Candidat-Spring-JPA-thymleaf/assets/79877072/50be1ffb-8e24-4b67-8ce9-be677bb197a4)
 
 
-# Diagramme de Classe :
+# Diagramme de Classe () :
 
 ![image3](https://github.com/mossabdeh/Project-Gestion-Candidat-Spring-JPA-thymleaf/assets/79877072/6cf86993-f8d4-4005-b48d-879e53474ade)
 
