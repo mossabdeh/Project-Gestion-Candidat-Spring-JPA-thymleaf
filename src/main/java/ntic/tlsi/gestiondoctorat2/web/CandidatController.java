@@ -6,9 +6,6 @@ import jakarta.validation.Valid;
 import ntic.tlsi.gestiondoctorat2.entities.*;
 
 import ntic.tlsi.gestiondoctorat2.repo.*;
-import ntic.tlsi.gestiondoctorat2.service.serviceUser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -31,16 +28,15 @@ import java.util.Optional;
 public class CandidatController extends BaseController{
 
 
-    private final serviceUser serviceUser;
-    @Autowired
-    private CandidatRepo candidatRepo;
-    @Autowired
-    private InfoConRepo conRepo;
+    private final CandidatRepo candidatRepo;
+    private final InfoConRepo conRepo;
+    private final CandidatProfileService profileService;
 
-
-    @Autowired
-    public CandidatController(ntic.tlsi.gestiondoctorat2.service.serviceUser serviceUser) {
-        this.serviceUser = serviceUser;
+    public CandidatController(CandidatRepo candidatRepo, InfoConRepo conRepo,
+                              CandidatProfileService profileService) {
+        this.candidatRepo = candidatRepo;
+        this.conRepo = conRepo;
+        this.profileService = profileService;
     }
 
     @GetMapping("/getConcourInfo")
@@ -118,42 +114,50 @@ public class CandidatController extends BaseController{
 
     @GetMapping("/editCandidat")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String editCandidat(Model model, @RequestParam("id") Long id) {
-        Optional<Candidat> candidatOptional = candidatRepo.findCandidatOptionalById(id);
-        Candidat candidat = candidatOptional.orElseThrow(() -> new IllegalArgumentException("Invalid candidat Id:" + id));
-        model.addAttribute("candidat", candidat);
+    public String editCandidat(Model model, @RequestParam("id") Long id,
+                               @RequestParam(name = "page", required = false) Integer page,
+                               @RequestParam(name = "keyword", required = false) String keyword) {
+        Candidat existing = candidatRepo.findCandidatOptionalById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Candidate not found"));
+        model.addAttribute("candidat", CandidatProfileForm.from(existing));
+        model.addAttribute("page", page);
+        model.addAttribute("keyword", keyword);
         return "AdminCandidatEdit";
     }
 
-
     @PostMapping("/saveEditedCandidat")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String saveEditedCandidat(Model model, @Valid Candidat candidat, BindingResult bindingResult) {
+    public String saveEditedCandidat(
+            @Valid @ModelAttribute("candidat") CandidatProfileForm candidat,
+            BindingResult bindingResult,
+            Model model,
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "keyword", required = false) String keyword) {
+        if (candidat.getId() == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "Candidate ID is required");
+        }
+        model.addAttribute("page", page);
+        model.addAttribute("keyword", keyword);
         if (bindingResult.hasErrors()) {
             return "AdminCandidatEdit";
         }
-
-        // Check if username already exists (excluding the current admin being edited)
-        if (candidatRepo.existsByUsernameAndIdNot(candidat.getUsername(), candidat.getId())) {
+        try {
+            profileService.updateProfile(candidat);
+        } catch (CandidatProfileService.UsernameAlreadyUsedException ex) {
             bindingResult.rejectValue("username", "error.candidat", "Username already exists");
             return "AdminCandidatEdit";
         }
 
-        // Retrieve the existing admin from the database
-        User existingAdmin = candidatRepo.findById(candidat.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid candidat Id:" + candidat.getId()));
-
-        // Set the existing password on the edited admin
-        candidat.setPassword(existingAdmin.getPassword());
-
-        candidat.setTypeRole(Role.CANDIDAT);
-
-
-
-        candidatRepo.save(candidat);
-        return "redirect:/candidat/getCandidats";
+        if (page == null && (keyword == null || keyword.isEmpty())) {
+            return "redirect:/candidat/getCandidats";
+        }
+        String encodedKeyword = org.springframework.web.util.UriUtils.encodeQueryParam(
+                keyword == null ? "" : keyword, java.nio.charset.StandardCharsets.UTF_8);
+        return "redirect:/candidat/getCandidats?page=" + (page == null ? 0 : page)
+                + "&keyword=" + encodedKeyword;
     }
-
 
     @GetMapping("/ResultatCandidat")
     public String ResultatCandidats(Model model,
