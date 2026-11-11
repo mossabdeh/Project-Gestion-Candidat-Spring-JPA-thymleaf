@@ -39,73 +39,24 @@ public class CfdController extends BaseController{
     private EnseignantRepo enseignantRepo;
     @Autowired
     private CorrectionRepo correctionRepo;
+    @Autowired
+    private ntic.tlsi.gestiondoctorat2.service.CompetitionPreparationService preparationService;
+    @Autowired
+    private ntic.tlsi.gestiondoctorat2.service.ResultPublicationService resultService;
 
 
 
-    @GetMapping("/initCopie")
+    @PostMapping("/initCopie")
     public String initializeCopies() {
-        List<InfoConcour> concours = conRepo.findAll();
-        if (concours.isEmpty()) {
-            return "No concour information found.";
-        }
-        InfoConcour lastConcour = concours.get(concours.size() - 1);
-
-        // setting copie for the lastConcour 
-        candidatRepo.findAllBy().forEach(candidat -> {
-            if (candidat.getCode() != null) {
-                Copie copie1 = new Copie(lastConcour.getMatier1(), candidat);
-                Copie copie2 = new Copie(lastConcour.getMatier2(), candidat);
-                candidat.getCopies().add(copie1); // Add copie1 to the collection
-                candidat.getCopies().add(copie2); // Add copie2 to the collection
-                copie1.setCandidat(candidat);
-                copie2.setCandidat(candidat);
-                copieRepo.save(copie1);
-                copieRepo.save(copie2);
-            }
-            candidatRepo.save(candidat); // Save the Candidat entity
-        });
-
-        return "cfdPage";
+        preparationService.initializePapers();
+        return "redirect:/cfdPage";
     }
 
-
-    @GetMapping("/InitCorrection")
-    public String InitCorrection(){
-        List<Enseignant> enseignants = enseignantRepo.findAllBy();
-        copieRepo.findAll().forEach(copie -> {
-            Enseignant enseignant1 = null;
-            Enseignant enseignant2 = null;
-            Enseignant enseignant3 = null;
-
-            // Find two teachers with the same specialty as the copy
-            for (Enseignant enseignant : enseignants) {
-                if (enseignant.getSpecialite() == copie.getMatier()) {
-                    if (enseignant1 == null) {
-                        enseignant1 = enseignant;
-                    } else if (enseignant2 == null) {
-                        enseignant2 = enseignant;
-                        break;
-                    }
-                }
-            }
-            // Create and save corrections for each teacher
-            Correction correction1 = new Correction();
-            correction1.setCopie(copie);
-            correction1.setEnseignant(enseignant1);
-           // correction1.setNote(note1);
-            correctionRepo.save(correction1);
-
-            Correction correction2 = new Correction();
-            correction2.setCopie(copie);
-            correction2.setEnseignant(enseignant2);
-           // correction2.setNote(note2);
-            correctionRepo.save(correction2);
-
-
-        });
-   return "redirect:/cfdPage" ;
+    @PostMapping("/InitCorrection")
+    public String InitCorrection() {
+        preparationService.initializeCorrections();
+        return "redirect:/cfdPage";
     }
-
 
     @GetMapping("/getCorrectionCopie")
     public String getCorrectionCopie(Model model,
@@ -123,29 +74,15 @@ public class CfdController extends BaseController{
         return "cfdCheckCorrection"; // Replace "correctionPage" with the actual name of your correction page view
     }
 
-    @GetMapping("/testNotes")
-    public String TestNotes(){
-
-        List<Correction> corrections = correctionRepo.findAll();
-        double[] notes = new double[] {14, 10, 15, 9, 8, 5, 2, 13.5};
-        double note = notes[new Random().nextInt(notes.length)];
-        for (Correction correction : corrections){
-            if (correction.getNote()== 0 ){
-                correction.setNote(note);
-                correctionRepo.save(correction);
-            }
-
-        }
-        return "redirect:/cfd/getCorrectionCopie";
-    }
-
     @PostMapping("/ThirdCorrectionCheck")
     public String thirdCorrectionCheck() {
         List<Copie> copies = copieRepo.findAll();
 
         for (Copie copie : copies) {
+            if (copie.getCorrections().size() < 2) continue;
             Correction correction1 = copie.getCorrections().get(0);
             Correction correction2 = copie.getCorrections().get(1);
+            if (correction1.getNote() == null || correction2.getNote() == null) continue;
             double note1 = correction1.getNote();
             double note2 = correction2.getNote();
 
@@ -199,84 +136,21 @@ public class CfdController extends BaseController{
 
     @PostMapping("/CalculResultat")
     public String CalculResultat() {
-        List<Candidat> candidatsWithNonNullCode = new ArrayList<>();
-        candidatRepo.findAllBy().forEach(candidat -> {
-            String code = candidat.getCode();
-            if (code != null) {
-                candidatsWithNonNullCode.add(candidat);
-            }
-        });
-
-        for (Candidat candidat : candidatsWithNonNullCode) {
-            List<Copie> copies = (List<Copie>) candidat.getCopies();
-            double moyMatier1 = calculateAverageNoteForCopies(copies, 0);
-            double moyMatier2 = calculateAverageNoteForCopies(copies, 1);
-            double moyGeneral = (moyMatier1 + moyMatier2) / 2;
-
-            // Format moyMatier1 and moyMatier2 to have two decimal places
-            DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-            String formattedMoyMatier1 = decimalFormat.format(moyMatier1).replace(",", ".");
-            String formattedMoyMatier2 = decimalFormat.format(moyMatier2).replace(",", ".");
-            String formattedMoyGeneral = decimalFormat.format(moyGeneral).replace(",", ".");
-
-            candidat.setMoyMatier1(Double.parseDouble(formattedMoyMatier1));
-            candidat.setMoyMatier2(Double.parseDouble(formattedMoyMatier2));
-            candidat.setMoyenneGeneral(Double.parseDouble(formattedMoyGeneral));
-            candidatRepo.save(candidat);
-        }
-
+        resultService.calculateResults();
         return "redirect:/cfd/ResultatCandidats";
     }
-
-    private double calculateAverageNoteForCopies(List<Copie> copies, int index) {
-        double sum = 0.0;
-        int count = 0;
-
-        if (index >= 0 && index < copies.size()) {
-            Copie copie = copies.get(index);
-            for (Correction correction : copie.getCorrections()) {
-                sum += correction.getNote();
-                count++;
-            }
-        }
-
-        return count > 0 ? sum / count : 0.0;
-    }
-
-
-
 
     @PostMapping("/SetPostForTopCandidates")
     public String setPostForTopCandidates() {
-        List<InfoConcour> concours = conRepo.findAll();
-        // return only the last Concour Information
-        int numberOfPostes = 0;
-        if (!concours.isEmpty()) {
-            InfoConcour lastConcour = concours.get(concours.size() - 1);
-            numberOfPostes = lastConcour.getNbrPostes();
-        }
-
-        List<Candidat> candidatsWithNonNullCode = new ArrayList<>();
-        candidatRepo.findAllBy().forEach(candidat -> {
-            String code = candidat.getCode();
-            if (code != null) {
-                candidatsWithNonNullCode.add(candidat);
-            }
-        });
-
-        // Sort the candidats based on moyGeneral in descending order
-        candidatsWithNonNullCode.sort(Comparator.comparingDouble(Candidat::getMoyenneGeneral).reversed());
-
-        // Set post=true for the top three candidats
-        for (int i = 0; i < Math.min(candidatsWithNonNullCode.size(), numberOfPostes); i++) {
-            Candidat candidat = candidatsWithNonNullCode.get(i);
-            candidat.setGetPoste(true);
-            candidatRepo.save(candidat);
-        }
-
+        resultService.rankCandidates();
         return "redirect:/cfd/ResultatCandidats";
     }
 
+    @PostMapping("/PublishResults")
+    public String publishResults() {
+        resultService.publishResults();
+        return "redirect:/cfd/ResultatCandidats";
+    }
 
     @GetMapping("/getCFDs")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

@@ -21,7 +21,9 @@ public class Correction {
     @JoinColumn(name = "copie_id")
     private Copie copie;
 
-    private double note;
+    // Null distinguishes an unmarked paper from the valid grade zero.
+    @Column(nullable = true)
+    private Double note;
 
     public void setEnseignant(Enseignant enseignant) {
         this.enseignant = enseignant;
@@ -31,7 +33,7 @@ public class Correction {
         this.copie = copie;
     }
 
-    public void setNote(double note) {
+    public void setNote(Double note) {
         this.note = note;
     }
 
@@ -43,7 +45,7 @@ public class Correction {
         return copie;
     }
 
-    public double getNote() {
+    public Double getNote() {
         return note;
     }
 

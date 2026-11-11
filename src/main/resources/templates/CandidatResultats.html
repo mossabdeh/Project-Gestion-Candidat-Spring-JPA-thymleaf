@@ -86,7 +86,10 @@
 
       </div>
 
-      <table class="table">
+      <div th:unless="${resultsPublished}" class="alert alert-info" role="status">
+        Results have not been published yet. Please check back after the competition committee releases them.
+      </div>
+      <table class="table" th:if="${resultsPublished}">
         <thead>
         <tr>
           <th>C_ID</th>

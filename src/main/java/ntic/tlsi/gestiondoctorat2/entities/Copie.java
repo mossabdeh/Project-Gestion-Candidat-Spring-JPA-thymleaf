@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(name = "uk_copie_candidate_subject", columnNames = {"Candidat_id", "matier"}))
 @Data
 public class Copie {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

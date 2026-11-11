@@ -37,6 +37,8 @@ public class vdController extends BaseController{
     private VDRepo vdRepo;
     @Autowired
     private CandidatRepo candidatRepo;
+    @Autowired
+    private ntic.tlsi.gestiondoctorat2.service.CompetitionPreparationService preparationService;
 
     @Autowired
     public vdController(ntic.tlsi.gestiondoctorat2.service.serviceUser serviceUser) {
@@ -84,15 +86,8 @@ public class vdController extends BaseController{
 
     @PostMapping("/generateCodes")
     public String generateCodes(@RequestParam("selectedCandidates") List<Long> selectedCandidates) {
-        for (Long candidateId : selectedCandidates) {
-            Candidat candidat = candidatRepo.findCandidatById(candidateId);
-            if (candidat != null) {
-                String code = serviceUser.generateUniqueCode(); // Replace with your code generation logic
-                candidat.setCode(code);
-                candidatRepo.save(candidat);
-            }
-        }
-        return "redirect:/vd/getCandidatsCode"; // Redirect back to the candidate list page
+        preparationService.assignCodes(selectedCandidates);
+        return "redirect:/vd/getCandidatsCode";
     }
 
     @GetMapping("/getVDs")
