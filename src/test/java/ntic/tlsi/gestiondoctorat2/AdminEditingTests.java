@@ -62,6 +62,26 @@ class AdminEditingTests {
     }
 
     @Test
+    void usernameCanBeChangedWithoutChangingPassword() throws Exception {
+        Admin admin = createAdmin();
+        String oldHash = admin.getPassword();
+        String newUsername = "renamed-" + UUID.randomUUID();
+
+        mvc.perform(post("/admin/saveEditedAdmin").with(csrf())
+                        .param("id", admin.getId().toString())
+                        .param("username", newUsername)
+                        .param("nom", admin.getNom())
+                        .param("prenom", admin.getPrenom())
+                        .param("email", admin.getEmail()))
+                .andExpect(status().is3xxRedirection());
+
+        adminRepo.flush();
+        Admin updated = adminRepo.findById(admin.getId()).orElseThrow();
+        assertEquals(newUsername, updated.getUsername());
+        assertEquals(oldHash, updated.getPassword());
+    }
+
+    @Test
     void unknownIdReturnsNotFound() throws Exception {
         mvc.perform(post("/admin/saveEditedAdmin").with(csrf())
                         .param("id", Long.toString(Long.MAX_VALUE))
