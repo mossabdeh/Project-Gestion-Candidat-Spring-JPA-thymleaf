@@ -130,28 +130,29 @@ public class AdminController extends BaseController{
 
     @PostMapping("/saveEditedAdmin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String saveEditedAdmin(Model model, @Valid Admin admin, BindingResult bindingResult) {
+    public String saveEditedAdmin(Model model, @ModelAttribute("admin") @Valid Admin admin,
+                                  BindingResult bindingResult) {
+        // Check the target before updating: only existing Admin accounts can be edited.
+        serviceUser.getAdmin(admin.getId());
+
         if (bindingResult.hasErrors()) {
             return "AdminAdminEdit";
         }
 
-        // Check if username already exists (excluding the current admin being edited)
         if (userAccountRepo.existsByUsernameAndIdNot(admin.getUsername(), admin.getId())) {
             bindingResult.rejectValue("username", "error.admin", "Username already exists");
             return "AdminAdminEdit";
         }
 
-        // Retrieve the existing admin from the database
-        User existingAdmin = adminRepo.findById(admin.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid admin Id:" + admin.getId()));
+        // Copy only the fields offered by the edit form.
+        // Ignore any submitted password, role, or system-managed values.
+        Admin changes = new Admin();
+        changes.setUsername(admin.getUsername());
+        changes.setNom(admin.getNom());
+        changes.setPrenom(admin.getPrenom());
+        changes.setEmail(admin.getEmail());
+        serviceUser.editAdmin(admin.getId(), changes);
 
-        // Set the existing password on the edited admin
-        admin.setPassword(existingAdmin.getPassword());
-
-        admin.setTypeRole(Role.ADMIN);
-        admin.setLogDate(new Date());
-
-        adminRepo.save(admin);
         return "redirect:/admin/getAdmins";
     }
 
