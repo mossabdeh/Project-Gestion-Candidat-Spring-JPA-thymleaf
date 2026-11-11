@@ -16,25 +16,25 @@
           <label for="nom">Nom <span aria-hidden="true">*</span></label>
           <input id="nom" type="text" th:field="*{nom}" autocomplete="family-name" required
                  th:attr="aria-invalid=${#fields.hasErrors('nom')},aria-describedby=${#fields.hasErrors('nom')} ? 'nom-error' : null">
-          <span id="nom-error" class="field-error" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></span>
+          <span id="nom-error" class="field-error text-danger" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></span>
         </div>
         <div class="field">
           <label for="prenom">Prenom <span aria-hidden="true">*</span></label>
           <input id="prenom" type="text" th:field="*{prenom}" autocomplete="given-name" required
                  th:attr="aria-invalid=${#fields.hasErrors('prenom')},aria-describedby=${#fields.hasErrors('prenom')} ? 'prenom-error' : null">
-          <span id="prenom-error" class="field-error" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></span>
+          <span id="prenom-error" class="field-error text-danger" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></span>
         </div>
         <div class="field">
           <label for="username">Username <span aria-hidden="true">*</span></label>
           <input id="username" type="text" th:field="*{username}" autocomplete="off" required
                  th:attr="aria-invalid=${#fields.hasErrors('username')},aria-describedby=${#fields.hasErrors('username')} ? 'username-error' : null">
-          <span id="username-error" class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+          <span id="username-error" class="field-error text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
         </div>
         <div class="field">
           <label for="email">Email <span aria-hidden="true">*</span></label>
           <input id="email" type="email" th:field="*{email}" autocomplete="email" required
                  th:attr="aria-invalid=${#fields.hasErrors('email')},aria-describedby=${#fields.hasErrors('email')} ? 'email-error' : null">
-          <span id="email-error" class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+          <span id="email-error" class="field-error text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
         </div>
         <div class="field field-full">
           <label for="password">Password <span aria-hidden="true">*</span></label>
@@ -42,7 +42,7 @@
                  aria-describedby="password-help"
                  th:attr="aria-invalid=${#fields.hasErrors('password')}">
           <small id="password-help" class="field-help">Use at least 12 characters. The password must differ from the username.</small>
-          <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+          <span class="field-error text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
         </div>
       </div>
       <div class="form-actions">
