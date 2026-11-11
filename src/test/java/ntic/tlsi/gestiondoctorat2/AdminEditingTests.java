@@ -46,8 +46,7 @@ class AdminEditingTests {
                         .param("prenom", "New")
                         .param("email", "updated@example.com")
                         .param("password", "attacker-password-123")
-                        .param("typeRole", "CANDIDAT")
-                        .param("logDate", "2001-01-01"))
+                        .param("typeRole", "CANDIDAT"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/getAdmins"));
 
