@@ -7,6 +7,7 @@ import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
 import ntic.tlsi.gestiondoctorat2.entities.Role;
 import ntic.tlsi.gestiondoctorat2.entities.User;
 import ntic.tlsi.gestiondoctorat2.repo.AdminRepo;
+import ntic.tlsi.gestiondoctorat2.repo.UserAccountRepo;
 import ntic.tlsi.gestiondoctorat2.service.serviceUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,8 @@ public class AdminController extends BaseController{
     private final serviceUser serviceUser;
     @Autowired
     private AdminRepo adminRepo ;
+    @Autowired
+    private UserAccountRepo userAccountRepo;
 
     @Autowired
     public AdminController(ntic.tlsi.gestiondoctorat2.service.serviceUser serviceUser) {
@@ -61,7 +64,7 @@ public class AdminController extends BaseController{
         if (bindingResult.hasErrors()) return "AdminAdminAdd";
 
         // Check if username already exists
-        if (adminRepo.existsByUsername(admin.getUsername())) {
+        if (userAccountRepo.existsByUsername(admin.getUsername())) {
             bindingResult.rejectValue("username", "error.admin", "Username already exists");
             return "AdminAdminAdd";
         }
@@ -106,11 +109,8 @@ public class AdminController extends BaseController{
                               @RequestParam(name = "keyword", defaultValue = "") String keyword,
                               @RequestParam(name = "page", defaultValue = "0") int page,
                               Authentication authentication) {
-        User user = adminRepo.findById(id)
+        Admin user = adminRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin not found"));
-        if (!(user instanceof Admin)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin not found");
-        }
         if (user.getUsername().equals(authentication.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot delete your own account");
         }
@@ -137,7 +137,7 @@ public class AdminController extends BaseController{
         }
 
         // Check if username already exists (excluding the current admin being edited)
-        if (adminRepo.existsByUsernameAndIdNot(admin.getUsername(), admin.getId())) {
+        if (userAccountRepo.existsByUsernameAndIdNot(admin.getUsername(), admin.getId())) {
             bindingResult.rejectValue("username", "error.admin", "Username already exists");
             return "AdminAdminEdit";
         }
