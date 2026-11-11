@@ -6,6 +6,7 @@ import ntic.tlsi.gestiondoctorat2.entities.DTO.CandidatDTO;
 import ntic.tlsi.gestiondoctorat2.entities.User;
 import ntic.tlsi.gestiondoctorat2.repo.CandidatRepo;
 import ntic.tlsi.gestiondoctorat2.repo.EnseignantRepo;
+import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
 import ntic.tlsi.gestiondoctorat2.sec.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +26,8 @@ public class BaseController {
     private CandidatRepo candidatRepo;
     @Autowired
     private EnseignantRepo enseignantRepo;
+    @Autowired
+    private InfoConRepo competitionRepo;
 
     @GetMapping("/")
     public String homePage() {
@@ -41,11 +44,15 @@ public class BaseController {
         return"cfdPage";
     }
     @GetMapping("/candidatPage")
-    public String CandidatPage( Authentication authentication, Model model){
-        String username = authentication.getName();
-        Optional<User> candidat = candidatRepo.findByUsername(username);
+    @PreAuthorize("hasRole('ROLE_CANDIDAT')")
+    public String CandidatPage(Authentication authentication, Model model) {
+        Candidat candidat = candidatRepo.findCandidatByUsername(authentication.getName())
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Candidate account not found"));
         model.addAttribute("candidat", candidat);
-        return"CandidatPage";}
+        model.addAttribute("latestConcour", competitionRepo.findTopByOrderByIdDesc().orElse(null));
+        return "CandidatPage";
+    }
 
     @GetMapping("/vdPage")
     public String VDPage(){
