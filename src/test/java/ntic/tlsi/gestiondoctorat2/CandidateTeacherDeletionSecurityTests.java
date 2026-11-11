@@ -153,12 +153,34 @@ class CandidateTeacherDeletionSecurityTests {
     void listFormsSubmitPostWithCsrf() throws Exception {
         Candidat candidate = candidate();
         Enseignant teacher = teacher();
-        mvc.perform(get("/candidat/getCandidats")).andExpect(status().isOk())
-                .andExpect(xpath("//form[@method='post' and contains(@action,'/candidat/delete')]/input[@name='_csrf']").exists())
-                .andExpect(xpath("//form[@method='post' and contains(@action,'/candidat/delete')]/button[@type='submit']").exists());
-        mvc.perform(get("/enseignant/getEnseignants")).andExpect(status().isOk())
-                .andExpect(xpath("//form[@method='post' and contains(@action,'/enseignant/delete')]/input[@name='_csrf']").exists())
-                .andExpect(xpath("//form[@method='post' and contains(@action,'/enseignant/delete')]/button[@type='submit']").exists());
+
+        String candidateHtml = mvc.perform(get("/candidat/getCandidats"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertProtectedDeleteForm(candidateHtml, candidate.getId());
+
+        String teacherHtml = mvc.perform(get("/enseignant/getEnseignants"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertProtectedDeleteForm(teacherHtml, teacher.getId());
+    }
+
+    private void assertProtectedDeleteForm(String html, Long id) {
+        // Spring renders HTML5, not XML; MockMvc's XPath XML parser cannot parse
+        // ordinary HTML void elements such as <link>.
+        int actionIndex = html.indexOf("action=\"delete\"");
+        assertTrue(actionIndex >= 0, "Expected a delete form in the account list");
+
+        int formStart = html.lastIndexOf("<form", actionIndex);
+        int formEnd = html.indexOf("</form>", actionIndex);
+        assertTrue(formStart >= 0 && formEnd > actionIndex, "Delete form must be complete");
+        String form = html.substring(formStart, formEnd);
+
+        assertTrue(form.contains("method=\"post\""), "Delete must submit using POST");
+        assertTrue(form.contains("name=\"_csrf\""), "Delete form must include CSRF token");
+        assertTrue(form.contains("name=\"id\" value=\"" + id + "\""),
+                "Delete form must submit the selected account ID");
+        assertTrue(form.contains("type=\"submit\""), "Delete must require explicit submission");
     }
 
     private Candidat candidate() {
