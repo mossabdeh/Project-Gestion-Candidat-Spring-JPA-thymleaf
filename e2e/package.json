@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@playwright/test": "1.65.0",
+    "@types/node": "22.15.30",
     "playwright-bdd": "9.2.1",
     "typescript": "5.9.3"
   }
