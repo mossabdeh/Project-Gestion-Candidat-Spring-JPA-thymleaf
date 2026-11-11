@@ -57,7 +57,7 @@
           </form>
         </li>
           <li>
-              <form method="get" th:action="@{cfd/initCopie}">
+              <form method="post" th:action="@{/cfd/initCopie}">
                   <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">init</button>
               </form>
           </li>
@@ -83,7 +83,7 @@
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
             <div class="icon-box">
               <div class="icon"><i class="bx bx-file"></i></div>
-              <h4><a th:href="@{InitCorrection}">Generate Corrections</a></h4>
+              <h4><form method="post" th:action="@{/cfd/InitCorrection}"><button type="submit" class="btn btn-primary">Initialize corrections</button></form></h4>
               <p>Check your Code here </p>
             </div>
           </div>
