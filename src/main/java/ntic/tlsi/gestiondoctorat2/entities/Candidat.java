@@ -7,7 +7,6 @@ import ntic.tlsi.gestiondoctorat2.entities.DTO.AdminDTO;
 import ntic.tlsi.gestiondoctorat2.entities.DTO.CandidatDTO;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,10 +57,6 @@ public class Candidat extends User{
             throw new IllegalArgumentException("The maximum size of the copies is 2, one for every matier");
         }
     }
-    @Transient
-    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-
      public static Candidat from(CandidatDTO candidatDTO){
          Candidat candidat =new Candidat();
          candidat.setDateNaissance(candidatDTO.getDateNaissance());
@@ -70,7 +65,7 @@ public class Candidat extends User{
          candidat.setMoyMatier1(candidatDTO.getMoyMatier1());
          candidat.setMoyMatier2(candidatDTO.getMoyMatier2());
          candidat.setUsername(candidatDTO.getUsername());
-         candidat.setPassword(passwordEncoder.encode(candidatDTO.getPassword())); // Hash the password
+         candidat.setPassword(candidatDTO.getPassword()); // Hashed once when first saved
          candidat.setEmail(candidatDTO.getEmail());
          candidat.setNom(candidatDTO.getNom());
          candidat.setPrenom(candidatDTO.getPrenom());
