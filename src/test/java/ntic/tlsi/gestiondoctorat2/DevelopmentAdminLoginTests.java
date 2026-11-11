@@ -1,7 +1,7 @@
 package ntic.tlsi.gestiondoctorat2;
 
 import ntic.tlsi.gestiondoctorat2.entities.User;
-import ntic.tlsi.gestiondoctorat2.repo.AdminRepo;
+import ntic.tlsi.gestiondoctorat2.repo.UserAccountRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,13 +27,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class DevelopmentAdminLoginTests {
 
-    @Autowired private AdminRepo adminRepo;
+    @Autowired private UserAccountRepo userAccountRepo;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private MockMvc mvc;
 
     @Test
     void devAdminExistsWithHashedPassword() {
-        User admin = adminRepo.findByUsername("development-admin").orElseThrow();
+        User admin = userAccountRepo.findByUsername("development-admin").orElseThrow();
 
         assertNotEquals("strong-development-password-123", admin.getPassword());
         assertTrue(passwordEncoder.matches("strong-development-password-123", admin.getPassword()));
