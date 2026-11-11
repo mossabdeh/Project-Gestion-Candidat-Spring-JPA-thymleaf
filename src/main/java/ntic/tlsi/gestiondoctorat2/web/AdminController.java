@@ -20,7 +20,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,11 +100,24 @@ public class AdminController extends BaseController{
         return new ResponseEntity<>(AdminDTO.from(admin),HttpStatus.OK);
     }*/
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String deleteAdmin(final Long id,String keyword,int page){
-       adminRepo.deleteById(id);
-        return "redirect:/admin/getAdmins?page="+page+"&keyword="+keyword;
+    public String deleteAdmin(@RequestParam("id") Long id,
+                              @RequestParam(name = "keyword", defaultValue = "") String keyword,
+                              @RequestParam(name = "page", defaultValue = "0") int page,
+                              Authentication authentication) {
+        User user = adminRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin not found"));
+        if (!(user instanceof Admin)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin not found");
+        }
+        if (user.getUsername().equals(authentication.getName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot delete your own account");
+        }
+
+        adminRepo.delete(user);
+        return "redirect:/admin/getAdmins?page=" + page + "&keyword=" +
+                UriUtils.encodeQueryParam(keyword, StandardCharsets.UTF_8);
     }
 
     @GetMapping("/editAdmin")
