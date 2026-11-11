@@ -40,10 +40,18 @@ public class CompetitionPreparationService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select at least one candidate");
         }
 
-        Set<String> used = new HashSet<>(candidates.findAssignedCodes());
+        // Resolve and validate the entire request before making any changes.
+        // A bad ID must not cause a partial assignment even when callers join
+        // an existing transaction.
+        List<Candidat> requested = new ArrayList<>();
         for (Long candidateId : new LinkedHashSet<>(selectedCandidateIds)) {
             Candidat candidate = candidates.findCandidatOptionalById(candidateId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidate not found"));
+            requested.add(candidate);
+        }
+
+        Set<String> used = new HashSet<>(candidates.findAssignedCodes());
+        for (Candidat candidate : requested) {
             // Generating a code again must never invalidate an existing exam paper.
             if (candidate.getCode() != null && !candidate.getCode().isBlank()) {
                 used.add(candidate.getCode());
