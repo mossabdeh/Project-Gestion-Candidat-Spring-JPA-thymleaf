@@ -32,6 +32,8 @@ public class EnseignantController extends BaseController{
     private EnseignantRepo enseignantRepo;
     @Autowired
     private CorrectionRepo correctionRepo;
+    @Autowired
+    private ntic.tlsi.gestiondoctorat2.repo.InfoConRepo infoConRepo;
 
 
     @Autowired
@@ -139,6 +141,21 @@ public class EnseignantController extends BaseController{
     public String saveNotes(@RequestParam("correctionIds") Long[] correctionIds,
                             @RequestParam("notes") double[] notes,
                             Authentication authentication) {
+        if (infoConRepo.findTopByOrderByIdDesc()
+                .map(c -> c.getResultsPublishedAt() != null).orElse(false)) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.CONFLICT, "Published results cannot be changed");
+        }
+        if (correctionIds.length != notes.length) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "Each correction needs a mark");
+        }
+        for (double note : notes) {
+            if (!Double.isFinite(note) || note < 0 || note > 20) {
+                throw new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.BAD_REQUEST, "Marks must be between 0 and 20");
+            }
+        }
         String username = authentication.getName();
         Optional<User> enseignant = enseignantRepo.findByUsername(username);
         Long loggedInEnseignantId = enseignant.get().getId();

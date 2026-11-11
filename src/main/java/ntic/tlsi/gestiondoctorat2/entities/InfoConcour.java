@@ -29,6 +29,8 @@ public class InfoConcour {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date DateConcour;
+    private java.time.Instant resultsPublishedAt;
+
     // No place because it happen only in one departelent NTIC
     @ManyToOne
     private VD vd ;

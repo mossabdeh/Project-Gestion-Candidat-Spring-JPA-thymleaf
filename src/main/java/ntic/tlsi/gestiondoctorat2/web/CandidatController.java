@@ -163,6 +163,10 @@ public class CandidatController extends BaseController{
 
         // Preserve the existing Thymeleaf contract until the follow-up
         // subject-ordered results DTO/UI migration.
+        boolean resultsPublished = conRepo.findTopByOrderByIdDesc()
+                .map(competition -> competition.getResultsPublishedAt() != null)
+                .orElse(false);
+        model.addAttribute("resultsPublished", resultsPublished);
         model.addAttribute("MyCandidat", Optional.of(currentCandidate));
         return "CandidatResultats";
     }
