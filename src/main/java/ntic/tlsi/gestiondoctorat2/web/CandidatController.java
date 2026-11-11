@@ -101,11 +101,19 @@ public class CandidatController extends BaseController{
         return "redirect:/candidat/getCandidats";
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String deleteCandidat(final Long id,String keyword,int page){
-        candidatRepo.deleteById(id);
-        return "redirect:/candidat/getCandidats?page="+page+"&keyword="+keyword;
+    public String deleteCandidat(@RequestParam("id") Long id,
+                                @RequestParam(name = "keyword", defaultValue = "") String keyword,
+                                @RequestParam(name = "page", defaultValue = "0") int page) {
+        // Only delete an account belonging to this role, never an account with
+        // the same ID from another user type.
+        Candidat account = candidatRepo.findCandidatOptionalById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Candidat not found"));
+        candidatRepo.delete(account);
+        return "redirect:/candidat/getCandidats?page=" + page + "&keyword=" +
+                org.springframework.web.util.UriUtils.encodeQueryParam(keyword, java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @GetMapping("/editCandidat")

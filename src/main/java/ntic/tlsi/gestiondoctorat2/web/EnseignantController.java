@@ -81,11 +81,19 @@ public class EnseignantController extends BaseController{
     }
 
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String deleteEnseignant(final Long id,String keyword,int page){
-        enseignantRepo.deleteById(id);
-        return "redirect:/enseignant/getEnseignants?page="+page+"&keyword="+keyword;
+    public String deleteEnseignant(@RequestParam("id") Long id,
+                                @RequestParam(name = "keyword", defaultValue = "") String keyword,
+                                @RequestParam(name = "page", defaultValue = "0") int page) {
+        // Only delete an account belonging to this role, never an account with
+        // the same ID from another user type.
+        Enseignant account = enseignantRepo.findEnseignantOptionalById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Enseignant not found"));
+        enseignantRepo.delete(account);
+        return "redirect:/enseignant/getEnseignants?page=" + page + "&keyword=" +
+                org.springframework.web.util.UriUtils.encodeQueryParam(keyword, java.nio.charset.StandardCharsets.UTF_8);
     }
 
 
