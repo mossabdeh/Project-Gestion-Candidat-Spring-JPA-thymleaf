@@ -50,7 +50,7 @@ Then('the dashboard should use the original coral branding and light navigation'
   const sidebarColor = await page.locator('.admin-sidebar').evaluate(element =>
     getComputedStyle(element).backgroundColor
   );
-  const accent = await page.locator('.eyebrow').evaluate(element =>
+  const accent = await page.locator('.page-heading .eyebrow').evaluate(element =>
     getComputedStyle(element).color
   );
   expect(brandColor).toBe('rgb(233, 107, 86)');
