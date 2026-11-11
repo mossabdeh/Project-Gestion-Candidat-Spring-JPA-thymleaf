@@ -1,0 +1,8 @@
+node_modules/
+.features-gen/
+playwright-report/
+test-results/
+blob-report/
+spring-boot.log
+.env
+.env.*
