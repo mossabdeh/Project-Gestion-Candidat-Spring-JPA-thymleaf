@@ -27,16 +27,16 @@
   .transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:150ms}
   .transition-transform{transition-property:transform,translate,scale,rotate;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:150ms}
   .duration-200{transition-duration:200ms}
-  .group:hover .group-hover\\:scale-110{transform:scale(1.1)}
-  .group:hover .group-hover\\:rotate-6{transform:rotate(6deg)}
+  .group:hover .group-hover\:scale-110{transform:scale(1.1)}
+  .group:hover .group-hover\:rotate-6{transform:rotate(6deg)}
   @media(min-width:64rem) {
-    .lg\\:sticky{position:sticky}
-    .lg\\:top-0{top:0}
-    .lg\\:h-screen{height:100vh}
-    .lg\\:overflow-y-auto{overflow-y:auto}
+    .lg\:sticky{position:sticky}
+    .lg\:top-0{top:0}
+    .lg\:h-screen{height:100vh}
+    .lg\:overflow-y-auto{overflow-y:auto}
   }
   @media(prefers-reduced-motion:no-preference){
-    .motion-safe\\:transition-all{transition-property:all}
-    .motion-safe\\:duration-200{transition-duration:200ms}
+    .motion-safe\:transition-all{transition-property:all}
+    .motion-safe\:duration-200{transition-duration:200ms}
   }
 }
