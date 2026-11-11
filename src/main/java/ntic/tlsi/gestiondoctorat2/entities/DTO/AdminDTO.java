@@ -18,7 +18,7 @@ public class AdminDTO extends UserDTO{
         adminDTO.setId(admin.getId());
         adminDTO.setLogDate(admin.getLogDate());
         adminDTO.setUsername(admin.getUsername());
-        adminDTO.setPassword(admin.getPassword());
+
         adminDTO.setEmail(admin.getEmail());
         adminDTO.setNom(admin.getNom());
         adminDTO.setPrenom(admin.getPrenom());
