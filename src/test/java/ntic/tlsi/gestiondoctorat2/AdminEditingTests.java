@@ -110,7 +110,9 @@ class AdminEditingTests {
         mvc.perform(post("/admin/saveEditedAdmin").with(csrf())
                         .param("id", first.getId().toString())
                         .param("username", second.getUsername())
-                        .param("nom", "Should Not Save"))
+                        .param("nom", "Should Not Save")
+                        .param("prenom", first.getPrenom())
+                        .param("email", first.getEmail()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("AdminAdminEdit"))
                 .andExpect(model().attributeHasFieldErrors("admin", "username"));

@@ -54,33 +54,38 @@ public class AdminController extends BaseController{
     @GetMapping("/AdminAdd")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String AdminAdminAdd(Model model){
-        model.addAttribute("admin",new Admin());
+        model.addAttribute("admin",new AdminForm());
         return "AdminAdminAdd";
     }
     @PostMapping("/saveAdmin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-
-    public String saveAdmin(Model model , @Valid Admin admin , BindingResult bindingResult){
-        if (bindingResult.hasErrors()) return "AdminAdminAdd";
-
-        // Check if username already exists
-        if (userAccountRepo.existsByUsername(admin.getUsername())) {
-            bindingResult.rejectValue("username", "error.admin", "Username already exists");
-            return "AdminAdminAdd";
-        }
-        if (admin.getPassword() == null || admin.getPassword().isBlank()
-                || admin.getPassword().length() < 12
-                || admin.getPassword().equalsIgnoreCase(admin.getUsername())) {
+    public String saveAdmin(@Valid @ModelAttribute("admin") AdminForm form,
+                            BindingResult bindingResult) {
+        if (form.getPassword() == null || form.getPassword().isBlank()
+                || form.getPassword().length() < 12
+                || (form.getUsername() != null &&
+                    form.getPassword().equalsIgnoreCase(form.getUsername().trim()))) {
             bindingResult.rejectValue("password", "error.admin",
                     "Password must be at least 12 characters and differ from the username");
+        }
+        if (bindingResult.hasErrors()) {
+            form.setPassword(null);
             return "AdminAdminAdd";
         }
+
+        Admin admin = form.toAdmin();
+        if (userAccountRepo.existsByUsername(admin.getUsername())) {
+            bindingResult.rejectValue("username", "error.admin", "Username already exists");
+            form.setPassword(null);
+            return "AdminAdminAdd";
+        }
+
+        admin.setPassword(form.getPassword());
         admin.setTypeRole(Role.ADMIN);
         admin.setLogDate(new Date());
         adminRepo.save(admin);
         return "redirect:/admin/getAdmins";
     }
-
 
     @GetMapping("/getAdmins")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -124,38 +129,31 @@ public class AdminController extends BaseController{
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editAdmin(Model model, @RequestParam("id") Long id) {
         Admin admin = serviceUser.getAdmin(id);
-        model.addAttribute("admin", admin);
+        model.addAttribute("admin", AdminForm.from(admin));
         return "AdminAdminEdit";
     }
 
     @PostMapping("/saveEditedAdmin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String saveEditedAdmin(Model model, @ModelAttribute("admin") @Valid Admin admin,
+    public String saveEditedAdmin(@Valid @ModelAttribute("admin") AdminForm form,
                                   BindingResult bindingResult) {
-        // Check the target before updating: only existing Admin accounts can be edited.
-        if (admin.getId() == null) {
+        if (form.getId() == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin not found");
         }
-        serviceUser.getAdmin(admin.getId());
+        serviceUser.getAdmin(form.getId());
 
         if (bindingResult.hasErrors()) {
             return "AdminAdminEdit";
         }
 
-        if (userAccountRepo.existsByUsernameAndIdNot(admin.getUsername(), admin.getId())) {
+        Admin changes = form.toAdmin();
+        if (userAccountRepo.existsByUsernameAndIdNot(changes.getUsername(), form.getId())) {
             bindingResult.rejectValue("username", "error.admin", "Username already exists");
             return "AdminAdminEdit";
         }
 
-        // Copy only the fields offered by the edit form.
-        // Ignore any submitted password, role, or system-managed values.
-        Admin changes = new Admin();
-        changes.setUsername(admin.getUsername());
-        changes.setNom(admin.getNom());
-        changes.setPrenom(admin.getPrenom());
-        changes.setEmail(admin.getEmail());
-        serviceUser.editAdmin(admin.getId(), changes);
-
+        // Only form fields are editable. Password, role and log date are preserved.
+        serviceUser.editAdmin(form.getId(), changes);
         return "redirect:/admin/getAdmins";
     }
 
