@@ -63,5 +63,5 @@ When('I open the {string} section', async ({ page }, section: string) => {
 
 Then('I should be on the {string} management page', async ({ page }, path: string) => {
   await expect(page).toHaveURL(new RegExp(`${path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\?.*)?$`));
-  await expect(page.locator('table, .card-body').first()).toBeVisible();
+  await expect(page.locator('.data-panel, .card-body, table').first()).toBeVisible();
 });
