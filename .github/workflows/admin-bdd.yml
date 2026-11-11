@@ -45,10 +45,8 @@ jobs:
         run: |
           npm install --no-audit --no-fund
           npm run build
-          echo "TAILWIND_GENERATED_CSS_BEGIN"
-          cat ../src/main/resources/static/css/tailwind-admin.css
-          echo
-          echo "TAILWIND_GENERATED_CSS_END"
+          test -s ../src/main/resources/static/css/tailwind-admin.css
+          grep -q 'sticky' ../src/main/resources/static/css/tailwind-admin.css
 
       - name: Java unit and integration tests
         run: |

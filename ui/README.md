@@ -12,8 +12,9 @@ npm install
 npm run build
 ```
 
-The generated `src/main/resources/static/css/tailwind-admin.css` is
-committed, so running `./mvnw spring-boot:run` does not require Node.
+A lightweight baseline is committed as `src/main/resources/static/css/tailwind-admin.css`,
+so `./mvnw spring-boot:run` works without Node. Run `npm run build` to generate
+the fully optimized Tailwind CSS before deploying or after editing utilities.
 Rebuild and commit the CSS after changing utility classes in Thymeleaf.
 `npm run watch` enables continuous compilation.
 
