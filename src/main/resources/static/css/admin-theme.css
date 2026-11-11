@@ -1,0 +1,235 @@
+/**
+ * Doctorat admin — warm Eterna-inspired theme.
+ * Keeps the existing accessible, responsive layout while restoring
+ * the original brand palette: coral #e96b56, charcoal #545454, and white.
+ *
+ * For white-on-accent controls we use a darker coral shade (#b8422f)
+ * to improve text contrast without changing the brand identity.
+ * This layer is intentionally loaded after admin.css.
+ */
+:root {
+  --admin-bg: #f7f7f7;
+  --admin-paper: #ffffff;
+  --admin-sidebar: #ffffff;
+  --admin-ink: #444444;
+  --admin-muted: #6e6e6e;
+  --admin-accent: #b8422f;
+  --admin-accent-hover: #9b3020;
+  --admin-line: #e6e6e6;
+  --admin-coral: #e96b56;
+  --admin-soft: #fef5f4;
+  --admin-soft-strong: #fbe2dd;
+}
+
+body.admin-app {
+  background: var(--admin-bg);
+  color: var(--admin-ink);
+}
+
+.admin-app :focus-visible {
+  outline: 3px solid #b8422f;
+  outline-offset: 3px;
+}
+
+/* A light navigation panel recalls the original white Eterna header. */
+.admin-sidebar {
+  background: #fff;
+  color: #545454;
+  border-right: 1px solid var(--admin-line);
+  box-shadow: 3px 0 18px rgba(52, 44, 42, .025);
+}
+.admin-brand,
+.admin-brand:hover,
+.admin-brand:focus {
+  color: #545454 !important;
+}
+.admin-brand strong { color: #545454; }
+.admin-brand small,
+.nav-caption,
+.sidebar-identity small { color: #777777; }
+.brand-mark {
+  background: var(--admin-coral);
+  color: #3d2520;
+  border-radius: 10px;
+}
+.admin-nav a {
+  color: #545454;
+  border-left: 3px solid transparent;
+  padding-left: 11px;
+}
+.admin-nav a:hover,
+.admin-nav a:focus-visible {
+  color: #9b3020;
+  background: var(--admin-soft);
+  border-left-color: var(--admin-coral);
+}
+.admin-sidebar .sidebar-footer { border-top: 1px solid #ededed; }
+.sidebar-avatar {
+  background: var(--admin-soft-strong);
+  color: #8c3324;
+}
+.sidebar-identity strong { color: #545454; }
+
+.admin-topbar {
+  border-top: 3px solid var(--admin-coral);
+  border-bottom: 1px solid #ededed;
+  box-shadow: 0 2px 12px rgba(84, 84, 84, .045);
+}
+.workspace-title { color: #545454; }
+.user-label { color: #6e6e6e; }
+.sign-out {
+  border-color: #e1e1e1;
+  color: #545454;
+}
+.sign-out:hover {
+  color: #8c3324;
+  border-color: #edb0a4;
+  background: var(--admin-soft);
+}
+
+/* Warm overview without sacrificing whitespace or information hierarchy. */
+.eyebrow { color: #9b392a; }
+.subheading,
+.section-heading span,
+.workspace-card p { color: #6e6e6e; }
+.intro-panel {
+  background: linear-gradient(112deg, #ffffff 4%, #fef5f4 100%);
+  border: 1px solid #f1ddd8;
+  border-left: 4px solid var(--admin-coral);
+  box-shadow: 0 4px 20px rgba(84, 84, 84, .025);
+}
+.intro-panel p { color: #6e6e6e; }
+.intro-icon { color: var(--admin-coral); }
+.workspace-card {
+  border-color: #e6e6e6;
+  box-shadow: 0 2px 12px rgba(68, 68, 68, .025);
+}
+.workspace-card:hover {
+  border-color: #e8a99c;
+  box-shadow: 0 12px 24px rgba(114, 64, 55, .095);
+}
+.tile-icon {
+  color: #a13828;
+  background: var(--admin-soft-strong);
+}
+.card-link { color: #9b392a; }
+.workspace-card h3 a:hover { color: #9b3020; }
+
+/* Lists and form components share the same visual language. */
+.data-panel,
+.form-panel {
+  background: #fff;
+  border-color: #e6e6e6;
+  box-shadow: 0 4px 18px rgba(68, 68, 68, .035);
+}
+.panel-heading,
+.form-intro,
+.table-pagination,
+.form-actions { border-color: #ededed; }
+.records-table th {
+  background: #fafafa;
+  color: #616161;
+  border-color: #ededed;
+}
+.records-table td { color: #444444; }
+.records-table tbody tr:hover { background: #fff9f8; }
+.search-form label,
+.field label { color: #545454; }
+.search-controls input,
+.field input,
+.field select.form-control {
+  border-color: #c9c9c9;
+  color: #444444;
+  background: #fff;
+}
+.search-controls input:focus,
+.field input:focus,
+.field select.form-control:focus {
+  border-color: #c15a48;
+  box-shadow: 0 0 0 3px rgba(233, 107, 86, .18);
+}
+.field input[aria-invalid="true"] {
+  border-color: #ad3131;
+}
+.field-error { color: #a42828; }
+.field-help,
+.toolbar-hint,
+.table-pagination,
+.self-account { color: #6e6e6e; }
+.breadcrumbs a,
+.empty-state a { color: #a33b2a; }
+.empty-state > span { color: var(--admin-coral); }
+
+/* Brand coral on primary actions, darker for readable white text. */
+.action-primary {
+  background: var(--admin-accent);
+  color: #fff !important;
+  border-color: var(--admin-accent);
+}
+.action-primary:hover,
+.action-primary:focus-visible {
+  background: var(--admin-accent-hover);
+  border-color: var(--admin-accent-hover);
+  color: #fff !important;
+}
+.action-secondary,
+.action-cancel {
+  border-color: #dadada;
+  background: #fff;
+  color: #545454;
+}
+.action-secondary:hover,
+.action-cancel:hover {
+  background: var(--admin-soft);
+  border-color: #e7aea2;
+  color: #8c3324;
+}
+.action-edit {
+  color: #933424;
+  border-color: #edc4bb;
+  background: var(--admin-soft);
+}
+.action-edit:hover {
+  color: #762718;
+  border-color: #d98f80;
+  background: #fbe2dd;
+}
+/* Destructive actions remain distinct from ordinary coral navigation. */
+.action-delete {
+  color: #9f2828;
+  border-color: #eccaca;
+  background: #fff7f7;
+}
+.action-delete:hover { background: #ffe9e9; }
+.page-links a:hover {
+  color: #963523;
+  border-color: #e8ad9f;
+  background: var(--admin-soft);
+}
+.page-links a.is-current,
+.page-links a.is-current:hover {
+  color: #fff;
+  background: var(--admin-accent);
+  border-color: var(--admin-accent);
+}
+
+/* Mobile menu keeps the same warm brand colors and keyboard affordances. */
+.mobile-navigation summary {
+  color: #545454;
+  background: #fff;
+  border-color: #e6e6e6;
+}
+.mobile-navigation[open] summary {
+  color: #9b3020;
+  border-color: #e8ad9f;
+}
+.mobile-links { border-color: #e6e6e6; }
+.mobile-links a:hover,
+.mobile-links a:focus-visible {
+  color: #9b3020;
+  background: var(--admin-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workspace-card { transition: none; }
+}
