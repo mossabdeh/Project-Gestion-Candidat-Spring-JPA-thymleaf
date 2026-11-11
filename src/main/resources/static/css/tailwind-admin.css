@@ -1,0 +1,42 @@
+/*! Tailwind CSS v4.1.10 – Admin utility baseline.
+ * Regenerate the complete optimized stylesheet with: cd ui && npm run build
+ * The checked-in baseline keeps Maven-only local runs functional.
+ */
+@layer utilities {
+  .sticky{position:sticky}
+  .relative{position:relative}
+  .isolate{isolation:isolate}
+  .overflow-hidden{overflow:hidden}
+  .overflow-y-auto{overflow-y:auto}
+  .top-0{top:0}
+  .z-10{z-index:10}
+  .z-30{z-index:30}
+  .min-w-0{min-width:0}
+  .max-w-full{max-width:100%}
+  .max-w-2xl{max-width:42rem}
+  .h-screen{height:100vh}
+  .inline-flex{display:inline-flex}
+  .flex{display:flex}
+  .flex-wrap{flex-wrap}
+  .items-center{align-items:center}
+  .gap-1{gap:.25rem}
+  .rounded-2xl{border-radius:1rem}
+  .tracking-tight{letter-spacing:-.025em}
+  .text-balance{text-wrap:balance}
+  .group{isolation:auto}
+  .transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:150ms}
+  .transition-transform{transition-property:transform,translate,scale,rotate;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:150ms}
+  .duration-200{transition-duration:200ms}
+  .group:hover .group-hover\:scale-110{transform:scale(1.1)}
+  .group:hover .group-hover\:rotate-6{transform:rotate(6deg)}
+  @media(min-width:64rem) {
+    .lg\:sticky{position:sticky}
+    .lg\:top-0{top:0}
+    .lg\:h-screen{height:100vh}
+    .lg\:overflow-y-auto{overflow-y:auto}
+  }
+  @media(prefers-reduced-motion:no-preference){
+    .motion-safe\:transition-all{transition-property:all}
+    .motion-safe\:duration-200{transition-duration:200ms}
+  }
+}

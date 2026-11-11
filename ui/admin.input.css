@@ -1,0 +1,14 @@
+/*
+ * Scoped Admin build: preserve Bootstrap and legacy components by
+ * importing only Tailwind theme + utilities (not Preflight).
+ */
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css";
+@source "../src/main/resources/templates";
+
+@theme {
+  --color-coral: #e96b56;
+  --color-coral-deep: #b8422f;
+  --color-charcoal: #545454;
+  --color-warm-paper: #fef5f4;
+}

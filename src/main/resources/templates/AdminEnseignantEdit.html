@@ -1,98 +1,13 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="AdminTemplate">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Edit CFD</title>
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-  <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .form-group label {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      margin-bottom: 5px;
-      display: block;
-    }
-    .form-control {
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 8px 12px;
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-
-<body>
-<section layout:fragment="content1">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h2 class="text-center">Edit Enseignant</h2>
-          </div>
-          <div class="card-body">
-            <form method="post" th:action="@{saveEditedEnseignant(page=${page},keyword=${keyword})}" th:object="${enseignant}">
-
-              <div class="form-group">
-                <label>ID</label>
-                <input id="id" class="form-control" type="text" readonly name="id" th:value="*{id}" >
-              </div>
-
-              <div class="form-group">
-                <label>Nom</label>
-                <input class="form-control" type="text" name="nom" th:value="*{nom}">
-                <span class="text-danger" th:errors="*{nom}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Prenom</label>
-                <input class="form-control" type="text" name="prenom" th:value="*{prenom}">
-                <span class="text-danger" th:errors="*{prenom}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Username</label>
-                <input class="form-control" type="text" name="username" th:value="*{username}">
-                <span class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Grade</label>
-                <select class="form-control" name="grade">
-                  <option value="professeur" th:selected="${enseignant.grade == 'professeur'}">Professeur</option>
-                  <option value="MCA" th:selected="${enseignant.grade == 'MCA'}">MCA</option>
-                </select>
-                <span class="text-danger" th:errors="${enseignant.grade}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Specialite</label>
-                <select class="form-control" name="specialite">
-                  <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}"
-                          th:text="${matier}" th:selected="${enseignant.specialite == matier}" th:value="${matier}"></option>
-                </select>
-                <span class="text-danger" th:errors="${enseignant.specialite}"></span>
-              </div>
-
-
-              <div class="form-group">
-                <label>Email</label>
-                <input class="form-control" type="email" name="email" th:value="*{email}">
-                <span class="text-danger" th:errors="*{email}"></span>
-              </div>
-
-              <div class="text-center">
-                <button type="submit" class="btn btn-success mt-3">Save</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-</body>
-
-</html>
+<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{AdminTemplate}">
+<head><title>Edit Teacher</title></head><body><section layout:fragment="content1"><nav class="breadcrumbs" aria-label="Breadcrumb"><a th:href="@{getEnseignants}">Teachers</a><span aria-hidden="true">/</span><span>Edit account</span></nav>
+<div class="page-heading gap-4"><div><span class="eyebrow">ACCOUNT MANAGEMENT</span><h1>Edit Enseignant</h1><p class="subheading">Edit profile information.</p></div></div>
+<section class="form-panel overflow-hidden" aria-label="Edit teacher"><div class="form-intro"><h2>Profile information</h2><p>Update the account's profile.</p></div>
+<form method="post" th:action="@{saveEditedEnseignant(page=${page},keyword=${keyword})}" th:object="${enseignant}">
+<input type="hidden" th:field="*{id}">
+<div class="form-grid gap-6"><div class="field"><label for="enseignant-nom">Nom</label><input class="form-control" id="enseignant-nom" name="nom" type="text" th:value="*{nom}" th:attr="aria-invalid=${#fields.hasErrors('nom')}" /><span class="field-error text-danger" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></span></div>
+<div class="field"><label for="enseignant-prenom">Prenom</label><input class="form-control" id="enseignant-prenom" name="prenom" type="text" th:value="*{prenom}" th:attr="aria-invalid=${#fields.hasErrors('prenom')}" /><span class="field-error text-danger" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></span></div>
+<div class="field"><label for="enseignant-username">Username</label><input class="form-control" id="enseignant-username" name="username" type="text" th:value="*{username}" th:attr="aria-invalid=${#fields.hasErrors('username')}" /><span class="field-error text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span></div>
+<div class="field"><label for="enseignant-email">Email</label><input class="form-control" id="enseignant-email" name="email" type="email" th:value="*{email}" th:attr="aria-invalid=${#fields.hasErrors('email')}" /><span class="field-error text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span></div>
+<div class="field"><label for="enseignant-grade">Grade</label><select class="form-control" id="enseignant-grade" name="grade"><option value="professeur" th:selected="*{grade == 'professeur'}">Professeur</option><option value="MCA" th:selected="*{grade == 'MCA'}">MCA</option></select><span class="field-error text-danger" th:if="${#fields.hasErrors('grade')}" th:errors="*{grade}"></span></div>
+<div class="field"><label for="enseignant-specialite">Specialty</label><select class="form-control" id="enseignant-specialite" name="specialite"><option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}" th:selected="*{specialite == matier}"></option></select><span class="field-error text-danger" th:if="${#fields.hasErrors('specialite')}" th:errors="*{specialite}"></span></div></div><div class="form-actions"><a class="action-cancel transition-colors duration-200" th:href="@{getEnseignants}">Cancel</a><button type="submit" class="action-primary transition-colors duration-200">Save</button></div>
+</form></section></section></body></html>

@@ -5,14 +5,14 @@
 <head><title>Vice Deans</title></head>
 <body>
 <section layout:fragment="content1">
-  <div class="page-heading">
+  <div class="page-heading gap-4">
     <div>
       <span class="eyebrow">ACCOUNT MANAGEMENT</span>
       <h1>Vice Deans</h1>
       <p class="subheading">Find and update vice deans in your institution.</p>
     </div>
   </div>
-  <section class="data-panel" aria-label="Vice Deans directory">
+  <section class="data-panel overflow-hidden" aria-label="Vice Deans directory">
     <div class="panel-heading">
       <div><h2>Vice Deans directory</h2><p>Search by last name or open a profile to edit its details.</p></div>
     </div>
@@ -22,12 +22,12 @@
         <div class="search-controls">
           <input id="vd-keyword" type="text" name="keyword" th:value="${keyword}"
                  placeholder="Enter a last name" autocomplete="off">
-          <button type="submit" class="action-secondary">Chercher</button>
+          <button type="submit" class="action-secondary transition-colors duration-200">Chercher</button>
         </div>
       </form>
       <span class="toolbar-hint">Search results update after submission.</span>
     </div>
-    <div class="table-scroll" th:if="${not #lists.isEmpty(ListVDs)}">
+    <div class="table-scroll max-w-full" th:if="${not #lists.isEmpty(ListVDs)}">
       <table class="records-table">
         <caption class="visually-hidden">Vice Deans matching your search</caption>
         <thead><tr>
@@ -45,7 +45,7 @@
             <td th:text="${vd.logDate}"></td>
             <td>
               <div class="row-actions">
-                <a class="action-edit" th:href="@{editVD(id=${vd.id},keyword=${keyword},page=${currentPage})}">Edit</a>
+                <a class="action-edit transition-colors duration-200" th:href="@{editVD(id=${vd.id},keyword=${keyword},page=${currentPage})}">Edit</a>
               </div>
             </td>
           </tr>
@@ -60,7 +60,7 @@
     </div>
     <nav class="table-pagination" aria-label="Vice Deans pages" th:if="${pages.length > 1}">
       <span>Page <span th:text="${currentPage + 1}">1</span> of <span th:text="${pages.length}">1</span></span>
-      <div class="page-links">
+      <div class="page-links flex flex-wrap gap-1">
         <a th:each="page,status : ${pages}"
            th:classappend="${status.index == currentPage} ? ' is-current' : ''"
            th:attr="aria-current=${status.index == currentPage} ? 'page' : null"

@@ -6,13 +6,13 @@
 <body>
 <section layout:fragment="content1">
   <nav class="breadcrumbs" aria-label="Breadcrumb"><a th:href="@{/admin/getAdmins}">Administrators</a><span aria-hidden="true">/</span><span>Edit account</span></nav>
-  <div class="page-heading"><div><span class="eyebrow">ACCOUNT MANAGEMENT</span>
+  <div class="page-heading gap-4"><div><span class="eyebrow">ACCOUNT MANAGEMENT</span>
     <h1>Edit Admin</h1><p class="subheading">Update profile details without changing the account's password or permissions.</p></div></div>
-  <section class="form-panel" aria-label="Edit administrator">
+  <section class="form-panel overflow-hidden" aria-label="Edit administrator">
     <div class="form-intro"><h2>Profile information</h2><p>Only contact and identity details can be changed here.</p></div>
     <form method="post" th:action="@{saveEditedAdmin(page=${page},keyword=${keyword})}" th:object="${admin}" novalidate="novalidate">
       <input type="hidden" name="id" th:value="*{id}">
-      <div class="form-grid">
+      <div class="form-grid gap-6">
         <div class="field">
           <label for="nom">Nom <span aria-hidden="true">*</span></label>
           <input id="nom" type="text" th:field="*{nom}" autocomplete="family-name" required
@@ -39,8 +39,8 @@
         </div>
       </div>
       <div class="form-actions">
-        <a class="action-cancel" th:href="@{/admin/getAdmins}">Cancel</a>
-        <button type="submit" class="action-primary">Save</button>
+        <a class="action-cancel transition-colors duration-200" th:href="@{/admin/getAdmins}">Cancel</a>
+        <button type="submit" class="action-primary transition-colors duration-200">Save</button>
       </div>
     </form>
   </section>

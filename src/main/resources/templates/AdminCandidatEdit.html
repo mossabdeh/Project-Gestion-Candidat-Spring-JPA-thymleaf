@@ -1,85 +1,12 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="AdminTemplate">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Edit CFD</title>
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-  <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .form-group label {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      margin-bottom: 5px;
-      display: block;
-    }
-    .form-control {
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 8px 12px;
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-
-<body>
-<section layout:fragment="content1">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h2 class="text-center">Edit Candidat</h2>
-          </div>
-          <div class="card-body">
-            <form method="post" th:action="@{saveEditedCandidat(page=${page},keyword=${keyword})}" th:object="${candidat}">
-
-              <div class="form-group">
-                <label>ID</label>
-                <input id="id" class="form-control" type="text" readonly name="id" th:value="*{id}" >
-              </div>
-
-              <div class="form-group">
-                <label>Nom</label>
-                <input class="form-control" type="text" name="nom" th:value="*{nom}">
-                <span class="text-danger" th:errors="*{nom}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Prenom</label>
-                <input class="form-control" type="text" name="prenom" th:value="*{prenom}">
-                <span class="text-danger" th:errors="*{prenom}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Username</label>
-                <input class="form-control" type="text" name="username" th:value="*{username}">
-                <span class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Date Naissance</label>
-                <input class="form-control" type="date" name="dateNaissance" th:value="*{dateNaissance}">
-                <span class="text-danger" th:errors="*{dateNaissance}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Email</label>
-                <input class="form-control" type="email" name="email" th:value="*{email}">
-                <span class="text-danger" th:errors="*{email}"></span>
-              </div>
-
-              <div class="text-center">
-                <button type="submit" class="btn btn-success mt-3">Save</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-</body>
-
-</html>
+<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{AdminTemplate}">
+<head><title>Edit Candidate</title></head><body><section layout:fragment="content1"><nav class="breadcrumbs" aria-label="Breadcrumb"><a th:href="@{getCandidats}">Candidates</a><span aria-hidden="true">/</span><span>Edit account</span></nav>
+<div class="page-heading gap-4"><div><span class="eyebrow">ACCOUNT MANAGEMENT</span><h1>Edit Candidat</h1><p class="subheading">Edit profile information.</p></div></div>
+<section class="form-panel overflow-hidden" aria-label="Edit candidate"><div class="form-intro"><h2>Profile information</h2><p>Update the account's profile.</p></div>
+<form method="post" th:action="@{saveEditedCandidat(page=${page},keyword=${keyword})}" th:object="${candidat}">
+<input type="hidden" th:field="*{id}">
+<div class="form-grid gap-6"><div class="field"><label for="candidat-nom">Nom</label><input class="form-control" id="candidat-nom" name="nom" type="text" th:value="*{nom}" th:attr="aria-invalid=${#fields.hasErrors('nom')}" /><span class="field-error text-danger" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></span></div>
+<div class="field"><label for="candidat-prenom">Prenom</label><input class="form-control" id="candidat-prenom" name="prenom" type="text" th:value="*{prenom}" th:attr="aria-invalid=${#fields.hasErrors('prenom')}" /><span class="field-error text-danger" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></span></div>
+<div class="field"><label for="candidat-username">Username</label><input class="form-control" id="candidat-username" name="username" type="text" th:value="*{username}" th:attr="aria-invalid=${#fields.hasErrors('username')}" /><span class="field-error text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span></div>
+<div class="field"><label for="candidat-email">Email</label><input class="form-control" id="candidat-email" name="email" type="email" th:value="*{email}" th:attr="aria-invalid=${#fields.hasErrors('email')}" /><span class="field-error text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span></div>
+<div class="field"><label for="candidat-dateNaissance">Date of birth</label><input class="form-control" id="candidat-dateNaissance" name="dateNaissance" type="date" th:value="*{dateNaissance}" th:attr="aria-invalid=${#fields.hasErrors('dateNaissance')}" /><span class="field-error text-danger" th:if="${#fields.hasErrors('dateNaissance')}" th:errors="*{dateNaissance}"></span></div></div><div class="form-actions"><a class="action-cancel transition-colors duration-200" th:href="@{getCandidats}">Cancel</a><button type="submit" class="action-primary transition-colors duration-200">Save</button></div>
+</form></section></section></body></html>

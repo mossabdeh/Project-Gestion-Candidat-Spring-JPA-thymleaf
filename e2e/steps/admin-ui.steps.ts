@@ -38,3 +38,26 @@ Then('cancelling should return to the administrator directory', async ({ page })
   await page.getByRole('link', { name: 'Cancel' }).click();
   await expect(page).toHaveURL(/\/admin\/getAdmins$/);
 });
+
+When('I open the administration dashboard', async ({ page }) => {
+  await page.goto('/adminPage');
+});
+
+Then('the dashboard should use the original coral branding and light navigation', async ({ page }) => {
+  const brandColor = await page.locator('.brand-mark').evaluate(element =>
+    getComputedStyle(element).backgroundColor
+  );
+  const sidebarColor = await page.locator('.admin-sidebar').evaluate(element =>
+    getComputedStyle(element).backgroundColor
+  );
+  const accent = await page.locator('.page-heading .eyebrow').evaluate(element =>
+    getComputedStyle(element).color
+  );
+  expect(brandColor).toBe('rgb(233, 107, 86)');
+  expect(sidebarColor).toBe('rgb(255, 255, 255)');
+  expect(accent).toBe('rgb(155, 57, 42)');
+});
+
+Then('the Admin topbar should use the compiled sticky utility', async ({ page }) => {
+  await expect(page.locator('.admin-topbar')).toHaveCSS('position', 'sticky');
+});

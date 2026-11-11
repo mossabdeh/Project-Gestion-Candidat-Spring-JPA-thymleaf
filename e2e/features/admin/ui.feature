@@ -15,3 +15,13 @@ Feature: Admin interface quality
     When I open the new administrator form
     Then the profile inputs should have accessible labels
     And cancelling should return to the administrator directory
+
+  Scenario: Admin workspace uses the original warm brand colors
+    Given I am signed in as an admin
+    When I open the administration dashboard
+    Then the dashboard should use the original coral branding and light navigation
+
+  Scenario: Admin interface loads built Tailwind utility classes
+    Given I am signed in as an admin
+    When I open the administration dashboard
+    Then the Admin topbar should use the compiled sticky utility
