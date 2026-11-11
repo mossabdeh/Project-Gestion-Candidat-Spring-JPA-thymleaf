@@ -24,7 +24,7 @@ public class EnseignantDTO extends UserDTO{
         enseignantDTO.setSpecialite(enseignant.getSpecialite());
         enseignantDTO.setGrade(enseignant.getGrade());
         enseignantDTO.setUsername(enseignant.getUsername());
-        enseignantDTO.setPassword(enseignant.getPassword());
+
         enseignantDTO.setEmail(enseignant.getEmail());
         enseignantDTO.setNom(enseignant.getNom());
         enseignantDTO.setPrenom(enseignant.getPrenom());
