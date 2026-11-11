@@ -115,10 +115,14 @@
                         <td th:text="${admin.logDate}"></td>
 
                         <td>
-                            <a onclick="return confirm('Etes vous sûr?')" class="btn btn-danger"
-                               th:unless="${admin.username == #authentication.name}"
-                               th:href="@{delete(id=${admin.id}, keyword=${keyword}, page=${currentPage})}"
-                               th:disabled="${admin.username != #authentication.name}">Delete</a>
+                            <form th:unless="${admin.username == #authentication.name}"
+                                  method="post" th:action="@{delete}"
+                                  onsubmit="return confirm('Delete this admin account?');">
+                                <input type="hidden" name="id" th:value="${admin.id}">
+                                <input type="hidden" name="keyword" th:value="${keyword}">
+                                <input type="hidden" name="page" th:value="${currentPage}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </td>
 
 
