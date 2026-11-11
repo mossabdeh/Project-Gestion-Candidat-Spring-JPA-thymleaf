@@ -7,11 +7,11 @@ This is a **planned** inventory, not an assertion that tests have passed.
 | ADM-01 | Auth | Valid login, invalid login, logout | Implemented in BDD |
 | ADM-02 | Dashboard | Navigation to 5 management lists | Implemented in BDD |
 | ADM-03 | Auth | Anonymous and non-admin access denied | Planned |
-| ADM-04 | Admin CRUD | Create valid admin | Planned |
-| ADM-05 | Admin CRUD | Required fields, email, duplicate username, password validation | Planned |
-| ADM-06 | Admin CRUD | Edit profile; preserve password and role | Planned |
-| ADM-07 | Admin CRUD | Delete another admin; prevent self-deletion and GET deletion | Planned |
-| ADM-08 | Search | Matching, empty, and special-character searches | Planned |
+| ADM-04 | Admin CRUD | Create valid admin | Implemented in BDD |
+| ADM-05 | Admin CRUD | Required last name and duplicate username | Implemented in BDD (other validation cases planned) |
+| ADM-06 | Admin CRUD | Edit profile; preserve password | Implemented in BDD (role integrity handled by Java tests) |
+| ADM-07 | Admin CRUD | Delete another admin; hide self-deletion | Implemented in BDD (direct POST/GET checks planned) |
+| ADM-08 | Search | Matching, empty, and special-character searches | Planned (keyword filter used in CRUD tests) |
 | ADM-09 | Pagination | First/last page, invalid indexes, preserved filters | Planned |
 | ADM-10 | Candidat | Create, update and delete candidate | Planned |
 | ADM-11 | Enseignant | Create, update and delete teacher | Planned |
