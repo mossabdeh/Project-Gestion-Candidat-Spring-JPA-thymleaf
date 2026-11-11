@@ -133,6 +133,9 @@ public class AdminController extends BaseController{
     public String saveEditedAdmin(Model model, @ModelAttribute("admin") @Valid Admin admin,
                                   BindingResult bindingResult) {
         // Check the target before updating: only existing Admin accounts can be edited.
+        if (admin.getId() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin not found");
+        }
         serviceUser.getAdmin(admin.getId());
 
         if (bindingResult.hasErrors()) {
