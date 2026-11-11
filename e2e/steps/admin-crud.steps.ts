@@ -165,7 +165,8 @@ When('I open my own Admin record in the list', async ({ page }) => {
   const username = process.env.ADMIN_USERNAME;
   if (!username) throw new Error('Missing ADMIN_USERNAME');
   const accounts = new AdminAccountsPage(page);
-  await accounts.filterByLastName('Admin');
+  // The dev bootstrap account is created with last name 'Development'.
+  await accounts.filterByLastName('Development');
   state(page).enteredUsername = username;
 });
 
