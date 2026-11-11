@@ -5,8 +5,6 @@ import ntic.tlsi.gestiondoctorat2.entities.User;
 import java.util.Optional;
 
 public interface Iservice {
-    public void InitUsers();
-
     public void InitInfoC();
 
      void InitCopie();
