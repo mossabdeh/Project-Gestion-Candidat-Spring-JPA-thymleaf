@@ -9,20 +9,20 @@
     <a th:href="@{/vd/getVDs}">Vice Deans</a>
     <span aria-hidden="true">/</span><span>Edit account</span>
   </nav>
-  <div class="page-heading">
+  <div class="page-heading gap-4">
     <div><span class="eyebrow">ACCOUNT MANAGEMENT</span>
       <h1>Edit Vice Dean</h1>
       <p class="subheading">Update contact and identity details for this account.</p>
     </div>
   </div>
-  <section class="form-panel" aria-label="Edit Vice Dean">
+  <section class="form-panel overflow-hidden" aria-label="Edit Vice Dean">
     <div class="form-intro">
       <h2>Profile information</h2>
       <p>Make changes to this account's profile. A password cannot be changed here.</p>
     </div>
     <form method="post" th:action="@{saveEditedVD(page=${page},keyword=${keyword})}" th:object="${vd}" novalidate="novalidate">
       <input type="hidden" th:field="*{id}">
-      <div class="form-grid">
+      <div class="form-grid gap-6">
         <div class="field">
           <label for="vd-nom">Nom <span aria-hidden="true">*</span></label>
           <input id="vd-nom" type="text" th:field="*{nom}" autocomplete="family-name" required
@@ -49,8 +49,8 @@
         </div>
       </div>
       <div class="form-actions">
-        <a class="action-cancel" th:href="@{/vd/getVDs}">Cancel</a>
-        <button type="submit" class="action-primary">Save</button>
+        <a class="action-cancel transition-colors duration-200" th:href="@{/vd/getVDs}">Cancel</a>
+        <button type="submit" class="action-primary transition-colors duration-200">Save</button>
       </div>
     </form>
   </section>

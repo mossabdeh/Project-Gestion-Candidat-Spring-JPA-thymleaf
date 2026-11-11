@@ -5,15 +5,15 @@
 <head><title>Administrators</title></head>
 <body>
 <section layout:fragment="content1">
-  <div class="page-heading page-heading-actions">
+  <div class="page-heading page-heading-actions gap-4">
     <div>
       <span class="eyebrow">ACCOUNT MANAGEMENT</span>
       <h1>Admin CRUD</h1>
       <p class="subheading">Search, update, and manage administrator accounts.</p>
     </div>
-    <a class="action-primary" th:href="@{AdminAdd}">Add <span class="action-descriptor">administrator</span></a>
+    <a class="action-primary transition-colors duration-200" th:href="@{AdminAdd}">Add <span class="action-descriptor">administrator</span></a>
   </div>
-  <section class="data-panel" aria-label="Administrator directory">
+  <section class="data-panel overflow-hidden" aria-label="Administrator directory">
     <div class="panel-heading">
       <div><h2>Administrators</h2><p>Manage access for administrator accounts.</p></div>
     </div>
@@ -23,12 +23,12 @@
         <div class="search-controls">
           <input id="admin-keyword" type="text" name="keyword" th:value="${keyword}"
                  placeholder="Enter a last name" autocomplete="off">
-          <button type="submit" class="action-secondary">Chercher</button>
+          <button type="submit" class="action-secondary transition-colors duration-200">Chercher</button>
         </div>
       </form>
       <span class="toolbar-hint">Search results update after submission.</span>
     </div>
-    <div class="table-scroll" th:if="${not #lists.isEmpty(ListAdmins)}">
+    <div class="table-scroll max-w-full" th:if="${not #lists.isEmpty(ListAdmins)}">
       <table class="records-table">
         <caption class="visually-hidden">Administrator accounts matching your search</caption>
         <thead><tr>
@@ -46,13 +46,13 @@
           <td th:text="${admin.logDate}"></td>
           <td>
             <div class="row-actions">
-              <a class="action-edit" th:href="@{editAdmin(id=${admin.id},keyword=${keyword},page=${currentPage})}">Edit</a>
+              <a class="action-edit transition-colors duration-200" th:href="@{editAdmin(id=${admin.id},keyword=${keyword},page=${currentPage})}">Edit</a>
               <form th:unless="${admin.username == #authentication.name}" method="post"
                     th:action="@{delete}" onsubmit="return confirm('Delete this admin account?');">
                 <input type="hidden" name="id" th:value="${admin.id}">
                 <input type="hidden" name="keyword" th:value="${keyword}">
                 <input type="hidden" name="page" th:value="${currentPage}">
-                <button type="submit" class="action-delete">Delete</button>
+                <button type="submit" class="action-delete transition-colors duration-200">Delete</button>
               </form>
               <span class="self-account" th:if="${admin.username == #authentication.name}">Your account</span>
             </div>
@@ -69,7 +69,7 @@
     </div>
     <nav class="table-pagination" aria-label="Administrator list pages" th:if="${pages.length > 1}">
       <span>Page <span th:text="${currentPage + 1}">1</span> of <span th:text="${pages.length}">1</span></span>
-      <div class="page-links">
+      <div class="page-links flex flex-wrap gap-1">
         <a th:each="page,status : ${pages}"
            th:classappend="${status.index == currentPage} ? ' is-current' : ''"
            th:attr="aria-current=${status.index == currentPage} ? 'page' : null"
