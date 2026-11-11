@@ -75,5 +75,7 @@ class CandidateDashboardUiTests {
     @Test
     void newStylesheetIsPackaged() {
         assertNotNull(getClass().getClassLoader().getResource("static/css/candidate.css"));
+        // Keep the Candidate shell bundled alongside its screens.
+        assertNotNull(getClass().getClassLoader().getResource("templates/CandidateTemplate.html"));
     }
 }
