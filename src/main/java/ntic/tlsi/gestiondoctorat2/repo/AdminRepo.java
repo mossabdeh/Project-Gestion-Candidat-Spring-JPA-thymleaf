@@ -1,19 +1,15 @@
 package ntic.tlsi.gestiondoctorat2.repo;
 
 import ntic.tlsi.gestiondoctorat2.entities.Admin;
-import ntic.tlsi.gestiondoctorat2.entities.User;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
-public interface AdminRepo extends UserRepo{
-    Admin findAdminById(Long id);
-
-    Page<Admin> findByNomContains(String keyword, PageRequest of);
-
-
-    boolean existsByUsername(String username);
-
-    boolean existsByUsernameAndIdNot(String username, Long id);
+public interface AdminRepo extends JpaRepository<Admin, Long> {
+    Optional<Admin> findByUsername(String username);
+    Page<Admin> findByNomContains(String keyword, Pageable pageable);
 }
