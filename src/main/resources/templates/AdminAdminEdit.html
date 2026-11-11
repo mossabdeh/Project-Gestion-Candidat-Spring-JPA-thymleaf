@@ -1,79 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="AdminTemplate">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Edit Admin</title>
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-  <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .form-group label {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      margin-bottom: 5px;
-      display: block;
-    }
-    .form-control {
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 8px 12px;
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{AdminTemplate}">
+<head><title>Edit administrator</title></head>
 <body>
 <section layout:fragment="content1">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h2 class="text-center">Edit Admin</h2>
-          </div>
-          <div class="card-body">
-            <form method="post" th:action="@{saveEditedAdmin(page=${page},keyword=${keyword})}" th:object="${admin}">
-
-              <div class="form-group">
-                <label>ID</label>
-                <input id="id" class="form-control" type="text" readonly name="id" th:value="*{id}">
-              </div>
-
-              <div class="form-group">
-                <label>Nom</label>
-                <input class="form-control" type="text" th:field="*{nom}">
-                <span class="text-danger" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Prenom</label>
-                <input class="form-control" type="text" th:field="*{prenom}">
-                <span class="text-danger" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Username</label>
-                <input class="form-control" type="text" th:field="*{username}">
-                <span class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Email</label>
-                <input class="form-control" type="email" th:field="*{email}">
-                <span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-              </div>
-
-              <div class="text-center">
-                <button type="submit" class="btn btn-success mt-3">Save</button>
-              </div>
-            </form>
-          </div>
+  <nav class="breadcrumbs" aria-label="Breadcrumb"><a th:href="@{/admin/getAdmins}">Administrators</a><span aria-hidden="true">/</span><span>Edit account</span></nav>
+  <div class="page-heading"><div><span class="eyebrow">ACCOUNT MANAGEMENT</span>
+    <h1>Edit Admin</h1><p class="subheading">Update profile details without changing the account's password or permissions.</p></div></div>
+  <section class="form-panel" aria-label="Edit administrator">
+    <div class="form-intro"><h2>Profile information</h2><p>Only contact and identity details can be changed here.</p></div>
+    <form method="post" th:action="@{saveEditedAdmin(page=${page},keyword=${keyword})}" th:object="${admin}" novalidate="novalidate">
+      <input type="hidden" name="id" th:value="*{id}">
+      <div class="form-grid">
+        <div class="field">
+          <label for="nom">Nom <span aria-hidden="true">*</span></label>
+          <input id="nom" type="text" th:field="*{nom}" autocomplete="family-name" required
+                 th:attr="aria-invalid=${#fields.hasErrors('nom')},aria-describedby=${#fields.hasErrors('nom')} ? 'nom-error' : null">
+          <span id="nom-error" class="field-error" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></span>
+        </div>
+        <div class="field">
+          <label for="prenom">Prenom <span aria-hidden="true">*</span></label>
+          <input id="prenom" type="text" th:field="*{prenom}" autocomplete="given-name" required
+                 th:attr="aria-invalid=${#fields.hasErrors('prenom')},aria-describedby=${#fields.hasErrors('prenom')} ? 'prenom-error' : null">
+          <span id="prenom-error" class="field-error" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></span>
+        </div>
+        <div class="field">
+          <label for="username">Username <span aria-hidden="true">*</span></label>
+          <input id="username" type="text" th:field="*{username}" autocomplete="off" required
+                 th:attr="aria-invalid=${#fields.hasErrors('username')},aria-describedby=${#fields.hasErrors('username')} ? 'username-error' : null">
+          <span id="username-error" class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+        </div>
+        <div class="field">
+          <label for="email">Email <span aria-hidden="true">*</span></label>
+          <input id="email" type="email" th:field="*{email}" autocomplete="email" required
+                 th:attr="aria-invalid=${#fields.hasErrors('email')},aria-describedby=${#fields.hasErrors('email')} ? 'email-error' : null">
+          <span id="email-error" class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
         </div>
       </div>
-    </div>
-  </div>
+      <div class="form-actions">
+        <a class="action-cancel" th:href="@{/admin/getAdmins}">Cancel</a>
+        <button type="submit" class="action-primary">Save</button>
+      </div>
+    </form>
+  </section>
 </section>
 </body>
-
 </html>

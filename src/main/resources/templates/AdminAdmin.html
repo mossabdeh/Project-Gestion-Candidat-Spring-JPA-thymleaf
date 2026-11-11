@@ -1,168 +1,83 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>AdminPage</title>
-
-    <!-- <link rel="stylesheet" type="text/css" href="webjars/bootstrap/5.2.3/css/bootstrap.min.css">
-      <script src="webjars/bootstrap/5.2.3/js/bootstrap.min.js"></script>
-      <script src="webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
-         mossab ------------------ -->
-
-    <!-- Favicons -->
-    <link href="/img/favicon.png" rel="icon">
-    <link href="/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-    <!-- Vendor CSS Files -->
-    <link href="/vendor/animate.css/animate.min.css" rel="stylesheet">
-    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-    <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
-    <!-- Template Main CSS File -->
-    <link href="/css/style.css" rel="stylesheet">
-
-
-</head>
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{AdminTemplate}">
+<head><title>Administrators</title></head>
 <body>
-
-<!-- ======= Header ======= -->
-<header id="header" class="d-flex align-items-center">
-    <div class="container d-flex justify-content-between align-items-center">
-
-        <div class="logo">
-            <h1><a href="">Doctorat</a></h1>
-            <!-- Uncomment below if you prefer to use an image logo -->
-            <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
-        </div>
-
-        <nav id="navbar" class="navbar">
-            <ul>
-                <li><a  th:href="@{/adminPage}">Home</a></li>
-                <li><a href="">About</a></li>
-
-
-                <li><a href="">Contact</a></li>
-                <li><a th:text="${#authentication.name}" class="btn-get-started animate__animated animate__fadeInUp disabled"></a></li>
-                <li>
-                    <form method="post" th:action="@{/logout}">
-                        <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">Logout</button>
-                    </form>
-                </li>
-            </ul>
-            <i class="bi bi-list mobile-nav-toggle"></i>
-        </nav><!-- .navbar -->
-
+<section layout:fragment="content1">
+  <div class="page-heading page-heading-actions">
+    <div>
+      <span class="eyebrow">ACCOUNT MANAGEMENT</span>
+      <h1>Admin CRUD</h1>
+      <p class="subheading">Search, update, and manage administrator accounts.</p>
     </div>
-</header><!-- End Header -->
-<!-- ======= Clients Section ======= -->
-
-    <div class="container">
-
-        <div class="section-title pt-2">
-            <h2>Admin CRUD</h2>
-        </div>
+    <a class="action-primary" th:href="@{AdminAdd}">Add <span class="action-descriptor">administrator</span></a>
+  </div>
+  <section class="data-panel" aria-label="Administrator directory">
+    <div class="panel-heading">
+      <div><h2>Administrators</h2><p>Manage access for administrator accounts.</p></div>
     </div>
-
-
-    <div class="container mt-2">
-        <div class="card">
-            <div class="card-header"> <h3> List des Admin</h3> </div>
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                      <form method="get" th:action="@{getAdmins}">
-                      <label> Keyword</label>
-                      <input type="text" name="keyword" th:value="${keyword}">
-                      <button type="submit" class="btn btn-secondary">Chercher</button>
-                      </form>
-                    </div>
-                    <div class="col-6 d-flex justify-content-lg-end m-auto ">
-                       <a th:href="@{AdminAdd}"> <button  type="button"  class="btn btn-outline-primary">Add</button>  </a>
-                    </div>
-                </div>
-                <table class="table" th:if="${not #lists.isEmpty(ListAdmins)}">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Prenom</th>
-                        <th>Email</th>
-                        <th>Username</th>
-                        <th>LogDate</th>
-                        <th>Delete</th>
-                        <th>Edit</th>
-
-
-
-
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="admin : ${ListAdmins}">
-                        <td th:text="${admin.id}"></td>
-                        <td th:text="${admin.nom}"></td>
-                        <td th:text="${admin.prenom}"></td>
-                        <td th:text="${admin.email}"></td>
-                        <td th:text="${admin.username}"></td>
-                        <td th:text="${admin.logDate}"></td>
-
-                        <td>
-                            <form th:unless="${admin.username == #authentication.name}"
-                                  method="post" th:action="@{delete}"
-                                  onsubmit="return confirm('Delete this admin account?');">
-                                <input type="hidden" name="id" th:value="${admin.id}">
-                                <input type="hidden" name="keyword" th:value="${keyword}">
-                                <input type="hidden" name="page" th:value="${currentPage}">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </td>
-
-
-
-                        <td>
-                            <a  class="btn btn-success" th:href="@{editAdmin(id=${admin.id},keyword=${keyword},page=${currentPage})}">Edit</a>
-                        </td>
-
-
-
-                    </tr>
-                    </tbody>
-                </table>
-                <p th:if="${#lists.isEmpty(ListAdmins)}">Aucun utilisateur trouvé.</p>
-
-                <ul class="nav nav-pills">
-                    <li th:each="page,status:${pages}">
-                        <a th:class="${status.index==currentPage?'btn btn-secondary m-1':'btn btn-outline-secondary m-1'}"
-                           th:text="${status.index}"
-                           th:href="@{getAdmins(page=${status.index},keyword=${keyword})}"
-                        >
-
-                        </a>
-                    </li>
-                </ul>
+    <div class="table-toolbar">
+      <form method="get" th:action="@{getAdmins}" class="search-form" role="search">
+        <label for="admin-keyword">Search by last name</label>
+        <div class="search-controls">
+          <input id="admin-keyword" type="text" name="keyword" th:value="${keyword}"
+                 placeholder="Enter a last name" autocomplete="off">
+          <button type="submit" class="action-secondary">Chercher</button>
+        </div>
+      </form>
+      <span class="toolbar-hint">Search results update after submission.</span>
+    </div>
+    <div class="table-scroll" th:if="${not #lists.isEmpty(ListAdmins)}">
+      <table class="records-table">
+        <caption class="visually-hidden">Administrator accounts matching your search</caption>
+        <thead><tr>
+          <th scope="col">ID</th><th scope="col">Nom</th><th scope="col">Prenom</th>
+          <th scope="col">Email</th><th scope="col">Username</th><th scope="col">LogDate</th>
+          <th scope="col">Actions</th>
+        </tr></thead>
+        <tbody>
+        <tr th:each="admin : ${ListAdmins}">
+          <td th:text="${admin.id}"></td>
+          <td th:text="${admin.nom}"></td>
+          <td th:text="${admin.prenom}"></td>
+          <td th:text="${admin.email}"></td>
+          <td><strong th:text="${admin.username}"></strong></td>
+          <td th:text="${admin.logDate}"></td>
+          <td>
+            <div class="row-actions">
+              <a class="action-edit" th:href="@{editAdmin(id=${admin.id},keyword=${keyword},page=${currentPage})}">Edit</a>
+              <form th:unless="${admin.username == #authentication.name}" method="post"
+                    th:action="@{delete}" onsubmit="return confirm('Delete this admin account?');">
+                <input type="hidden" name="id" th:value="${admin.id}">
+                <input type="hidden" name="keyword" th:value="${keyword}">
+                <input type="hidden" name="page" th:value="${currentPage}">
+                <button type="submit" class="action-delete">Delete</button>
+              </form>
+              <span class="self-account" th:if="${admin.username == #authentication.name}">Your account</span>
             </div>
-        </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
-
-<!-- Vendor JS Files -->
-<script src="/vendor/purecounter/purecounter_vanilla.js"></script>
-<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/vendor/glightbox/js/glightbox.min.js"></script>
-<script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-<script src="/vendor/swiper/swiper-bundle.min.js"></script>
-<script src="/vendor/waypoints/noframework.waypoints.js"></script>
-<script src="/vendor/php-email-form/validate.js"></script>
-
-<!-- Template Main JS File -->
-<script src="/js/main.js"></script>
-
+    <div class="empty-state" th:if="${#lists.isEmpty(ListAdmins)}" role="status">
+      <span aria-hidden="true">⌕</span>
+      <h3>No administrators found</h3>
+      <p>Aucun utilisateur trouvé. Try a different last name.</p>
+      <a th:href="@{getAdmins}">Clear search</a>
+    </div>
+    <nav class="table-pagination" aria-label="Administrator list pages" th:if="${pages.length > 1}">
+      <span>Page <span th:text="${currentPage + 1}">1</span> of <span th:text="${pages.length}">1</span></span>
+      <div class="page-links">
+        <a th:each="page,status : ${pages}"
+           th:classappend="${status.index == currentPage} ? ' is-current' : ''"
+           th:attr="aria-current=${status.index == currentPage} ? 'page' : null"
+           th:text="${status.index + 1}"
+           th:href="@{getAdmins(page=${status.index},keyword=${keyword})}">1</a>
+      </div>
+    </nav>
+  </section>
+</section>
 </body>
 </html>

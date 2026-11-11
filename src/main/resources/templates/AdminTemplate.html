@@ -1,92 +1,64 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>AdminPage</title>
-
-  <!-- <link rel="stylesheet" type="text/css" href="webjars/bootstrap/5.2.3/css/bootstrap.min.css">
-    <script src="webjars/bootstrap/5.2.3/js/bootstrap.min.js"></script>
-    <script src="webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
-       mossab ------------------ -->
-
-  <!-- Favicons -->
-  <link href="/img/favicon.png" rel="icon">
-  <link href="/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="/vendor/animate.css/animate.min.css" rel="stylesheet">
-  <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
-  <link href="/css/style.css" rel="stylesheet">
-
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title layout:title-pattern="$CONTENT_TITLE | Doctorat Admin">Doctorat Admin</title>
+  <link rel="icon" th:href="@{/img/favicon.png}">
+  <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
-<body>
-
-<!-- ======= Header ======= -->
-<header id="header" class="d-flex align-items-center">
-  <div class="container d-flex justify-content-between align-items-center">
-
-    <div class="logo">
-      <h1><a href="">Doctorat</a></h1>
-      <!-- Uncomment below if you prefer to use an image logo -->
-      <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+<body class="admin-app">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div class="admin-shell">
+  <aside class="admin-sidebar" aria-label="Administrator navigation">
+    <a class="admin-brand" th:href="@{/adminPage}">
+      <span class="brand-mark" aria-hidden="true">D</span>
+      <span><strong>Doctorat</strong><small>Administration</small></span>
+    </a>
+    <p class="nav-caption">WORKSPACE</p>
+    <nav class="admin-nav" aria-label="Primary">
+      <a th:href="@{/adminPage}"><span aria-hidden="true">▦</span> Overview</a>
+      <a th:href="@{/admin/getAdmins}"><span aria-hidden="true">◉</span> Administrators</a>
+      <a th:href="@{/candidat/getCandidats}"><span aria-hidden="true">▤</span> Candidates</a>
+      <a th:href="@{/enseignant/getEnseignants}"><span aria-hidden="true">▥</span> Teachers</a>
+      <a th:href="@{/vd/getVDs}"><span aria-hidden="true">◇</span> Vice Deans</a>
+      <a th:href="@{/cfd/getCFDs}"><span aria-hidden="true">▧</span> CFD</a>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="sidebar-avatar" aria-hidden="true">A</span>
+      <span class="sidebar-identity"><small>Signed in as</small><strong th:text="${#authentication.name}">admin</strong></span>
     </div>
+  </aside>
 
-    <nav id="navbar" class="navbar">
-      <ul>
-        <li><a class="active" th:href="@{/adminPage}">Home</a></li>
-        <li><a href="">About</a></li>
-
-
-        <li><a href="">Contact</a></li>
-        <li><a th:text="${#authentication.name}" class="btn-get-started animate__animated animate__fadeInUp disabled"></a></li>
-        <li>
-          <form method="post" th:action="@{/logout}">
-            <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">Logout</button>
+  <div class="admin-content">
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <details class="mobile-navigation">
+          <summary aria-label="Open navigation">☰ <span>Menu</span></summary>
+          <nav aria-label="Mobile navigation" class="mobile-links">
+            <a th:href="@{/adminPage}">Overview</a>
+            <a th:href="@{/admin/getAdmins}">Administrators</a>
+            <a th:href="@{/candidat/getCandidats}">Candidates</a>
+            <a th:href="@{/enseignant/getEnseignants}">Teachers</a>
+            <a th:href="@{/vd/getVDs}">Vice Deans</a>
+            <a th:href="@{/cfd/getCFDs}">CFD</a>
+          </nav>
+        </details>
+        <span class="workspace-title">Doctoral competition management</span>
+      </div>
+      <div class="topbar-right">
+        <span class="user-label" th:text="${#authentication.name}">admin</span>
+        <form method="post" th:action="@{/logout}">
+          <button type="submit" class="sign-out">Logout</button>
         </form>
-        </li>
-      </ul>
-      <i class="bi bi-list mobile-nav-toggle"></i>
-    </nav><!-- .navbar -->
-
-  </div>
-</header><!-- End Header -->
-<!-- ======= Clients Section ======= -->
-
-<div class="container">
-
-  <div class="section-title pt-2">
-    <h2 th:text="${#authentication.name}"></h2>
+      </div>
+    </header>
+    <main id="main-content" class="admin-main" tabindex="-1">
+      <section layout:fragment="content1"></section>
+    </main>
   </div>
 </div>
-
-<section layout:fragment="content1"> </section>
-
-
-
-
-<!-- Vendor JS Files -->
-<script src="/vendor/purecounter/purecounter_vanilla.js"></script>
-<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/vendor/glightbox/js/glightbox.min.js"></script>
-<script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-<script src="/vendor/swiper/swiper-bundle.min.js"></script>
-<script src="/vendor/waypoints/noframework.waypoints.js"></script>
-<script src="/vendor/php-email-form/validate.js"></script>
-
-<!-- Template Main JS File -->
-<script src="/js/main.js"></script>
-
 </body>
 </html>

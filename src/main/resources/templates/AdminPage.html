@@ -1,104 +1,55 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="AdminTemplate">
-<head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>AdminPage</title>
-
-    <!-- <link rel="stylesheet" type="text/css" href="webjars/bootstrap/5.2.3/css/bootstrap.min.css">
-      <script src="webjars/bootstrap/5.2.3/js/bootstrap.min.js"></script>
-      <script src="webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
-         mossab ------------------ -->
-
-    <!-- Favicons -->
-    <link href="/img/favicon.png" rel="icon">
-    <link href="/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-    <!-- Vendor CSS Files -->
-    <link href="/vendor/animate.css/animate.min.css" rel="stylesheet">
-    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-    <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
-    <!-- Template Main CSS File -->
-    <link href="/css/style.css" rel="stylesheet">
-
-
-</head>
+      layout:decorate="~{AdminTemplate}">
+<head><title>Overview</title></head>
 <body>
-
 <section layout:fragment="content1">
-
-<!-- ======= Services Section ======= -->
-<section id="services" class="services">
-    <div class="container">
-
-        <div class="row">
-            <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-                <div class="icon-box">
-                    <div class="icon"><i class="bx bxl-dribbble"></i></div>
-                    <h4><a th:href="@{admin/getAdmins}">Admin</a></h4>
-                    <p>To create, modify, and delete data, as well as add new Admin</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
-                <div class="icon-box">
-                    <div class="icon"><i class="bx bx-file"></i></div>
-                    <h4><a th:href="@{candidat/getCandidats}">Candidat</a></h4>
-                    <p>To create, modify, and delete data, as well as add new Candidat</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0">
-                <div class="icon-box">
-                    <div class="icon"><i class="bx bx-tachometer"></i></div>
-                    <h4><a th:href="@{vd/getVDs}">Vice Doyen</a></h4>
-                    <p>To create, modify, and delete data, as well as add new Vice Doyen</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
-                <div class="icon-box">
-                    <div class="icon"><i class="bx bx-world"></i></div>
-                    <h4><a th:href="@{cfd/getCFDs}">CFD</a></h4>
-                    <p>To create, modify, and delete data, as well as add new CFD</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
-                <div class="icon-box">
-                    <div class="icon"><i class="bx bx-slideshow"></i></div>
-                    <h4><a th:href="@{enseignant/getEnseignants}"> Enseignant</a></h4>
-                    <p>To create, modify, and delete data, as well as add new Enseignant</p>
-                </div>
-            </div>
-
-
-
-        </div>
-
+  <div class="page-heading">
+    <div>
+      <span class="eyebrow">OVERVIEW</span>
+      <h1>Administration dashboard</h1>
+      <p class="subheading">Manage competition users and their access in one place.</p>
     </div>
-</section><!-- End Services Section -->
-
-<!-- Vendor JS Files -->
-<script src="/vendor/purecounter/purecounter_vanilla.js"></script>
-<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/vendor/glightbox/js/glightbox.min.js"></script>
-<script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-<script src="/vendor/swiper/swiper-bundle.min.js"></script>
-<script src="/vendor/waypoints/noframework.waypoints.js"></script>
-<script src="/vendor/php-email-form/validate.js"></script>
-
-<!-- Template Main JS File -->
-<script src="/js/main.js"></script>
+  </div>
+  <section class="intro-panel" aria-label="Getting started">
+    <div><span class="eyebrow">WORKSPACE</span><h2>Manage your institution</h2>
+    <p>Choose an account type to view, update, or manage its records.</p></div>
+    <span class="intro-icon" aria-hidden="true">▦</span>
+  </section>
+  <div class="section-heading"><h2>Account management</h2><span>5 sections</span></div>
+  <div class="workspace-grid">
+    <article class="workspace-card">
+      <span class="tile-icon" aria-hidden="true">◉</span>
+      <h3><a th:href="@{/admin/getAdmins}">Admin</a></h3>
+      <p>Maintain administrator accounts and permissions.</p>
+      <span class="card-link" aria-hidden="true">Manage administrators →</span>
+    </article>
+    <article class="workspace-card">
+      <span class="tile-icon" aria-hidden="true">▤</span>
+      <h3><a th:href="@{/candidat/getCandidats}">Candidat</a></h3>
+      <p>Review and manage candidate profiles.</p>
+      <span class="card-link" aria-hidden="true">Manage candidates →</span>
+    </article>
+    <article class="workspace-card">
+      <span class="tile-icon" aria-hidden="true">◇</span>
+      <h3><a th:href="@{/vd/getVDs}">Vice Doyen</a></h3>
+      <p>Access vice-dean account records.</p>
+      <span class="card-link" aria-hidden="true">Manage vice deans →</span>
+    </article>
+    <article class="workspace-card">
+      <span class="tile-icon" aria-hidden="true">▧</span>
+      <h3><a th:href="@{/cfd/getCFDs}">CFD</a></h3>
+      <p>View and maintain doctoral committee accounts.</p>
+      <span class="card-link" aria-hidden="true">Manage CFD →</span>
+    </article>
+    <article class="workspace-card">
+      <span class="tile-icon" aria-hidden="true">▥</span>
+      <h3><a th:href="@{/enseignant/getEnseignants}">Enseignant</a></h3>
+      <p>Manage teaching staff accounts.</p>
+      <span class="card-link" aria-hidden="true">Manage teachers →</span>
+    </article>
+  </div>
 </section>
 </body>
 </html>
