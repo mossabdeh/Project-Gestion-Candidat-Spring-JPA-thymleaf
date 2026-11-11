@@ -1,0 +1,18 @@
+{
+  "name": "gestion-doctorat-e2e",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Playwright + Gherkin acceptance tests for Gestion Doctorat",
+  "scripts": {
+    "bdd:generate": "bddgen",
+    "test": "bddgen && playwright test",
+    "test:headed": "bddgen && playwright test --headed",
+    "test:ui": "bddgen && playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "playwright-bdd": "9.2.1",
+    "typescript": "5.9.3"
+  }
+}

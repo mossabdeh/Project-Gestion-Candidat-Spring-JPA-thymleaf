@@ -1,0 +1,7 @@
+node_modules/
+.features-gen/
+playwright-report/
+test-results/
+blob-report/
+.env
+.env.*
