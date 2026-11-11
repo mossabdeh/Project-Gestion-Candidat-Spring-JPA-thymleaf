@@ -18,6 +18,9 @@ import java.util.Optional;
 public interface CandidatRepo extends UserRepo{
     List<Candidat> findAllBy();
 
+    // Role-specific lookup for the authenticated Candidate view.
+    Optional<Candidat> findCandidatByUsername(String username);
+
     Page<Candidat> findByNomContains(String kw, Pageable pageable);
 
 
