@@ -62,10 +62,15 @@ public class AdminController extends BaseController{
             bindingResult.rejectValue("username", "error.admin", "Username already exists");
             return "AdminAdminAdd";
         }
+        if (admin.getPassword() == null || admin.getPassword().isBlank()
+                || admin.getPassword().length() < 12
+                || admin.getPassword().equalsIgnoreCase(admin.getUsername())) {
+            bindingResult.rejectValue("password", "error.admin",
+                    "Password must be at least 12 characters and differ from the username");
+            return "AdminAdminAdd";
+        }
         admin.setTypeRole(Role.ADMIN);
         admin.setLogDate(new Date());
-        // Set the password as the same value as the username
-        admin.setPassword(admin.getUsername());
         adminRepo.save(admin);
         return "redirect:/admin/getAdmins";
     }

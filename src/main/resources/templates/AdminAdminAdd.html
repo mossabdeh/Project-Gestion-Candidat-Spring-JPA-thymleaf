@@ -51,7 +51,8 @@
                         </div>
                         <div class="form-group">
                             <label>Password</label>
-                            <input class="form-control" type="password" name="password" th:value="${admin.username}" readonly>
+                            <input class="form-control" type="password" name="password" minlength="12" required autocomplete="new-password">
+                            <span class="text-danger" th:errors="${admin.password}"></span>
                         </div>
                         <div class="form-group">
                             <label>Email</label>

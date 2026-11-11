@@ -13,16 +13,39 @@ https://gestion-doctorat-production.up.railway.app
 ![image1](https://github.com/mossabdeh/Project-Gestion-Candidat-Spring-JPA-thymleaf/assets/79877072/72318e61-6817-4bc6-9856-954c8c234f94)
 
 
-| Role                  | Username              | Password |
-| --------------------- | --------------------- | ---------|
-| **Admin**             | admin                 | admin    |
-| **VD**                | Vd                    | vd       |
-| **CFD**               | Cfd                   | Cfd      |
-| **Candidat1**         | mossab0               | mossab   |
-| **Candidat2**         | hakim0                | hakim    |
-| **Enseignant1(Ens)**  | prof                  | prof     |
-| **Enseignant2**       | doc                   | doc      |
+## Local development login
 
+The H2 database is in memory, so accounts are cleared when the application restarts.
+
+Enable the `dev` profile and provide your own admin credentials. No username or password is hardcoded.
+
+**macOS / Linux**
+
+```bash
+export SPRING_PROFILES_ACTIVE=dev
+export ADMIN_USERNAME=your-admin-name
+export ADMIN_PASSWORD='your-own-password-at-least-12-characters'
+./mvnw spring-boot:run
+```
+
+**PowerShell**
+
+```powershell
+$env:SPRING_PROFILES_ACTIVE="dev"
+$env:ADMIN_USERNAME="your-admin-name"
+$env:ADMIN_PASSWORD="your-own-password-at-least-12-characters"
+.\mvnw.cmd spring-boot:run
+```
+
+Open http://localhost:8082/login and sign in with your chosen credentials.
+
+- The development admin is created only when the `dev` profile is active and both variables are present.
+- Passwords must be at least 12 characters and different from the username.
+- Without these settings, no default admin is created.
+- In other profiles, the development admin initializer is disabled.
+- When creating another admin through the application, enter an initial password; the username is never used as the password.
+
+**Security:** Previous versions of this repository included credentials in source files and documentation. Removing them from the current version does not remove them from Git history. Rotate any previously published credentials that are still active.
 
 ## **Introduction :**
 >
