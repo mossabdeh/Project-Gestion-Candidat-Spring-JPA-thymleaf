@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -30,51 +29,6 @@ public class IserviceImpl implements Iservice {
     private CopieRepo copieRepo;
 
     private CorrectionRepo correctionRepo;
-
-
-    @Override
-    public void InitUsers() {
-       //---------------------- Admin -----------------------------------------
-        User admin = new Admin("admin","admin","admin@gmail.com"
-                ,"admin","admin", Role.ADMIN,new Date());
-        adminRepo.save(admin);
-        User admin1 = new Admin("admin1","admin1","admin1@gmail.com"
-                ,"admin1","admin1", Role.ADMIN,new Date());
-        adminRepo.save(admin1);
-        //---------------------- VD -----------------------------------------
-        User vd = new VD("vd","vd","vd@gmail.com"
-                ,"vd","vd", Role.VD,new Date());
-        vdRepo.save(vd);
-        //---------------------- CFD -----------------------------------------
-        User cfd = new CFD("cfd","cfd","cfd@gmail.com"
-                ,"cfd","cfd", Role.CFD,new Date());
-        cfdRepo.save(cfd);
-        //---------------------- Candidats -----------------------------------------
-        Random random = new Random();
-        for ( int  i = 0;i<7;i++){
-            final int index = i;
-        Stream.of("mossab","Seif","Islme","Didou","nadjib","Kobi","Ammar","yahia","hakim")
-                .forEach(nameUser ->{
-
-        User candidat = new Candidat(nameUser+index,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.CANDIDAT
-                ,new Date(),null,0.00);
-
-        candidatRepo.save(candidat);
-                });}
-
-
-        //---------------------- Enseingants -----------------------------------------
-       /*// Random random = new Random();
-        Matier[] specialites = Matier.values();
-
-        Stream.of("edl","svs","algo","tbib","yasou","prof","doc","algo")
-                .forEach(nameUser ->{
-        User ens = new Enseignant(nameUser,nameUser,nameUser+"@gmail.com",nameUser,nameUser, Role.ENSEIGNANT,"Professor",specialites[random.nextInt(specialites.length)]);
-        enseignantRepo.save(ens);});*/
-
-    }
-
-
 
 
     @Override
