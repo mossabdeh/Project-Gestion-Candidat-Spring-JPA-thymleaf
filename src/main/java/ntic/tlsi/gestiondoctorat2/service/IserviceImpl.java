@@ -14,7 +14,7 @@ import java.util.*;
 @AllArgsConstructor
 public class IserviceImpl implements Iservice {
 
-     private AdminRepo adminRepo;
+     private UserAccountRepo userAccountRepo;
 
     private CFDRepo cfdRepo;
 
@@ -138,7 +138,7 @@ public class IserviceImpl implements Iservice {
     @Override
     public Optional<User> loadUserByUsername(String username) {
         // Load the stored hash directly. Mapping through DTOs can lose or rehash it.
-        Optional<User> user = adminRepo.findByUsername(username);
+        Optional<User> user = userAccountRepo.findByUsername(username);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(String.format("User %s not found", username));
         }

@@ -38,22 +38,13 @@ public class serviceUser {
     }
 
     public List<Admin> getAdmins(){
-       Iterable<User> users = adminRepo.findAll();
-        //return StreamSupport.stream(admins.spliterator(),false).collect(Collectors.toList());
-        List<Admin> admins = new ArrayList<>();
-        for (User user : users) {
-            if (user instanceof Admin) {
-                admins.add((Admin) user);
-            }
-        }
-        return admins;
+        return adminRepo.findAll();
     }
 
     public Admin getAdmin(Long id){
-        return (Admin) adminRepo.findById(id).orElseThrow(()->{
-            new RuntimeException();
-            return null;
-        });
+        return adminRepo.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Admin not found"));
     }
 
     public Admin deleteAdmin(Long id){

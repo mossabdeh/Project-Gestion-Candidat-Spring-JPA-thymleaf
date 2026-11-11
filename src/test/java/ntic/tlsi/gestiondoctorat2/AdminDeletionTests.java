@@ -4,6 +4,7 @@ import ntic.tlsi.gestiondoctorat2.entities.Admin;
 import ntic.tlsi.gestiondoctorat2.entities.CFD;
 import ntic.tlsi.gestiondoctorat2.entities.Role;
 import ntic.tlsi.gestiondoctorat2.repo.AdminRepo;
+import ntic.tlsi.gestiondoctorat2.repo.UserAccountRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,6 +30,7 @@ class AdminDeletionTests {
 
     @Autowired private MockMvc mvc;
     @Autowired private AdminRepo adminRepo;
+    @Autowired private UserAccountRepo userAccountRepo;
 
     @Test
     void getRequestCannotDeleteAdmin() throws Exception {
@@ -59,12 +61,12 @@ class AdminDeletionTests {
     void adminCannotDeleteAnotherRole() throws Exception {
         CFD cfd = new CFD("cfd-" + UUID.randomUUID(), "password-of-at-least-12",
                 "cfd@example.com", "CFD", "User", Role.CFD, new Date());
-        adminRepo.saveAndFlush(cfd);
+        userAccountRepo.saveAndFlush(cfd);
 
         mvc.perform(post("/admin/delete").with(csrf())
                         .param("id", cfd.getId().toString()))
                 .andExpect(status().isNotFound());
-        assertTrue(adminRepo.findById(cfd.getId()).isPresent());
+        assertTrue(userAccountRepo.findById(cfd.getId()).isPresent());
     }
 
     @Test

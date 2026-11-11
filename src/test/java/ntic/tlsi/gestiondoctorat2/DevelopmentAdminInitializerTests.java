@@ -3,6 +3,7 @@ package ntic.tlsi.gestiondoctorat2;
 import ntic.tlsi.gestiondoctorat2.entities.Admin;
 import ntic.tlsi.gestiondoctorat2.entities.Role;
 import ntic.tlsi.gestiondoctorat2.repo.AdminRepo;
+import ntic.tlsi.gestiondoctorat2.repo.UserAccountRepo;
 import ntic.tlsi.gestiondoctorat2.sec.DevelopmentAdminInitializer;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Profile;
@@ -16,6 +17,7 @@ import static org.mockito.Mockito.*;
 class DevelopmentAdminInitializerTests {
 
     private final AdminRepo adminRepo = mock(AdminRepo.class);
+    private final UserAccountRepo userAccountRepo = mock(UserAccountRepo.class);
 
     @Test
     void runsOnlyInDevProfile() {
@@ -26,37 +28,37 @@ class DevelopmentAdminInitializerTests {
 
     @Test
     void missingCredentialsNeverCreateAdmin() {
-        new DevelopmentAdminInitializer(adminRepo, "", "").run();
-        new DevelopmentAdminInitializer(adminRepo, "developer", "").run();
-        new DevelopmentAdminInitializer(adminRepo, "", "strong-password-123").run();
+        new DevelopmentAdminInitializer(adminRepo, userAccountRepo, "", "").run();
+        new DevelopmentAdminInitializer(adminRepo, userAccountRepo, "developer", "").run();
+        new DevelopmentAdminInitializer(adminRepo, userAccountRepo, "", "strong-password-123").run();
 
-        verifyNoInteractions(adminRepo);
+        verifyNoInteractions(adminRepo, userAccountRepo);
     }
 
     @Test
     void weakPasswordIsRejected() {
         assertThrows(IllegalStateException.class,
-                () -> new DevelopmentAdminInitializer(adminRepo, "developer", "short").run());
+                () -> new DevelopmentAdminInitializer(adminRepo, userAccountRepo, "developer", "short").run());
         assertThrows(IllegalStateException.class,
-                () -> new DevelopmentAdminInitializer(adminRepo, "same-password", "same-password").run());
+                () -> new DevelopmentAdminInitializer(adminRepo, userAccountRepo, "same-password", "same-password").run());
 
         verifyNoInteractions(adminRepo);
     }
 
     @Test
     void existingAdminIsNotOverwritten() {
-        when(adminRepo.findByUsername("developer")).thenReturn(Optional.of(new Admin()));
+        when(userAccountRepo.existsByUsername("developer")).thenReturn(true);
 
-        new DevelopmentAdminInitializer(adminRepo, "developer", "strong-password-123").run();
+        new DevelopmentAdminInitializer(adminRepo, userAccountRepo, "developer", "strong-password-123").run();
 
         verify(adminRepo, never()).save(any());
     }
 
     @Test
     void createsAdminWithProvidedCredentials() {
-        when(adminRepo.findByUsername("developer")).thenReturn(Optional.empty());
+        when(userAccountRepo.existsByUsername("developer")).thenReturn(false);
 
-        new DevelopmentAdminInitializer(adminRepo, "developer", "strong-password-123").run();
+        new DevelopmentAdminInitializer(adminRepo, userAccountRepo, "developer", "strong-password-123").run();
 
         org.mockito.ArgumentCaptor<Admin> captor = org.mockito.ArgumentCaptor.forClass(Admin.class);
         verify(adminRepo).save(captor.capture());
