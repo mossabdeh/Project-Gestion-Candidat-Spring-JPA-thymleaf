@@ -154,8 +154,12 @@
       </form>
 
       <div class="m-auto">
-      <form method="post" th:action="SetPostForTopCandidates">
-        <button type="submit" class="btn btn-secondary mt-2">Check Postes</button>
+      <form method="post" th:action="@{/cfd/SetPostForTopCandidates}">
+        <button type="submit" class="btn btn-secondary mt-2">Recalculate ranking (draft)</button>
+      </form>
+      <form method="post" th:action="@{/cfd/PublishResults}"
+            onsubmit="return confirm('Publish official results? This action cannot be undone.');">
+        <button type="submit" class="btn btn-danger mt-2">Publish official results</button>
       </form>
       </div>
 
