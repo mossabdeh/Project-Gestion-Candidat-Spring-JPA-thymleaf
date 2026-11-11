@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,9 @@ import java.util.Optional;
 @Repository
 public interface CandidatRepo extends UserRepo{
     List<Candidat> findAllBy();
+
+    @Query("select c.code from Candidat c where c.code is not null")
+    List<String> findAssignedCodes();
 
     // Role-specific lookup for the authenticated Candidate view.
     Optional<Candidat> findCandidatByUsername(String username);

@@ -20,6 +20,9 @@ public class Candidat extends User{
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateNaissance;
 
+    // The current model assigns one code per Candidate. Competition-specific
+    // enrollment and code scopes are tracked separately in issue #31.
+    @Column(unique = true)
     private String code;
 
   /*  @Digits(integer = 2, fraction = 2)
