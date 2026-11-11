@@ -8,9 +8,7 @@ import ntic.tlsi.gestiondoctorat2.entities.*;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 import ntic.tlsi.gestiondoctorat2.service.serviceUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -45,12 +42,8 @@ public class CandidatController extends BaseController{
 
     @GetMapping("/getConcourInfo")
     public String GetConcourInfo(Model  model){
-        List<InfoConcour> concours = conRepo.findAll();
-        // return only the last Concour Information
-        if (!concours.isEmpty()) {
-            InfoConcour lastConcour = concours.get(concours.size() - 1);
-            model.addAttribute("lastConcour", lastConcour);
-        }
+        conRepo.findTopByOrderByIdDesc()
+                .ifPresent(concours -> model.addAttribute("lastConcour", concours));
         return "CandidatConcourInfo";
     }
 
@@ -156,31 +149,18 @@ public class CandidatController extends BaseController{
 
 
     @GetMapping("/ResultatCandidat")
-    public String ResultatCandidats(Model model,
-                                    @RequestParam(name = "page", defaultValue = "0") int page,
-                                    @RequestParam(name = "size", defaultValue = "5") int size,
-                                    @RequestParam(name = "keyword", defaultValue = "") String keyword ,
-                                    Authentication authentication) {
-        String username = authentication.getName();
-        Optional<User> MyCandidat = candidatRepo.findByUsername(username);
-        List<Candidat> candidatsWithNonNullCode = new ArrayList<>();
-        candidatRepo.findAllBy().forEach(candidat -> {
-            String code = candidat.getCode();
-            if (code != null) {
-                candidatsWithNonNullCode.add(candidat);
-            }
-        });
+    public String ResultatCandidats(Model model, Authentication authentication) {
+        // This view only presents the signed-in candidate's own result.
+        // Do not query or attach results belonging to other candidates.
+        Candidat currentCandidate = candidatRepo.findCandidatByUsername(authentication.getName())
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Candidate account not found"));
 
-        Page<Candidat> pageCandidats = new PageImpl<>(candidatsWithNonNullCode, PageRequest.of(page, size), candidatsWithNonNullCode.size());
-        model.addAttribute("ListCandidats", pageCandidats.getContent());
-        model.addAttribute("pages", new int[pageCandidats.getTotalPages()]);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("MyCandidat",MyCandidat);
-
+        // Preserve the existing Thymeleaf contract until the follow-up
+        // subject-ordered results DTO/UI migration.
+        model.addAttribute("MyCandidat", Optional.of(currentCandidate));
         return "CandidatResultats";
     }
-
     }
 
 
