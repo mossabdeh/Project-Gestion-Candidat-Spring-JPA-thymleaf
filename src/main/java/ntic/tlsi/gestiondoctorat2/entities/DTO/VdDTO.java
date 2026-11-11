@@ -16,7 +16,7 @@ public class VdDTO extends UserDTO{
         vdDTO.setId(vd.getId());
         vdDTO.setLogDate(vd.getLogDate());
         vdDTO.setUsername(vd.getUsername());
-        vdDTO.setPassword(vd.getPassword());
+
         vdDTO.setEmail(vd.getEmail());
         vdDTO.setNom(vd.getNom());
         vdDTO.setPrenom(vd.getPrenom());
