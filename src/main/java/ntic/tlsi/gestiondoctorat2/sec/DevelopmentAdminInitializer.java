@@ -3,6 +3,7 @@ package ntic.tlsi.gestiondoctorat2.sec;
 import ntic.tlsi.gestiondoctorat2.entities.Admin;
 import ntic.tlsi.gestiondoctorat2.entities.Role;
 import ntic.tlsi.gestiondoctorat2.repo.AdminRepo;
+import ntic.tlsi.gestiondoctorat2.repo.UserAccountRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -15,14 +16,17 @@ import java.util.Date;
 public class DevelopmentAdminInitializer implements CommandLineRunner {
 
     private final AdminRepo adminRepo;
+    private final UserAccountRepo userAccountRepo;
     private final String username;
     private final String password;
 
     public DevelopmentAdminInitializer(
             AdminRepo adminRepo,
+            UserAccountRepo userAccountRepo,
             @Value("${ADMIN_USERNAME:}") String username,
             @Value("${ADMIN_PASSWORD:}") String password) {
         this.adminRepo = adminRepo;
+        this.userAccountRepo = userAccountRepo;
         this.username = username;
         this.password = password;
     }
@@ -37,7 +41,7 @@ public class DevelopmentAdminInitializer implements CommandLineRunner {
             throw new IllegalStateException(
                     "Development admin password must be at least 12 characters and differ from the username");
         }
-        if (adminRepo.findByUsername(username).isPresent()) {
+        if (userAccountRepo.existsByUsername(username)) {
             return;
         }
 
