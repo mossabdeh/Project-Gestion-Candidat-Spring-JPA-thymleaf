@@ -1,79 +1,59 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="AdminTemplate">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Edit VD</title>
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-  <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .form-group label {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      margin-bottom: 5px;
-      display: block;
-    }
-    .form-control {
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 8px 12px;
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{AdminTemplate}">
+<head><title>Edit Vice Dean</title></head>
 <body>
 <section layout:fragment="content1">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h2 class="text-center">Edit Vice Doyen</h2>
-          </div>
-          <div class="card-body">
-            <form method="post" th:action="@{saveEditedVD(page=${page},keyword=${keyword})}" th:object="${vd}">
-
-              <div class="form-group">
-                <label>ID</label>
-                <input id="id" class="form-control" type="text" readonly name="id" th:value="*{id}">
-              </div>
-
-              <div class="form-group">
-                <label>Nom</label>
-                <input class="form-control" type="text" name="nom" th:value="*{nom}">
-                <span class="text-danger" th:errors="*{nom}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Prenom</label>
-                <input class="form-control" type="text" name="prenom" th:value="*{prenom}">
-                <span class="text-danger" th:errors="*{prenom}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Username</label>
-                <input class="form-control" type="text" name="username" th:value="*{username}">
-                <span class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
-              </div>
-
-              <div class="form-group">
-                <label>Email</label>
-                <input class="form-control" type="email" name="email" th:value="*{email}">
-                <span class="text-danger" th:errors="*{email}"></span>
-              </div>
-
-              <div class="text-center">
-                <button type="submit" class="btn btn-success mt-3">Save</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a th:href="@{/vd/getVDs}">Vice Deans</a>
+    <span aria-hidden="true">/</span><span>Edit account</span>
+  </nav>
+  <div class="page-heading">
+    <div><span class="eyebrow">ACCOUNT MANAGEMENT</span>
+      <h1>Edit Vice Dean</h1>
+      <p class="subheading">Update contact and identity details for this account.</p>
     </div>
   </div>
+  <section class="form-panel" aria-label="Edit Vice Dean">
+    <div class="form-intro">
+      <h2>Profile information</h2>
+      <p>Make changes to this account's profile. A password cannot be changed here.</p>
+    </div>
+    <form method="post" th:action="@{saveEditedVD(page=${page},keyword=${keyword})}" th:object="${vd}" novalidate="novalidate">
+      <input type="hidden" th:field="*{id}">
+      <div class="form-grid">
+        <div class="field">
+          <label for="vd-nom">Nom <span aria-hidden="true">*</span></label>
+          <input id="vd-nom" type="text" th:field="*{nom}" autocomplete="family-name" required
+                 th:attr="aria-invalid=${#fields.hasErrors('nom')},aria-describedby=${#fields.hasErrors('nom')} ? 'vd-nom-error' : null">
+          <span id="vd-nom-error" class="field-error text-danger" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></span>
+        </div>
+        <div class="field">
+          <label for="vd-prenom">Prenom <span aria-hidden="true">*</span></label>
+          <input id="vd-prenom" type="text" th:field="*{prenom}" autocomplete="given-name" required
+                 th:attr="aria-invalid=${#fields.hasErrors('prenom')},aria-describedby=${#fields.hasErrors('prenom')} ? 'vd-prenom-error' : null">
+          <span id="vd-prenom-error" class="field-error text-danger" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></span>
+        </div>
+        <div class="field">
+          <label for="vd-username">Username <span aria-hidden="true">*</span></label>
+          <input id="vd-username" type="text" th:field="*{username}" autocomplete="off" required
+                 th:attr="aria-invalid=${#fields.hasErrors('username')},aria-describedby=${#fields.hasErrors('username')} ? 'vd-username-error' : null">
+          <span id="vd-username-error" class="field-error text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+        </div>
+        <div class="field">
+          <label for="vd-email">Email <span aria-hidden="true">*</span></label>
+          <input id="vd-email" type="email" th:field="*{email}" autocomplete="email" required
+                 th:attr="aria-invalid=${#fields.hasErrors('email')},aria-describedby=${#fields.hasErrors('email')} ? 'vd-email-error' : null">
+          <span id="vd-email-error" class="field-error text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        </div>
+      </div>
+      <div class="form-actions">
+        <a class="action-cancel" th:href="@{/vd/getVDs}">Cancel</a>
+        <button type="submit" class="action-primary">Save</button>
+      </div>
+    </form>
+  </section>
 </section>
 </body>
-
 </html>
