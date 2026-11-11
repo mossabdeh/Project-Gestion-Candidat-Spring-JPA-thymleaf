@@ -16,7 +16,7 @@ public class CfdDTO extends UserDTO{
         cfdDTO.setId(cfd.getId());
         cfdDTO.setLogDate(cfd.getLogDate());
         cfdDTO.setUsername(cfd.getUsername());
-        cfdDTO.setPassword(cfd.getPassword());
+
         cfdDTO.setEmail(cfd.getEmail());
         cfdDTO.setNom(cfd.getNom());
         cfdDTO.setPrenom(cfd.getPrenom());
