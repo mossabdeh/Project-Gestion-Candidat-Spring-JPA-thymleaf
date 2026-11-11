@@ -97,6 +97,7 @@ class PasswordSecurityTests {
     private Admin createAdmin(String password) {
         Admin admin = new Admin("user-" + UUID.randomUUID(), password, "a@example.com",
                 "Given", "Family", Role.ADMIN, new Date());
-        return adminRepo.saveAndFlush(admin);
+        adminRepo.saveAndFlush(admin);
+        return admin;
     }
 }
