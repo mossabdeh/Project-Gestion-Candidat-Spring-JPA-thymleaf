@@ -58,7 +58,7 @@ Then('I cannot reopen the admin dashboard without logging in', async ({ page }) 
 });
 
 When('I open the {string} section', async ({ page }, section: string) => {
-  await page.getByRole('link', { name: section, exact: true }).click();
+  await page.locator('#main-content').getByRole('link', { name: section, exact: true }).click();
 });
 
 Then('I should be on the {string} management page', async ({ page }, path: string) => {
