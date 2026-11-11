@@ -56,7 +56,7 @@ public class serviceUser {
     @Transactional
     public Admin editAdmin(Long id , Admin admin){
         Admin adminToEdit = getAdmin(id);
-        adminToEdit.setLogDate(admin.getLogDate());
+        // LogDate is a system-managed field; profile updates must preserve it.
         adminToEdit.setUsername(admin.getUsername());
         updatePassword(adminToEdit, admin);
         adminToEdit.setNom(admin.getNom());
