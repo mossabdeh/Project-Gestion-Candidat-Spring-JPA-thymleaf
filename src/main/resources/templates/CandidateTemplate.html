@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Candidate Portal | Doctorat</title>
+  <link rel="icon" th:href="@{/img/favicon.png}">
+  <link rel="stylesheet" th:href="@{/css/candidate.css}">
+</head>
+<body class="candidate-app">
+  <a class="skip-to-content" href="#candidate-main">Skip to content</a>
+  <div class="candidate-shell">
+    <aside class="candidate-sidebar" aria-label="Candidate navigation">
+      <a class="candidate-brand" th:href="@{/candidatPage}">
+        <span class="brand-symbol" aria-hidden="true">D</span>
+        <span><strong>Doctorat</strong><small>Candidate portal</small></span>
+      </a>
+      <p class="sidebar-caption">MY WORKSPACE</p>
+      <nav class="candidate-nav" aria-label="Main navigation">
+        <a th:href="@{/candidatPage}"><span aria-hidden="true">⌂</span> Dashboard</a>
+        <a th:href="@{/candidat/getConcourInfo}"><span aria-hidden="true">▤</span> Competition details</a>
+        <a th:href="@{/candidat/ResultatCandidat}"><span aria-hidden="true">◉</span> My results</a>
+      </nav>
+      <div class="sidebar-help">
+        <strong>Your account, your results</strong>
+        <p>Competition information and results in one place.</p>
+      </div>
+    </aside>
+    <div class="candidate-content">
+      <header class="candidate-topbar">
+        <div class="topbar-identity">
+          <span class="overline">DOCTORAL COMPETITION</span>
+          <strong>Candidate workspace</strong>
+        </div>
+        <div class="topbar-actions">
+          <span class="signed-in" th:text="${#authentication.name}">Candidate</span>
+          <form method="post" th:action="@{/logout}">
+            <button type="submit" class="button button-outline">Sign out</button>
+          </form>
+        </div>
+      </header>
+      <main id="candidate-main" class="candidate-main" tabindex="-1">
+        <section layout:fragment="candidateContent"></section>
+      </main>
+      <footer class="candidate-footer">Doctorat · Candidate portal</footer>
+    </div>
+  </div>
+</body>
+</html>
