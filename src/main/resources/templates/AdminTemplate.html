@@ -10,13 +10,14 @@
   <link rel="stylesheet" th:href="@{/css/admin.css}">
   <!-- Original Eterna-inspired colors, with improved readability and focus states -->
   <link rel="stylesheet" th:href="@{/css/admin-theme.css}">
+  <link rel="stylesheet" th:href="@{/css/tailwind-admin.css}">
 </head>
 <body class="admin-app">
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="admin-shell">
-  <aside class="admin-sidebar" aria-label="Administrator navigation">
-    <a class="admin-brand" th:href="@{/adminPage}">
-      <span class="brand-mark" aria-hidden="true">D</span>
+  <aside class="admin-sidebar lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto" aria-label="Administrator navigation">
+    <a class="admin-brand group" th:href="@{/adminPage}">
+      <span class="brand-mark transition-transform duration-200 group-hover:rotate-6" aria-hidden="true">D</span>
       <span><strong>Doctorat</strong><small>Administration</small></span>
     </a>
     <p class="nav-caption">WORKSPACE</p>
@@ -34,8 +35,8 @@
     </div>
   </aside>
 
-  <div class="admin-content">
-    <header class="admin-topbar">
+  <div class="admin-content min-w-0">
+    <header class="admin-topbar sticky top-0 z-30">
       <div class="topbar-left">
         <details class="mobile-navigation">
           <summary aria-label="Open navigation">☰ <span>Menu</span></summary>
@@ -57,7 +58,7 @@
         </form>
       </div>
     </header>
-    <main id="main-content" class="admin-main" tabindex="-1">
+    <main id="main-content" class="admin-main min-w-0" tabindex="-1">
       <section layout:fragment="content1"></section>
     </main>
   </div>

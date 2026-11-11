@@ -40,6 +40,16 @@ jobs:
           echo "ADMIN_USERNAME=e2e-ci-admin" >> "$GITHUB_ENV"
           echo "ADMIN_PASSWORD=$password" >> "$GITHUB_ENV"
 
+      - name: Build Admin Tailwind CSS
+        working-directory: ui
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+          echo "TAILWIND_GENERATED_CSS_BEGIN"
+          cat ../src/main/resources/static/css/tailwind-admin.css
+          echo
+          echo "TAILWIND_GENERATED_CSS_END"
+
       - name: Java unit and integration tests
         run: |
           chmod +x ./mvnw

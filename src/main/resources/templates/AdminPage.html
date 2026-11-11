@@ -8,46 +8,46 @@
   <div class="page-heading">
     <div>
       <span class="eyebrow">OVERVIEW</span>
-      <h1>Administration dashboard</h1>
+      <h1 class="text-balance">Administration dashboard</h1>
       <p class="subheading">Manage competition users and their access in one place.</p>
     </div>
   </div>
-  <section class="intro-panel" aria-label="Getting started">
-    <div><span class="eyebrow">WORKSPACE</span><h2>Manage your institution</h2>
+  <section class="intro-panel relative isolate overflow-hidden" aria-label="Getting started">
+    <div><span class="eyebrow">WORKSPACE</span><h2 class="text-balance tracking-tight">Manage your institution</h2>
     <p>Choose an account type to view, update, or manage its records.</p></div>
     <span class="intro-icon" aria-hidden="true">▦</span>
   </section>
   <div class="section-heading"><h2>Account management</h2><span>5 sections</span></div>
   <div class="workspace-grid">
-    <article class="workspace-card">
-      <span class="tile-icon" aria-hidden="true">◉</span>
+    <article class="workspace-card group motion-safe:transition-all motion-safe:duration-200">
+      <span class="tile-icon transition-transform duration-200 group-hover:scale-110" aria-hidden="true">◉</span>
       <h3><a th:href="@{/admin/getAdmins}">Admin</a></h3>
       <p>Maintain administrator accounts and permissions.</p>
-      <span class="card-link" aria-hidden="true">Manage administrators →</span>
+      <span class="card-link inline-flex items-center gap-1" aria-hidden="true">Manage administrators →</span>
     </article>
-    <article class="workspace-card">
-      <span class="tile-icon" aria-hidden="true">▤</span>
+    <article class="workspace-card group motion-safe:transition-all motion-safe:duration-200">
+      <span class="tile-icon transition-transform duration-200 group-hover:scale-110" aria-hidden="true">▤</span>
       <h3><a th:href="@{/candidat/getCandidats}">Candidat</a></h3>
       <p>Review and manage candidate profiles.</p>
-      <span class="card-link" aria-hidden="true">Manage candidates →</span>
+      <span class="card-link inline-flex items-center gap-1" aria-hidden="true">Manage candidates →</span>
     </article>
-    <article class="workspace-card">
-      <span class="tile-icon" aria-hidden="true">◇</span>
+    <article class="workspace-card group motion-safe:transition-all motion-safe:duration-200">
+      <span class="tile-icon transition-transform duration-200 group-hover:scale-110" aria-hidden="true">◇</span>
       <h3><a th:href="@{/vd/getVDs}">Vice Doyen</a></h3>
       <p>Access vice-dean account records.</p>
-      <span class="card-link" aria-hidden="true">Manage vice deans →</span>
+      <span class="card-link inline-flex items-center gap-1" aria-hidden="true">Manage vice deans →</span>
     </article>
-    <article class="workspace-card">
-      <span class="tile-icon" aria-hidden="true">▧</span>
+    <article class="workspace-card group motion-safe:transition-all motion-safe:duration-200">
+      <span class="tile-icon transition-transform duration-200 group-hover:scale-110" aria-hidden="true">▧</span>
       <h3><a th:href="@{/cfd/getCFDs}">CFD</a></h3>
       <p>View and maintain doctoral committee accounts.</p>
-      <span class="card-link" aria-hidden="true">Manage CFD →</span>
+      <span class="card-link inline-flex items-center gap-1" aria-hidden="true">Manage CFD →</span>
     </article>
-    <article class="workspace-card">
-      <span class="tile-icon" aria-hidden="true">▥</span>
+    <article class="workspace-card group motion-safe:transition-all motion-safe:duration-200">
+      <span class="tile-icon transition-transform duration-200 group-hover:scale-110" aria-hidden="true">▥</span>
       <h3><a th:href="@{/enseignant/getEnseignants}">Enseignant</a></h3>
       <p>Manage teaching staff accounts.</p>
-      <span class="card-link" aria-hidden="true">Manage teachers →</span>
+      <span class="card-link inline-flex items-center gap-1" aria-hidden="true">Manage teachers →</span>
     </article>
   </div>
 </section>

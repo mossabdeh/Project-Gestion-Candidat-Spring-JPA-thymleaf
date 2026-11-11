@@ -57,3 +57,7 @@ Then('the dashboard should use the original coral branding and light navigation'
   expect(sidebarColor).toBe('rgb(255, 255, 255)');
   expect(accent).toBe('rgb(155, 57, 42)');
 });
+
+Then('the Admin topbar should use the compiled sticky utility', async ({ page }) => {
+  await expect(page.locator('.admin-topbar')).toHaveCSS('position', 'sticky');
+});

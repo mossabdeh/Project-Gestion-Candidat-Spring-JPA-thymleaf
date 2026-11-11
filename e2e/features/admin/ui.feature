@@ -20,3 +20,8 @@ Feature: Admin interface quality
     Given I am signed in as an admin
     When I open the administration dashboard
     Then the dashboard should use the original coral branding and light navigation
+
+  Scenario: Admin interface loads built Tailwind utility classes
+    Given I am signed in as an admin
+    When I open the administration dashboard
+    Then the Admin topbar should use the compiled sticky utility

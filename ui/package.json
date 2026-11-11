@@ -1,0 +1,13 @@
+{
+  "name": "doctorat-admin-tailwind",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tailwindcss -i ./admin.input.css -o ../src/main/resources/static/css/tailwind-admin.css --minify",
+    "watch": "tailwindcss -i ./admin.input.css -o ../src/main/resources/static/css/tailwind-admin.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.1.10",
+    "tailwindcss": "4.1.10"
+  }
+}
