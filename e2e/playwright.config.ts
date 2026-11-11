@@ -26,12 +26,15 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
+    // Run the existing H2-backed Spring Boot app locally for E2E testing.
     command: process.platform === 'win32'
-      ? '..\\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev'
-      : '../mvnw spring-boot:run -Dspring-boot.run.profiles=dev',
+      ? '..\\mvnw.cmd -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > spring-boot.log 2>&1'
+      : '../mvnw -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > spring-boot.log 2>&1',
     url: `${baseURL}/login`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
+    stdout: 'pipe',
+    stderr: 'pipe',
     env: { SPRING_PROFILES_ACTIVE: 'dev' },
   },
 });

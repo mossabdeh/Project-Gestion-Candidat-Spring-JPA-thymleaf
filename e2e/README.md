@@ -12,7 +12,7 @@ This is the black-box functional and UI test suite for the Spring Boot applicati
 
 ## Prerequisites
 
-Java 17, Node.js 20+, and a working Maven wrapper. H2 is in-memory; the test runner starts a new development Spring Boot instance unless one is already running locally.
+Java 17, Node.js 22+, and a working Maven wrapper. H2 is in-memory; the test runner starts a new development Spring Boot instance unless one is already running locally.
 
 Choose a **unique, private** dev admin password with at least 12 characters, different from the username.
 
@@ -42,6 +42,20 @@ The runner starts Spring Boot with the `dev` profile on port 8082, using the app
 
 To target another local test server: set `BASE_URL`. Never run these destructive-account tests against production.
 
+## GitHub Actions
+
+The workflow in `../.github/workflows/admin-bdd.yml` runs Java tests and the BDD browser suite on pull requests targeting `master` and pushes to `master`.
+
+GitHub Actions uses Ubuntu, Java 17, Node.js 22, Chromium, and temporary generated admin credentials. It starts Spring Boot automatically and uploads the Playwright HTML report, traces/screenshots and `spring-boot.log` as the `admin-bdd-evidence` artifact.
+
+There is no committed npm lockfile yet. The initial CI workflow uses `npm install` and uploads the generated `package-lock.json`; **commit that file in a follow-up to switch CI to reproducible `npm ci`**.
+
+## Troubleshooting server startup failures
+
+If Playwright says `Process from config.webServer was not able to start. Exit code: 1`, the Spring Boot process exited before tests started. This does **not** necessarily mean Chromium or WSL is broken. Inspect `e2e/spring-boot.log` for Maven, Java, or application errors. On GitHub Actions, open the failed job's `Show Spring Boot logs` step or download the `admin-bdd-evidence` artifact.
+
+Check `java -version`, and run `./mvnw spring-boot:run` (Linux/macOS) or `..\\mvnw.cmd -B spring-boot:run -Dspring-boot.run.profiles=dev` from `e2e` (PowerShell) to isolate backend startup issues.
+
 ## Commands
 
 - `npm test` — generate Playwright tests from feature files and run Chromium
@@ -59,7 +73,3 @@ Failed tests retain screenshots and traces in `test-results/`. Reports and gener
 - Keep business behavior in `.feature`; browser interaction and assertions belong in `steps/` or `pages/`
 - Prefer accessible selectors over brittle CSS selectors, and use uniquely named test records for CRUD cases
 - Do not check in pending/undefined steps as if they were executable tests
-
-## Next
-
-After the local BDD smoke suite is stable, add a dedicated GitHub Actions workflow with a committed lockfile (`npm ci`), Java 17 / Node setup, Chromium installation, isolated dev credentials and report artifacts.

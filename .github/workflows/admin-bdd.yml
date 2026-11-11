@@ -1,0 +1,81 @@
+name: Admin BDD (Playwright)
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  admin-e2e:
+    name: Java + Gherkin E2E (Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Generate isolated development credentials
+        shell: bash
+        run: |
+          password="$(openssl rand -hex 24)"
+          echo "::add-mask::$password"
+          echo "ADMIN_USERNAME=e2e-ci-admin" >> "$GITHUB_ENV"
+          echo "ADMIN_PASSWORD=$password" >> "$GITHUB_ENV"
+
+      - name: Java unit and integration tests
+        run: |
+          chmod +x ./mvnw
+          ./mvnw -B test
+
+      - name: Install E2E dependencies
+        working-directory: e2e
+        # First run uses npm install because the new E2E project has no committed lockfile yet.
+        # Once package-lock.json is committed, replace with npm ci.
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium and OS dependencies
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Admin Gherkin scenarios
+        working-directory: e2e
+        run: npm test
+
+      - name: Show Spring Boot logs if tests fail
+        if: failure()
+        run: |
+          if [ -f e2e/spring-boot.log ]; then
+            echo '--- Spring Boot startup log ---'
+            tail -200 e2e/spring-boot.log
+          fi
+
+      - name: Upload Playwright reports, server logs, and initial lockfile
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-bdd-evidence
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            e2e/playwright-report/
+            e2e/test-results/
+            e2e/spring-boot.log
+            e2e/package-lock.json
