@@ -42,7 +42,7 @@ export class AdminAccountsPage {
 
   async filterByLastName(lastName: string) {
     await this.openList();
-    await this.page.locator('input[name="keyword"]').fill(lastName);
+    await this.page.locator('form[method="get"] input[name="keyword"][type="text"]').fill(lastName);
     await this.page.getByRole('button', { name: 'Chercher' }).click();
     await expect(this.page).toHaveURL(/\/admin\/getAdmins\?keyword=/);
   }
