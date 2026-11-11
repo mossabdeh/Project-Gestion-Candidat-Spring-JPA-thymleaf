@@ -28,6 +28,8 @@ public class serviceUser {
     private CandidatRepo candidatRepo;
     @Autowired
     private EnseignantRepo enseignantRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
 // ------------------------------ ADMIN  CRUD OPERATION -------------------------------------------------
@@ -65,7 +67,7 @@ public class serviceUser {
         Admin adminToEdit = getAdmin(id);
         adminToEdit.setLogDate(admin.getLogDate());
         adminToEdit.setUsername(admin.getUsername());
-        adminToEdit.setPassword(admin.getPassword());
+        updatePassword(adminToEdit, admin);
         adminToEdit.setNom(admin.getNom());
         adminToEdit.setPrenom(admin.getPrenom());
         adminToEdit.setEmail(admin.getEmail());
@@ -107,7 +109,7 @@ public class serviceUser {
         Candidat candidatToEdit = getCandidat(id);
         candidatToEdit.setDateNaissance(candidat.getDateNaissance());
         candidatToEdit.setUsername(candidat.getUsername());
-        candidatToEdit.setPassword(candidatToEdit.getPassword());
+        updatePassword(candidatToEdit, candidat);
         candidatToEdit.setPrenom(candidat.getPrenom());
         candidatToEdit.setNom(candidat.getNom());
         candidatToEdit.setEmail(candidat.getEmail());
@@ -150,7 +152,7 @@ public class serviceUser {
         CFD cfdToEdit = getCFD(id);
         cfdToEdit.setLogDate(cfd.getLogDate());
         cfdToEdit.setUsername(cfd.getUsername());
-        cfdToEdit.setPassword(cfd.getPassword());
+        updatePassword(cfdToEdit, cfd);
         cfdToEdit.setNom(cfd.getNom());
         cfdToEdit.setPrenom(cfd.getPrenom());
         cfdToEdit.setEmail(cfd.getEmail());
@@ -191,7 +193,7 @@ public class serviceUser {
         VD vdToEdit = getVD(id);
         vdToEdit.setLogDate(vd.getLogDate());
         vdToEdit.setUsername(vd.getUsername());
-        vdToEdit.setPassword(vd.getPassword());
+        updatePassword(vdToEdit, vd);
         vdToEdit.setNom(vd.getNom());
         vdToEdit.setPrenom(vd.getPrenom());
         vdToEdit.setEmail(vd.getEmail());
@@ -233,12 +235,20 @@ public class serviceUser {
         enseignantToEdit.setSpecialite(enseignant.getSpecialite());
         enseignantToEdit.setGrade(enseignant.getGrade());
         enseignantToEdit.setUsername(enseignant.getUsername());
-        enseignantToEdit.setPassword(enseignant.getPassword());
+        updatePassword(enseignantToEdit, enseignant);
         enseignantToEdit.setNom(enseignant.getNom());
         enseignantToEdit.setPrenom(enseignant.getPrenom());
         enseignantToEdit.setEmail(enseignant.getEmail());
         return enseignantToEdit;
     }
+    // Empty passwords mean a profile-only edit; never replace the stored hash with them.
+    private void updatePassword(User existing, User updates) {
+        String newPassword = updates.getPassword();
+        if (newPassword != null && !newPassword.isBlank()) {
+            existing.setPassword(passwordEncoder.encode(newPassword));
+        }
+    }
+
 // ------------------------------ Generation Code Anonymat -------------------------------------------------
 // Generating unique code for Vice Doyen for candidats concours
 public String generateUniqueCode() {

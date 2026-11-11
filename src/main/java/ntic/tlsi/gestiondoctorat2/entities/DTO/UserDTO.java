@@ -1,5 +1,6 @@
 package ntic.tlsi.gestiondoctorat2.entities.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
@@ -10,6 +11,7 @@ import ntic.tlsi.gestiondoctorat2.entities.User;
 public class UserDTO {
     private Long id;
     private String username;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String email;
     private String nom;
@@ -21,7 +23,7 @@ public class UserDTO {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
-        userDTO.setPassword(user.getPassword());
+
         userDTO.setEmail(user.getEmail());
         userDTO.setNom(user.getNom());
         userDTO.setPrenom(user.getPrenom());
