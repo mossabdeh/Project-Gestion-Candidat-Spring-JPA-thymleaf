@@ -26,10 +26,11 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    // Run the existing H2-backed Spring Boot app locally for E2E testing.
+    // Playwright runs in e2e/, but Maven must run from the repository root (pom.xml).
+    cwd: '..',
     command: process.platform === 'win32'
-      ? '..\\mvnw.cmd -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > spring-boot.log 2>&1'
-      : '../mvnw -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > spring-boot.log 2>&1',
+      ? '.\\\\mvnw.cmd -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > e2e/spring-boot.log 2>&1'
+      : './mvnw -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > e2e/spring-boot.log 2>&1',
     url: `${baseURL}/login`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
