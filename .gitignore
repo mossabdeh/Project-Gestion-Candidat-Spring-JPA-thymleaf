@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Node build output ###
+/ui/node_modules/
+/ui/.env
+/ui/.env.*
