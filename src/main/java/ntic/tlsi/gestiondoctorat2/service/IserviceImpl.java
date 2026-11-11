@@ -2,15 +2,9 @@ package ntic.tlsi.gestiondoctorat2.service;
 
 import lombok.AllArgsConstructor;
 import ntic.tlsi.gestiondoctorat2.entities.*;
-import ntic.tlsi.gestiondoctorat2.entities.DTO.CandidatDTO;
-import ntic.tlsi.gestiondoctorat2.entities.DTO.EnseignantDTO;
-import ntic.tlsi.gestiondoctorat2.entities.DTO.VdDTO;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -184,48 +178,17 @@ public class IserviceImpl implements Iservice {
             }
         });
     }
-    private static final Logger logger = LoggerFactory.getLogger(IserviceImpl.class);
 
 
   //  private UserRepo userRepo;
     @Override
     public Optional<User> loadUserByUsername(String username) {
-            Optional<User> user = adminRepo.findByUsername(username);
-            if (user == null) {
-                Optional<User> optionalUser = cfdRepo.findByUsername(username);
-                if (optionalUser.isPresent()) {
-                    user = optionalUser;
-                } else {
-                    Optional<VdDTO> optionalVdDTO = vdRepo.findDTOByUsername(username);
-
-                    if (optionalVdDTO.isPresent()) {
-                        VD vd = VD.from(optionalVdDTO.get());
-                        user = Optional.of(vd);
-                    } else {
-                        Optional<CandidatDTO> optionalCandidatDTO = candidatRepo.findDTOByUsername(username);
-                        if (optionalCandidatDTO.isPresent()) {
-                            logger.debug("CandidatDTO --------------: {}", optionalCandidatDTO);
-                            Candidat candidat = Candidat.from(optionalCandidatDTO.get());
-                            logger.debug("Candidat---------------: {}", candidat);
-                            user = Optional.of(candidat);
-                        } else {
-                            Optional<EnseignantDTO> optionalEnseignantDTO = enseignantRepo.findDTOByUsername(username);
-                            if (optionalEnseignantDTO.isPresent()) {
-                                Enseignant enseignant = Enseignant.from(optionalEnseignantDTO.get());
-                                user = Optional.of(enseignant);
-                            }
-                        }
-                    }
-                }
-            }
-            if (user == null) {
-                throw new UsernameNotFoundException(String.format("User %s not found ",username));
-            }
-            return user;
+        // Load the stored hash directly. Mapping through DTOs can lose or rehash it.
+        Optional<User> user = adminRepo.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException(String.format("User %s not found", username));
         }
-
-
-
+        return user;
+    }
 
 }
-
