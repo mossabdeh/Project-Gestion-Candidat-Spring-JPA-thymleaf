@@ -1,6 +1,6 @@
 package ntic.tlsi.gestiondoctorat2;
 
-import ntic.tlsi.gestiondoctorat2.repo.AdminRepo;
+import ntic.tlsi.gestiondoctorat2.repo.UserAccountRepo;
 import ntic.tlsi.gestiondoctorat2.sec.DevelopmentAdminInitializer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +20,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class NonDevelopmentAdminBootstrapTests {
 
     @Autowired private ApplicationContext context;
-    @Autowired private AdminRepo adminRepo;
+    @Autowired private UserAccountRepo userAccountRepo;
 
     @Test
     void bootstrapIsDisabledOutsideDevEvenWithCredentials() {
         assertTrue(context.getBeansOfType(DevelopmentAdminInitializer.class).isEmpty());
-        assertTrue(adminRepo.findByUsername("should-not-exist").isEmpty());
+        assertTrue(userAccountRepo.findByUsername("should-not-exist").isEmpty());
     }
 }
