@@ -109,6 +109,7 @@ public class serviceUser {
         Candidat candidatToEdit = getCandidat(id);
         candidatToEdit.setDateNaissance(candidat.getDateNaissance());
         candidatToEdit.setUsername(candidat.getUsername());
+        updatePassword(candidatToEdit, candidat);
         candidatToEdit.setPrenom(candidat.getPrenom());
         candidatToEdit.setNom(candidat.getNom());
         candidatToEdit.setEmail(candidat.getEmail());
