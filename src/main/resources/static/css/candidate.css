@@ -72,3 +72,50 @@ dt{color:var(--muted);font-size:12px}dd{font-weight:700;font-size:14px;margin:3p
 .subject-result strong{white-space:nowrap;font-size:19px}
 .results-note{margin-top:18px}
 @media(max-width:620px){.results-heading{flex-direction:column}.results-summary,.subject-results{grid-template-columns:1fr}.results-panel{padding:20px}}
+
+/* Refined original Candidate anatomy: horizontal site header, profile bio, two feature tiles */
+.candidate-header{background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 14px rgba(35,40,48,.035)}
+.header-inner{width:min(1120px,calc(100% - 40px));min-height:86px;margin:0 auto;display:flex;align-items:center;gap:30px}
+.candidate-header .candidate-brand{font-family:Georgia,serif;font-size:28px;letter-spacing:-.035em;color:var(--charcoal);white-space:nowrap;text-decoration:none;padding:0}
+.brand-accent{color:var(--coral)}
+.candidate-header .candidate-nav{display:flex;align-items:center;gap:5px;margin-right:auto}
+.candidate-header .candidate-nav a{display:inline-flex;padding:10px 12px;color:#515964;text-decoration:none;border-radius:9px;font-size:14px;font-weight:650;white-space:nowrap}
+.candidate-header .candidate-nav a:hover,.candidate-header .candidate-nav a:focus-visible{background:#fff0eb;color:#a64334}
+.header-account{display:flex;align-items:center;gap:16px;min-width:0}
+.header-account form{margin:0}
+.candidate-main{width:min(1120px,calc(100% - 40px));padding:48px 0 75px}
+.candidate-profile{background:white;border:1px solid var(--border);border-radius:18px;padding:36px;display:flex;align-items:flex-start;gap:30px;box-shadow:0 12px 30px rgba(35,40,48,.04)}
+.profile-avatar{width:112px;height:112px;flex:0 0 112px;object-fit:cover;border-radius:50%;border:5px solid #fff0eb;box-shadow:0 0 0 1px #ead8d4}
+.profile-bio{min-width:0;flex:1}
+.profile-bio h1{font-size:clamp(28px,3vw,37px);letter-spacing:-.035em;line-height:1.2;margin:7px 0 8px}
+.profile-name{font-size:16px;font-weight:750;margin:0 0 2px}
+.profile-email{font-size:14px;color:#ae4738;margin:0 0 12px;overflow-wrap:anywhere}
+.profile-description{font-size:14px;color:var(--muted);max-width:680px;margin:0 0 18px}
+.candidate-profile .profile-details{display:flex;flex-wrap:wrap;gap:12px}
+.candidate-profile .profile-details>div{min-width:150px;padding:10px 15px}
+.dashboard-section{margin:40px 0}
+.section-heading .eyebrow{display:block;margin-bottom:4px}
+.action-tile{min-height:234px;box-shadow:0 5px 19px rgba(35,40,48,.025);transition:transform .16s,box-shadow .16s,border-color .16s}
+.action-tile:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(35,40,48,.07)}
+.action-tile>.tile-next{position:static;margin-top:auto;font-size:13px;font-weight:750;color:#ae4738}
+@media(max-width:900px){
+  .header-inner{flex-wrap:wrap;gap:14px;padding:14px 0}
+  .candidate-header .candidate-nav{order:3;width:100%;margin:0;justify-content:center;border-top:1px solid var(--border);padding-top:7px}
+  .header-account{margin-left:auto}
+  .candidate-main{padding-top:30px}
+}
+@media(max-width:620px){
+  .header-inner,.candidate-main{width:calc(100% - 30px)}
+  .candidate-header .candidate-brand{font-size:25px}
+  .header-account{gap:8px}
+  .header-account .signed-in{max-width:100px;font-size:12px}
+  .candidate-header .candidate-nav{justify-content:space-between;gap:0;flex-wrap:nowrap}
+  .candidate-header .candidate-nav a{font-size:12px;padding:9px 4px}
+  .candidate-profile{padding:24px;flex-direction:column;align-items:center;gap:16px;text-align:center}
+  .profile-avatar{width:94px;height:94px;flex-basis:94px}
+  .candidate-profile .profile-details{justify-content:center}
+  .section-heading h2{font-size:23px}
+  .action-grid{grid-template-columns:1fr}
+  .action-tile{min-height:205px;padding:23px}
+}
+@media(prefers-reduced-motion:reduce){.action-tile{transition:none}.action-tile:hover{transform:none}}
