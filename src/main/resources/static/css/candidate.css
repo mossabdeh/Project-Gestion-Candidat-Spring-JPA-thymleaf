@@ -53,3 +53,22 @@ dt{color:var(--muted);font-size:12px}dd{font-weight:700;font-size:14px;margin:3p
 .empty-panel{text-align:center;padding:65px 25px}.empty-icon{margin:0 auto 15px}.empty-panel p{color:var(--muted);max-width:470px;margin:8px auto 22px}
 @media(max-width:900px){.candidate-shell{grid-template-columns:1fr}.candidate-sidebar{padding:14px 18px;gap:12px}.candidate-brand{padding:2px 8px}.sidebar-caption,.sidebar-help{display:none}.candidate-nav{display:flex;flex-wrap:wrap;gap:4px}.candidate-nav a{font-size:12px;padding:9px}.candidate-nav a span{font-size:16px}.candidate-main{padding-top:25px}.profile-card{grid-template-columns:1fr}}
 @media(max-width:620px){.candidate-topbar{align-items:flex-start;flex-direction:column;gap:10px}.topbar-actions{width:100%;justify-content:space-between}.signed-in{max-width:60%}.candidate-hero{padding:27px}.hero-graphic{display:none}.action-grid,.profile-details,.detail-grid{grid-template-columns:1fr}.profile-card,.detail-panel{padding:22px}.page-intro h1{font-size:29px}.candidate-nav{justify-content:space-between}.candidate-nav a{gap:5px;padding:8px 5px}}
+
+/* Candidate results — responsive cards, no wide legacy corrections table */
+.results-panel{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:clamp(22px,3vw,34px)}
+.results-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px}
+.results-heading h2{font-size:clamp(21px,2.4vw,28px);margin:5px 0}
+.results-heading p,.results-note{font-size:14px;color:var(--muted);margin:0}
+.results-pill{display:inline-flex;border-radius:30px;padding:7px 14px;font-size:13px;font-weight:800;white-space:nowrap}
+.results-pill-admitted{background:#e6f5eb;color:#23663b}
+.results-pill-not-admitted{background:#fff1ec;color:#9e4032}
+.results-summary,.subject-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.result-stat,.subject-result{min-width:0;background:#f8f9fb;border:1px solid var(--border);border-radius:13px;padding:20px}
+.result-stat-label,.subject-result>span{display:block;font-size:13px;color:var(--muted)}
+.result-stat strong{display:block;font-size:27px;overflow-wrap:anywhere;margin-top:6px}
+.result-stat small,.subject-result small{font-size:13px;font-weight:500;color:var(--muted)}
+.results-subtitle{font-size:18px;margin:27px 0 13px}
+.subject-result{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.subject-result strong{white-space:nowrap;font-size:19px}
+.results-note{margin-top:18px}
+@media(max-width:620px){.results-heading{flex-direction:column}.results-summary,.subject-results{grid-template-columns:1fr}.results-panel{padding:20px}}

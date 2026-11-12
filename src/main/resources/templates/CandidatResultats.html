@@ -1,182 +1,74 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      >
-<head>
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title> Candidat Result</title>
-
-  <!-- Favicons -->
-  <link href="/img/favicon.png" rel="icon">
-  <link href="/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="/vendor/animate.css/animate.min.css" rel="stylesheet">
-  <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
-  <link href="/css/style.css" rel="stylesheet">
-
-  <!-- =======================================================
-
-  ======================================================== -->
-</head>
-
+      layout:decorate="~{CandidateTemplate}">
+<head><title>My results | Candidate Portal</title></head>
 <body>
+<section layout:fragment="candidateContent">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a th:href="@{/candidatPage}">Dashboard</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">My results</span>
+  </nav>
+  <header class="page-intro">
+    <span class="eyebrow">EXAM RESULTS</span>
+    <h1>My results</h1>
+    <p>View your official competition outcome when it is published.</p>
+  </header>
 
+  <section class="empty-panel" role="status" th:if="${results.status.name() == 'NO_COMPETITION'}">
+    <span class="empty-icon" aria-hidden="true">▤</span>
+    <h2>No competition announced</h2>
+    <p>There is no competition to display yet. Check the competition page for updates.</p>
+    <a class="button button-primary" th:href="@{/candidat/getConcourInfo}">Competition information</a>
+  </section>
 
-<!-- ======= Header ======= -->
-<header id="header" class="d-flex align-items-center">
-  <div class="container d-flex justify-content-between align-items-center">
+  <section class="empty-panel" role="status" th:if="${results.status.name() == 'PENDING'}">
+    <span class="empty-icon" aria-hidden="true">◷</span>
+    <h2>Results pending publication</h2>
+    <p>Results have not been published yet. Please check back after the competition committee releases them.</p>
+    <a class="button button-outline" th:href="@{/candidat/getConcourInfo}">Competition information</a>
+  </section>
 
-    <div class="logo">
-      <h1><a href="">Doctorat</a></h1>
-      <!-- Uncomment below if you prefer to use an image logo -->
-      <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+  <section class="empty-panel" role="status" th:if="${results.status.name() == 'NOT_AVAILABLE'}">
+    <span class="empty-icon" aria-hidden="true">▤</span>
+    <h2>No individual result available</h2>
+    <p>The competition results are published, but no result is available for this account.</p>
+    <a class="button button-outline" th:href="@{/candidatPage}">Back to dashboard</a>
+  </section>
+
+  <section class="results-panel" th:if="${results.status.name() == 'PUBLISHED'}" aria-labelledby="official-results-heading">
+    <div class="results-heading">
+      <div>
+        <span class="eyebrow">OFFICIAL PUBLICATION</span>
+        <h2 id="official-results-heading">Your competition outcome</h2>
+        <p>Your subject averages and final admission decision.</p>
+      </div>
+      <span class="results-pill" th:classappend="${results.admitted ? ' results-pill-admitted' : ' results-pill-not-admitted'}"
+            th:text="${results.admitted ? 'Admitted' : 'Not admitted'}">Decision</span>
     </div>
 
-    <nav id="navbar" class="navbar">
-      <ul>
-        <li><a   th:href="@{/candidatPage}">Home</a></li>
-        <li><a href="">About</a></li>
-
-
-        <li><a href="">Contact</a></li>
-        <li><a th:text="${#authentication.name}" class="btn-get-started animate__animated animate__fadeInUp disabled"></a></li>
-        <li>
-          <form method="post" th:action="@{/logout}">
-            <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">Logout</button>
-          </form>
-        </li>
-      </ul>
-      <i class="bi bi-list mobile-nav-toggle"></i>
-    </nav><!-- .navbar -->
-
-  </div>
-</header><!-- End Header -->
-<!-- ======= Clients Section ======= -->
-
-<div class="container">
-
-  <div class="section-title pt-2">
-    <h2>Resultat Center</h2>
-  </div>
-</div>
-
-
-<div class="container mt-2">
-  <div class="card">
-    <div class="card-header"> <h3> Resultat Center</h3> </div>
-    <div class="card-body">
-
-      <div class="row align-items-center">
-        <div class="col-6">
-          <form method="get" th:action="@{ResultatCandidat}">
-            <input type="hidden" name="keyword" th:value="${keyword}">
-          </form>
-        </div>
-
+    <div class="results-summary">
+      <div class="result-stat">
+        <span class="result-stat-label">Anonymous candidate code</span>
+        <strong th:text="${results.code}">0000000</strong>
       </div>
-
-      <div th:unless="${resultsPublished}" class="alert alert-info" role="status">
-        Results have not been published yet. Please check back after the competition committee releases them.
+      <div class="result-stat">
+        <span class="result-stat-label">Overall average</span>
+        <strong><span th:text="${#numbers.formatDecimal(results.overallAverage, 1, 2)}">0.00</span><small> / 20</small></strong>
       </div>
-      <table class="table" th:if="${resultsPublished}">
-        <thead>
-        <tr>
-          <th>C_ID</th>
-          <th>Code</th>
-          <th>M1 n1</th>
-          <th>M1 n2</th>
-          <th>M1 n3</th>
-          <th>M1 Moy</th>
-          <th>M2 n1</th>
-          <th>M2 n2</th>
-          <th>M2 n3</th>
-          <th>M2 Moye</th>
-          <th>Moyenne</th>
-          <th>Post</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td th:text="${MyCandidat.get().id}"></td>
-          <td th:text="${MyCandidat.get().code}"></td>
-          <td>
-            <span th:if="${MyCandidat.get().copies?.size() > 0 && MyCandidat.get().copies[0].corrections?.size() > 0}" th:text="${MyCandidat.get().copies[0].corrections[0].note}"></span>
-          </td>
-          <td>
-            <span th:if="${MyCandidat.get().copies?.size() > 0 && MyCandidat.get().copies[0].corrections?.size() > 1}" th:text="${MyCandidat.get().copies[0].corrections[1].note}"></span>
-          </td>
-          <td>
-            <span th:if="${MyCandidat.get().copies?.size() > 0 && MyCandidat.get().copies[0].corrections?.size() > 2}" th:text="${MyCandidat.get().copies[0].corrections[2].note}"></span>
-          </td>
-          <td>
-            <span th:if="${MyCandidat.get().copies?.size() > 0}" th:text="${MyCandidat.get().getMoyMatier1()}"></span>
-          </td>
-          <td>
-            <span th:if="${MyCandidat.get().copies?.size() > 1 && MyCandidat.get().copies[1].corrections?.size() > 0}" th:text="${MyCandidat.get().copies[1].corrections[0].note}"></span>
-          </td>
-          <td>
-            <span th:if="${MyCandidat.get().copies?.size() > 1 && MyCandidat.get().copies[1].corrections?.size() > 1}" th:text="${MyCandidat.get().copies[1].corrections[1].note}"></span>
-          </td>
-          <td>
-            <span th:if="${MyCandidat.get().copies?.size() > 1 && MyCandidat.get().copies[1].corrections?.size() > 2}" th:text="${MyCandidat.get().copies[1].corrections[2].note}"></span>
-          </td>
-          <td>
-            <span th:if="${MyCandidat.get().copies?.size() > 1}" th:text="${MyCandidat.get().getMoyMatier2()}"></span>
-          </td>
-          <td>
-            <span th:if="${MyCandidat.get().copies?.size() > 0}" th:text="${MyCandidat.get().getMoyenneGeneral()}"></span>
-          </td>
-          <td>
-           <span th:if="${MyCandidat.get().copies?.size() > 0}"
-             th:classappend="${MyCandidat.get().isGetPoste() ? 'text-success' : 'text-danger'}">
-            <b th:text="${MyCandidat.get().isGetPoste() ? 'Admis' : 'Rejeté'}"></b>
-           </span>
-
-          </td>
-
-
-        </tr>
-        </tbody>
-      </table>
-
-
-
-
-
-
-
     </div>
-  </div>
-</div>
-<!-- End About Section -->
 
-
-  <!-- Vendor JS Files -->
-  <script src="/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="/vendor/waypoints/noframework.waypoints.js"></script>
-  <script src="/vendor/php-email-form/validate.js"></script>
-
-
-
-  <!-- Template Main JS File -->
-  <script src="/js/main.js"></script>
-<!-- Chat GPT javaScript methode  -->
-
+    <h3 class="results-subtitle">Subject averages</h3>
+    <div class="subject-results" role="list" aria-label="Subject averages">
+      <div class="subject-result" role="listitem" th:each="score : ${results.subjects}">
+        <span th:text="${score.subject.name()}">Subject</span>
+        <strong><span th:text="${#numbers.formatDecimal(score.average, 1, 2)}">0.00</span><small> / 20</small></strong>
+      </div>
+    </div>
+    <p class="results-note">These are the officially published averages. Individual examiner marks are not displayed.</p>
+    <div class="panel-actions"><a class="button button-outline" th:href="@{/candidatPage}">Back to dashboard</a></div>
+  </section>
+</section>
 </body>
-
 </html>
