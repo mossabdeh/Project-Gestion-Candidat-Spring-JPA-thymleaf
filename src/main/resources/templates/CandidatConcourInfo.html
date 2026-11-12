@@ -30,8 +30,17 @@
       <div><dt>Common subject</dt><dd th:text="${lastConcour.matier1}">Subject 1</dd></div>
       <div><dt>Speciality subject</dt><dd th:text="${lastConcour.matier2}">Subject 2</dd></div>
     </dl>
+    <div class="enrollment-status" role="status">
+      <p th:if="${enrolled == true}"><strong>Registered</strong> — Your account is enrolled in this competition.</p>
+      <p th:if="${enrolled != true and lastConcour.resultsPublishedAt != null}">Registration is closed because results have been published.</p>
+      <p th:if="${enrolled != true and lastConcour.resultsPublishedAt == null}">You are not registered for this competition yet.</p>
+    </div>
     <div class="panel-actions">
-      <a class="button button-primary" th:href="@{/candidat/ResultatCandidat}">Go to my results</a>
+      <form method="post" th:action="@{/candidat/register}" th:if="${enrolled != true and lastConcour.resultsPublishedAt == null}">
+        <input type="hidden" name="competitionId" th:value="${lastConcour.id}">
+        <button type="submit" class="button button-primary">Register for competition</button>
+      </form>
+      <a class="button button-outline" th:href="@{/candidat/ResultatCandidat}">Go to my results</a>
       <a class="button button-outline" th:href="@{/candidatPage}">Back to dashboard</a>
     </div>
   </section>
