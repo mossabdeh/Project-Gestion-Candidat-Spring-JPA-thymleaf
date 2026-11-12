@@ -7,6 +7,7 @@ import ntic.tlsi.gestiondoctorat2.entities.*;
 
 import ntic.tlsi.gestiondoctorat2.repo.*;
 import ntic.tlsi.gestiondoctorat2.service.CandidateResultsReadService;
+import ntic.tlsi.gestiondoctorat2.service.CompetitionEnrollmentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -31,21 +32,36 @@ public class CandidatController extends BaseController{
     private final InfoConRepo conRepo;
     private final CandidatProfileService profileService;
     private final CandidateResultsReadService resultsReadService;
+    private final CompetitionEnrollmentService enrollmentService;
 
     public CandidatController(CandidatRepo candidatRepo, InfoConRepo conRepo,
                               CandidatProfileService profileService,
-                              CandidateResultsReadService resultsReadService) {
+                              CandidateResultsReadService resultsReadService,
+                              CompetitionEnrollmentService enrollmentService) {
         this.candidatRepo = candidatRepo;
         this.conRepo = conRepo;
         this.profileService = profileService;
         this.resultsReadService = resultsReadService;
+        this.enrollmentService = enrollmentService;
     }
 
     @GetMapping("/getConcourInfo")
-    public String GetConcourInfo(Model  model){
-        conRepo.findTopByOrderByIdDesc()
-                .ifPresent(concours -> model.addAttribute("lastConcour", concours));
+    @PreAuthorize("hasRole('ROLE_CANDIDAT')")
+    public String GetConcourInfo(Model model, Authentication authentication) {
+        conRepo.findTopByOrderByIdDesc().ifPresent(competition -> {
+            model.addAttribute("lastConcour", competition);
+            model.addAttribute("enrolled", enrollmentService.isRegistered(
+                    competition.getId(), authentication.getName()));
+        });
         return "CandidatConcourInfo";
+    }
+
+    @PostMapping("/register")
+    @PreAuthorize("hasRole('ROLE_CANDIDAT')")
+    public String registerForCompetition(@RequestParam("competitionId") Long competitionId,
+                                         Authentication authentication) {
+        enrollmentService.register(competitionId, authentication.getName());
+        return "redirect:/candidat/getConcourInfo";
     }
 
 
