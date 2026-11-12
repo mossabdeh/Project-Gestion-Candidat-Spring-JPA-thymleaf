@@ -73,7 +73,7 @@ Then('the Candidate dashboard identifies the signed-in account', async ({ page }
   if (!account) throw new Error('Candidate fixture was not created');
   await expect(page.getByRole('heading', { name: `Welcome, ${account.prenom}.` })).toBeVisible();
   await expect(page.locator('.profile-details')).toContainText(account.username);
-  await expect(page.locator('.profile-details')).toContainText(account.email);
+  await expect(page.locator('.profile-email')).toContainText(account.email);
 });
 
 Then('the Candidate navigation offers competition information and my results', async ({ page }) => {
