@@ -5,53 +5,36 @@
 <head><title>Dashboard | Candidate Portal</title></head>
 <body>
 <section layout:fragment="candidateContent">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><span aria-current="page">Dashboard</span></nav>
-  <header class="page-intro">
-    <span class="eyebrow">WELCOME BACK</span>
-    <h1>Welcome, <span th:text="${candidat.prenom}">Candidate</span>.</h1>
-    <p>Find your competition information and follow your results from one workspace.</p>
-  </header>
-  <div class="candidate-hero">
-    <div>
-      <span class="hero-eyebrow">MY COMPETITION</span>
-      <h2 th:text="${latestConcour != null ? latestConcour.specialite : 'Competition information pending'}">Doctoral competition</h2>
-      <p th:if="${latestConcour != null}">Review the current competition details, subjects and exam date.</p>
-      <p th:unless="${latestConcour != null}">No competition has been announced yet. Check again later.</p>
-      <a class="button button-light" th:href="@{/candidat/getConcourInfo}">View competition details</a>
+  <section class="candidate-profile" aria-labelledby="profile-heading">
+    <img class="profile-avatar" th:src="@{/img/team/profile.png}" alt="Candidate profile avatar" width="112" height="112">
+    <div class="profile-bio">
+      <span class="eyebrow">CANDIDATE PROFILE</span>
+      <h1 id="profile-heading">Welcome, <span th:text="${candidat.prenom}">Candidate</span>.</h1>
+      <p class="profile-name" th:text="|${candidat.prenom} ${candidat.nom}|">Full name</p>
+      <p class="profile-email" th:text="${candidat.email}">email@example.com</p>
+      <p class="profile-description">Welcome to your Doctorat candidate space. Review your competition information and check your official results when they are released.</p>
+      <dl class="profile-details">
+        <div><dt>Username</dt><dd th:text="${candidat.username}">username</dd></div>
+        <div><dt>Account type</dt><dd>Candidate</dd></div>
+      </dl>
     </div>
-    <div class="hero-graphic" aria-hidden="true">D</div>
-  </div>
+  </section>
   <section class="dashboard-section" aria-labelledby="quick-actions-heading">
-    <div class="section-heading">
-      <h2 id="quick-actions-heading">Quick access</h2>
-      <p>Everything you need for your competition.</p>
-    </div>
+    <div class="section-heading"><span class="eyebrow">YOUR WORKSPACE</span><h2 id="quick-actions-heading">Quick access</h2></div>
     <div class="action-grid">
       <a class="action-tile" th:href="@{/candidat/getConcourInfo}">
         <span class="tile-icon" aria-hidden="true">▤</span>
         <strong>Competition information</strong>
-        <span>Subjects, available places and exam date.</span>
-        <span class="tile-next" aria-hidden="true">→</span>
+        <span>See the speciality, subjects, places and competition date.</span>
+        <span class="tile-next">View competition <span aria-hidden="true">→</span></span>
       </a>
       <a class="action-tile" th:href="@{/candidat/ResultatCandidat}">
         <span class="tile-icon" aria-hidden="true">◉</span>
         <strong>My results</strong>
-        <span>Check your results when the competition committee releases them.</span>
-        <span class="tile-next" aria-hidden="true">→</span>
+        <span>Check your performance and admission decision after official publication.</span>
+        <span class="tile-next">View results <span aria-hidden="true">→</span></span>
       </a>
     </div>
-  </section>
-  <section class="profile-card" aria-labelledby="profile-heading">
-    <div>
-      <span class="eyebrow">ACCOUNT INFORMATION</span>
-      <h2 id="profile-heading">Your profile</h2>
-      <p>This information identifies your Candidate account.</p>
-    </div>
-    <dl class="profile-details">
-      <div><dt>Full name</dt><dd th:text="|${candidat.prenom} ${candidat.nom}|">Candidate Name</dd></div>
-      <div><dt>Username</dt><dd th:text="${candidat.username}">username</dd></div>
-      <div><dt>Email address</dt><dd th:text="${candidat.email}">email@example.com</dd></div>
-    </dl>
   </section>
 </section>
 </body>
