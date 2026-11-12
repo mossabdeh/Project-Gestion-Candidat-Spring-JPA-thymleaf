@@ -114,7 +114,9 @@ When('I request the Admin account directory', async ({ page }) => {
 });
 
 Then('access to the Admin account directory is denied', async ({ page }) => {
-  await expect(page).not.toHaveURL(/\/admin\/getAdmins$/);
+  // Spring Security can forward to /notAuthorized while keeping the requested URL.
+  // Assert the protected management UI is absent, regardless of redirect or forward.
+  await expect(page.locator('table')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Admin Accounts', exact: true })).toHaveCount(0);
 });
 
