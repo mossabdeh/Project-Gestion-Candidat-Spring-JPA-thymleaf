@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import ntic.tlsi.gestiondoctorat2.entities.*;
 
 import ntic.tlsi.gestiondoctorat2.repo.*;
+import ntic.tlsi.gestiondoctorat2.service.CandidateResultsReadService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -29,12 +30,15 @@ public class CandidatController extends BaseController{
     private final CandidatRepo candidatRepo;
     private final InfoConRepo conRepo;
     private final CandidatProfileService profileService;
+    private final CandidateResultsReadService resultsReadService;
 
     public CandidatController(CandidatRepo candidatRepo, InfoConRepo conRepo,
-                              CandidatProfileService profileService) {
+                              CandidatProfileService profileService,
+                              CandidateResultsReadService resultsReadService) {
         this.candidatRepo = candidatRepo;
         this.conRepo = conRepo;
         this.profileService = profileService;
+        this.resultsReadService = resultsReadService;
     }
 
     @GetMapping("/getConcourInfo")
@@ -155,19 +159,7 @@ public class CandidatController extends BaseController{
 
     @GetMapping("/ResultatCandidat")
     public String ResultatCandidats(Model model, Authentication authentication) {
-        // This view only presents the signed-in candidate's own result.
-        // Do not query or attach results belonging to other candidates.
-        Candidat currentCandidate = candidatRepo.findCandidatByUsername(authentication.getName())
-                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
-                        org.springframework.http.HttpStatus.NOT_FOUND, "Candidate account not found"));
-
-        // Preserve the existing Thymeleaf contract until the follow-up
-        // subject-ordered results DTO/UI migration.
-        boolean resultsPublished = conRepo.findTopByOrderByIdDesc()
-                .map(competition -> competition.getResultsPublishedAt() != null)
-                .orElse(false);
-        model.addAttribute("resultsPublished", resultsPublished);
-        model.addAttribute("MyCandidat", Optional.of(currentCandidate));
+        model.addAttribute("results", resultsReadService.readFor(authentication.getName()));
         return "CandidatResultats";
     }
     }

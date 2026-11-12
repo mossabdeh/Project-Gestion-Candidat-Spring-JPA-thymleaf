@@ -42,7 +42,8 @@ class CandidateReadPathTests {
         mvc.perform(get("/candidat/ResultatCandidat"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("CandidatResultats"))
-                .andExpect(model().attributeExists("MyCandidat"))
+                .andExpect(model().attributeExists("results"))
+                .andExpect(model().attributeDoesNotExist("MyCandidat"))
                 .andExpect(model().attributeDoesNotExist("ListCandidats", "pages", "currentPage"));
     }
 
