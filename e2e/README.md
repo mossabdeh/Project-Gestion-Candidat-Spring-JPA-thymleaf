@@ -1,14 +1,16 @@
-# Admin E2E acceptance tests (Playwright + Gherkin)
+# Admin and Candidate E2E acceptance tests (Playwright + Gherkin)
 
 This is the black-box functional and UI test suite for the Spring Boot application. Gherkin contains requirements, step definitions implement them, and Playwright drives a real browser.
 
 ## Project layout
 
-- `features/admin/`: executable business scenarios
+- `features/admin/`: Admin business scenarios
+- `features/candidate/`: Candidate login, navigation, privacy, access-control and mobile scenarios
 - `steps/`: Gherkin step definitions and assertions
 - `pages/`: reusable browser interactions
 - `playwright.config.ts`: browser, server lifecycle and reporting
-- `docs/admin-coverage.md`: planned future coverage (not executed)
+- `docs/admin-coverage.md`: Admin coverage
+- `docs/candidate-coverage.md`: Candidate coverage and gaps
 
 ## Prerequisites
 
@@ -44,7 +46,7 @@ To target another local test server: set `BASE_URL`. Never run these destructive
 
 ## GitHub Actions
 
-The workflow in `../.github/workflows/admin-bdd.yml` runs Java tests and the BDD browser suite on pull requests targeting `master` and pushes to `master`.
+The workflow in `../.github/workflows/admin-bdd.yml` runs Java tests and both Admin and Candidate BDD browser suites on pull requests targeting `master` and pushes to `master`.
 
 GitHub Actions uses Ubuntu, Java 17, Node.js 22, Chromium, and temporary generated admin credentials. It starts Spring Boot automatically and uploads the Playwright HTML report, traces/screenshots and `spring-boot.log` as the `admin-bdd-evidence` artifact.
 
