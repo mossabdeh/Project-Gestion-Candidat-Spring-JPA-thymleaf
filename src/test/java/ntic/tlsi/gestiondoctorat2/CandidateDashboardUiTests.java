@@ -39,6 +39,10 @@ class CandidateDashboardUiTests {
                 .andExpect(model().attributeExists("candidat"))
                 .andReturn().getResponse().getContentAsString();
         assertTrue(html.contains("Welcome,"));
+        assertTrue(html.contains("profile-avatar"));
+        assertTrue(html.contains("candidate-profile"));
+        assertTrue(html.contains("action-grid"));
+        assertTrue(html.contains("candidate-header"));
         assertTrue(html.contains("Alex"));
         assertTrue(html.contains("/candidat/getConcourInfo"));
         assertTrue(html.contains("/candidat/ResultatCandidat"));
