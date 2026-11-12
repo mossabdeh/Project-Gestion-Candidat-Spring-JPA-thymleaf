@@ -61,7 +61,7 @@ class CandidateResultsReadModelTests {
         assertEquals(12.5, view.subjects().get(0).average());
         assertEquals(Matier.ALGO, view.subjects().get(1).subject());
         assertEquals(18.0, view.subjects().get(1).average());
-        assertEquals(15.25, view.overallAverage());
+        assertEquals(15.25, view.overallAverage().doubleValue());
         assertEquals(Boolean.TRUE, view.admitted());
         mvc.perform(get("/candidat/ResultatCandidat"))
                 .andExpect(status().isOk())
@@ -75,7 +75,7 @@ class CandidateResultsReadModelTests {
         candidate(USERNAME, "3450000", 0, 0, 0, false);
         competition(Matier.ALGO, Matier.EDL, true);
         CandidateResultsReadService.CandidateResultsView view = readService.readFor(USERNAME);
-        assertEquals(0.0, view.overallAverage());
+        assertEquals(0.0, view.overallAverage().doubleValue());
         assertEquals(Boolean.FALSE, view.admitted());
         String html = mvc.perform(get("/candidat/ResultatCandidat"))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();

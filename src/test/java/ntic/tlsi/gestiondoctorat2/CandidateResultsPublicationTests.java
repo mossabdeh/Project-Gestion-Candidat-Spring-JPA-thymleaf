@@ -128,7 +128,8 @@ class CandidateResultsPublicationTests {
 
         String html = mvc.perform(get("/candidat/ResultatCandidat"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("resultsPublished", false))
+                .andExpect(model().attributeExists("results"))
+                .andExpect(model().attributeDoesNotExist("MyCandidat"))
                 .andReturn().getResponse().getContentAsString();
         assertTrue(html.contains("Results have not been published yet"));
         assertFalse(html.contains("<b>Rejeté</b>"));
