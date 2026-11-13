@@ -35,4 +35,11 @@ public class EnrollmentExamCorrection {
     public EnrollmentExamPaper getPaper() { return paper; }
     public Enseignant getTeacher() { return teacher; }
     public Double getGrade() { return grade; }
+
+    public void recordGrade(double value) {
+        if (!Double.isFinite(value) || value < 0 || value > 20) {
+            throw new IllegalArgumentException("Grade must be a finite number between 0 and 20");
+        }
+        this.grade = value;
+    }
 }
