@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Competition anonymization | Doctorat</title>
+  <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+</head>
+<body class="bg-light">
+<header class="bg-white border-bottom p-3"><div class="container d-flex justify-content-between align-items-center">
+  <a th:href="@{/vdPage}" class="fw-bold text-decoration-none">Doctorat · Vice Dean</a>
+  <form method="post" th:action="@{/logout}"><button type="submit" class="btn btn-outline-secondary">Logout</button></form>
+</div></header>
+<main class="container py-5">
+  <div class="mb-4"><a th:href="@{/vdPage}">Back to dashboard</a><h1 class="h3 mt-3">Competition anonymization codes</h1>
+    <p class="text-muted">Codes are scoped to individual competition registrations and are not published to candidates here.</p></div>
+  <div th:if="${competition == null}" class="alert alert-info" role="status">No competition is configured.</div>
+  <section th:if="${competition != null}" class="card">
+    <div class="card-body">
+      <h2 class="h5" th:text="${competition.specialite}">Competition</h2>
+      <p th:if="${competition.resultsPublishedAt != null}" class="alert alert-secondary">This competition is closed.</p>
+      <form method="post" th:action="@{/vd/assignEnrollmentCodes}"
+            th:if="${competition.resultsPublishedAt == null and not #lists.isEmpty(enrollmentCodes)}">
+        <input type="hidden" name="competitionId" th:value="${competition.id}">
+        <button type="submit" class="btn btn-primary mb-3">Assign missing registration codes</button>
+      </form>
+      <p th:if="${#lists.isEmpty(enrollmentCodes)}" role="status">No candidates have registered for this competition yet.</p>
+      <div class="table-responsive" th:unless="${#lists.isEmpty(enrollmentCodes)}">
+        <table class="table table-striped"><thead><tr><th>Candidate ID</th><th>Username</th><th>Competition code</th></tr></thead>
+          <tbody><tr th:each="entry : ${enrollmentCodes}"><td th:text="${entry.candidateId}">1</td>
+            <td th:text="${entry.username}">candidate</td>
+            <td th:text="${entry.code != null ? entry.code : 'Pending'}">Pending</td></tr></tbody>
+        </table>
+      </div>
+      <p class="small text-muted">This is a new enrollment-scoped workflow. Legacy exam copy generation and grading still use Candidate-wide codes until migration is completed.</p>
+    </div>
+  </section>
+</main>
+</body>
+</html>

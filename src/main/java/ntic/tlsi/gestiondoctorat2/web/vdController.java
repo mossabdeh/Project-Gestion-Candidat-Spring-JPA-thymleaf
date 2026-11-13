@@ -39,6 +39,8 @@ public class vdController extends BaseController{
     private CandidatRepo candidatRepo;
     @Autowired
     private ntic.tlsi.gestiondoctorat2.service.CompetitionPreparationService preparationService;
+    @Autowired
+    private ntic.tlsi.gestiondoctorat2.service.EnrollmentAnonymizationService anonymizationService;
 
     @Autowired
     public vdController(ntic.tlsi.gestiondoctorat2.service.serviceUser serviceUser) {
@@ -88,6 +90,24 @@ public class vdController extends BaseController{
     public String generateCodes(@RequestParam("selectedCandidates") List<Long> selectedCandidates) {
         preparationService.assignCodes(selectedCandidates);
         return "redirect:/vd/getCandidatsCode";
+    }
+
+    @GetMapping("/enrollmentCodes")
+    @PreAuthorize("hasRole('ROLE_VD')")
+    public String enrollmentCodes(Model model) {
+        conRepo.findTopByOrderByIdDesc().ifPresent(competition -> {
+            model.addAttribute("competition", competition);
+            model.addAttribute("enrollmentCodes",
+                    anonymizationService.listCodes(competition.getId()));
+        });
+        return "VDEnrollmentCodes";
+    }
+
+    @PostMapping("/assignEnrollmentCodes")
+    @PreAuthorize("hasRole('ROLE_VD')")
+    public String assignEnrollmentCodes(@RequestParam("competitionId") Long competitionId) {
+        anonymizationService.assignCodes(competitionId);
+        return "redirect:/vd/enrollmentCodes";
     }
 
     @GetMapping("/getVDs")
