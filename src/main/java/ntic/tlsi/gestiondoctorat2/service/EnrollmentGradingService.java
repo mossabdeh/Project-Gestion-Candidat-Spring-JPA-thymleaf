@@ -73,7 +73,7 @@ public class EnrollmentGradingService {
                     && paper.getSubject() != competition.getMatier2()) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Unexpected subject");
             }
-            List<EnrollmentExamCorrection> marks = corrections.findByPaper_Id(paper.getId());
+            List<EnrollmentExamCorrection> marks = corrections.findByPaper_IdOrderByIdAsc(paper.getId());
             if (marks.size() < 2 || marks.size() > 3) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Paper needs two or three assigned markers");
             }
