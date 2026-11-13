@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enrollment exam preparation | Doctorat</title>
+  <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+</head>
+<body class="bg-light">
+<header class="bg-white border-bottom p-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a class="fw-bold text-decoration-none" th:href="@{/cfdPage}">Doctorat · CFD</a>
+    <form method="post" th:action="@{/logout}"><button type="submit" class="btn btn-outline-secondary">Logout</button></form>
+  </div>
+</header>
+<main class="container py-5">
+  <a th:href="@{/cfdPage}">Back to CFD dashboard</a>
+  <h1 class="h3 mt-3">Competition exam preparation</h1>
+  <p class="text-muted">Prepare papers and teacher assignments for registered candidates with anonymization codes.</p>
+  <div class="alert alert-info" th:if="${competition == null}" role="status">Create a competition before preparing papers.</div>
+  <section class="card" th:if="${competition != null}">
+    <div class="card-body">
+      <h2 class="h5" th:text="${competition.specialite}">Current competition</h2>
+      <p th:if="${competition.resultsPublishedAt != null}" class="alert alert-secondary">This competition is closed.</p>
+      <div class="d-flex flex-wrap gap-2" th:if="${competition.resultsPublishedAt == null}">
+        <form method="post" th:action="@{/cfd/initEnrollmentPapers}">
+          <input type="hidden" name="competitionId" th:value="${competition.id}">
+          <button type="submit" class="btn btn-primary">1. Initialize enrollment papers</button>
+        </form>
+        <form method="post" th:action="@{/cfd/initEnrollmentCorrections}">
+          <input type="hidden" name="competitionId" th:value="${competition.id}">
+          <button type="submit" class="btn btn-outline-primary">2. Assign qualified teachers</button>
+        </form>
+      </div>
+      <p class="small text-muted mt-3">Assign registration codes in the Vice Dean workflow first. Repeat actions safely: existing records are preserved.</p>
+      <p class="alert alert-warning">This is the new enrollment model. The legacy correction editor and results publication still use the old Candidate-wide exam records.</p>
+      <div class="table-responsive">
+        <table class="table" th:if="${not #lists.isEmpty(papers)}">
+          <thead><tr><th>Paper ID</th><th>Anonymous code</th><th>Subject</th><th>Assigned teachers</th></tr></thead>
+          <tbody><tr th:each="paper : ${papers}">
+            <td th:text="${paper.paperId}">1</td>
+            <td th:text="${paper.code}">0000000</td>
+            <td th:text="${paper.subject}">ALGO</td>
+            <td th:text="${paper.assignedTeachers}">2</td>
+          </tr></tbody>
+        </table>
+        <p th:if="${#lists.isEmpty(papers)}" role="status">No enrollment papers have been initialized yet.</p>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
