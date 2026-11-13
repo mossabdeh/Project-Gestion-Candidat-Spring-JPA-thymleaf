@@ -34,6 +34,8 @@ public class EnseignantController extends BaseController{
     private CorrectionRepo correctionRepo;
     @Autowired
     private ntic.tlsi.gestiondoctorat2.repo.InfoConRepo infoConRepo;
+    @Autowired
+    private ntic.tlsi.gestiondoctorat2.service.EnrollmentGradingService enrollmentGrading;
 
 
     @Autowired
@@ -42,6 +44,22 @@ public class EnseignantController extends BaseController{
     }
 
 
+
+    @GetMapping("/enrollmentGrades")
+    @PreAuthorize("hasRole('ROLE_ENSEIGNANT')")
+    public String enrollmentGrades(Model model, Authentication authentication) {
+        model.addAttribute("assignedGrades", enrollmentGrading.assignments(authentication.getName()));
+        return "EnseignantEnrollmentGrades";
+    }
+
+    @PostMapping("/saveEnrollmentGrade")
+    @PreAuthorize("hasRole('ROLE_ENSEIGNANT')")
+    public String saveEnrollmentGrade(@RequestParam("correctionId") Long correctionId,
+                                      @RequestParam("grade") double grade,
+                                      Authentication authentication) {
+        enrollmentGrading.recordGrade(correctionId, authentication.getName(), grade);
+        return "redirect:/enseignant/enrollmentGrades";
+    }
 
     @GetMapping("/getEnseignants")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

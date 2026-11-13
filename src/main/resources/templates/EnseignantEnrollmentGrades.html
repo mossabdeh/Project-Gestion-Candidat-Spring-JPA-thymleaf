@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enrollment grading | Doctorat</title>
+  <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+</head>
+<body class="bg-light">
+<header class="bg-white border-bottom p-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a th:href="@{/enseignantPage}" class="fw-bold text-decoration-none">Doctorat · Teacher</a>
+    <form method="post" th:action="@{/logout}"><button type="submit" class="btn btn-outline-secondary">Logout</button></form>
+  </div>
+</header>
+<main class="container py-5">
+  <a th:href="@{/enseignantPage}">Back to Teacher dashboard</a>
+  <h1 class="h3 mt-3">My enrollment grading assignments</h1>
+  <p class="text-muted">Only assigned anonymized papers appear here. Marks are scored from 0 to 20.</p>
+  <div role="status" class="alert alert-info" th:if="${#lists.isEmpty(assignedGrades)}">No competition-scoped grading assignments yet.</div>
+  <div class="table-responsive bg-white border rounded" th:unless="${#lists.isEmpty(assignedGrades)}">
+    <table class="table table-striped align-middle mb-0">
+      <thead><tr><th>Competition</th><th>Anonymous code</th><th>Subject</th><th>Paper</th><th>My grade</th><th>Save</th></tr></thead>
+      <tbody>
+        <tr th:each="assignment : ${assignedGrades}">
+          <td th:text="${assignment.competitionId}">1</td>
+          <td th:text="${assignment.anonymousCode}">0000000</td>
+          <td th:text="${assignment.subject}">ALGO</td>
+          <td th:text="${assignment.paperId}">1</td>
+          <td colspan="2">
+            <form method="post" class="d-flex flex-wrap align-items-center gap-2" th:action="@{/enseignant/saveEnrollmentGrade}">
+              <input type="hidden" name="correctionId" th:value="${assignment.correctionId}">
+              <label class="visually-hidden" th:for="|grade-${assignment.correctionId}|">Grade</label>
+              <input class="form-control" style="max-width:130px" type="number" min="0" max="20" step="any" required
+                     name="grade" th:id="|grade-${assignment.correctionId}|" th:value="${assignment.grade}">
+              <button class="btn btn-primary" type="submit">Save grade</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small text-muted mt-3">This grading path is independent of the legacy Candidate-wide results. CFD publication does not yet use these grades.</p>
+</main>
+</body>
+</html>
