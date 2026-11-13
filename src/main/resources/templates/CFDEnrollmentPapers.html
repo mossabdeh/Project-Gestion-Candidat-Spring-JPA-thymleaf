@@ -32,6 +32,11 @@
           <button type="submit" class="btn btn-outline-primary">2. Assign qualified teachers</button>
         </form>
       </div>
+      <form method="post" th:action="@{/cfd/assignEnrollmentThirdMarkers}"
+            th:if="${competition.resultsPublishedAt == null}">
+          <input type="hidden" name="competitionId" th:value="${competition.id}">
+          <button type="submit" class="btn btn-outline-warning mt-2">3. Assign third markers where grades differ by 3 or more</button>
+        </form>
       <p class="small text-muted mt-3">Assign registration codes in the Vice Dean workflow first. Repeat actions safely: existing records are preserved.</p>
       <p class="alert alert-warning">This is the new enrollment model. The legacy correction editor and results publication still use the old Candidate-wide exam records.</p>
       <div class="table-responsive">
