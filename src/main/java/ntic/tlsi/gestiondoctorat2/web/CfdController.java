@@ -45,8 +45,17 @@ public class CfdController extends BaseController{
     private ntic.tlsi.gestiondoctorat2.service.ResultPublicationService resultService;
     @Autowired
     private ntic.tlsi.gestiondoctorat2.service.EnrollmentExamPreparationService enrollmentExamPreparation;
+    @Autowired
+    private ntic.tlsi.gestiondoctorat2.service.EnrollmentGradingService enrollmentGrading;
 
 
+
+    @PostMapping("/assignEnrollmentThirdMarkers")
+    @PreAuthorize("hasRole('ROLE_CFD')")
+    public String assignEnrollmentThirdMarkers(@RequestParam("competitionId") Long competitionId) {
+        enrollmentGrading.assignThirdMarkers(competitionId);
+        return "redirect:/cfd/enrollmentPapers";
+    }
 
     @GetMapping("/enrollmentPapers")
     @PreAuthorize("hasRole('ROLE_CFD')")
