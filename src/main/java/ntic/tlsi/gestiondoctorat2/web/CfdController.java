@@ -43,8 +43,34 @@ public class CfdController extends BaseController{
     private ntic.tlsi.gestiondoctorat2.service.CompetitionPreparationService preparationService;
     @Autowired
     private ntic.tlsi.gestiondoctorat2.service.ResultPublicationService resultService;
+    @Autowired
+    private ntic.tlsi.gestiondoctorat2.service.EnrollmentExamPreparationService enrollmentExamPreparation;
 
 
+
+    @GetMapping("/enrollmentPapers")
+    @PreAuthorize("hasRole('ROLE_CFD')")
+    public String enrollmentPapers(Model model) {
+        conRepo.findTopByOrderByIdDesc().ifPresent(competition -> {
+            model.addAttribute("competition", competition);
+            model.addAttribute("papers", enrollmentExamPreparation.listPapers(competition.getId()));
+        });
+        return "CFDEnrollmentPapers";
+    }
+
+    @PostMapping("/initEnrollmentPapers")
+    @PreAuthorize("hasRole('ROLE_CFD')")
+    public String initEnrollmentPapers(@RequestParam("competitionId") Long competitionId) {
+        enrollmentExamPreparation.initializePapers(competitionId);
+        return "redirect:/cfd/enrollmentPapers";
+    }
+
+    @PostMapping("/initEnrollmentCorrections")
+    @PreAuthorize("hasRole('ROLE_CFD')")
+    public String initEnrollmentCorrections(@RequestParam("competitionId") Long competitionId) {
+        enrollmentExamPreparation.initializeCorrections(competitionId);
+        return "redirect:/cfd/enrollmentPapers";
+    }
 
     @PostMapping("/initCopie")
     public String initializeCopies() {
