@@ -43,9 +43,9 @@ class EnrollmentGradingTests {
         EnrollmentExamCorrection assignment = corrections.saveAndFlush(new EnrollmentExamCorrection(paper, teacher));
         assertEquals(1, grading.assignments(teacher.getUsername()).size());
         grading.recordGrade(assignment.getId(), teacher.getUsername(), 0);
-        assertEquals(0, assignment.getGrade());
+        assertEquals(0.0, assignment.getGrade());
         grading.recordGrade(assignment.getId(), teacher.getUsername(), 20);
-        assertEquals(20, assignment.getGrade());
+        assertEquals(20.0, assignment.getGrade());
         for (double invalid : new double[]{-1, 20.01, Double.NaN, Double.POSITIVE_INFINITY}) {
             assertEquals(org.springframework.http.HttpStatus.BAD_REQUEST,
                     assertThrows(ResponseStatusException.class,
