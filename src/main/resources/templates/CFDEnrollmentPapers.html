@@ -16,6 +16,7 @@
 <main class="container py-5">
   <a th:href="@{/cfdPage}">Back to CFD dashboard</a>
   <h1 class="h3 mt-3">Competition exam preparation</h1>
+  <a class="btn btn-outline-success mb-3" th:href="@{/cfd/enrollmentResults}">4. Validate and publish competition results</a>
   <p class="text-muted">Prepare papers and teacher assignments for registered candidates with anonymization codes.</p>
   <div class="alert alert-info" th:if="${competition == null}" role="status">Create a competition before preparing papers.</div>
   <section class="card" th:if="${competition != null}">
@@ -38,7 +39,7 @@
           <button type="submit" class="btn btn-outline-warning mt-2">3. Assign third markers where grades differ by 3 or more</button>
         </form>
       <p class="small text-muted mt-3">Assign registration codes in the Vice Dean workflow first. Repeat actions safely: existing records are preserved.</p>
-      <p class="alert alert-warning">This is the new enrollment model. The legacy correction editor and results publication still use the old Candidate-wide exam records.</p>
+      <p class="alert alert-warning">This is the new enrollment model. Use the new enrollment results publication screen for these papers. Legacy result publication remains separate.</p>
       <div class="table-responsive">
         <table class="table" th:if="${not #lists.isEmpty(papers)}">
           <thead><tr><th>Paper ID</th><th>Anonymous code</th><th>Subject</th><th>Assigned teachers</th></tr></thead>
