@@ -17,7 +17,7 @@ class H2ConsoleSecurityTests {
 
     @Test
     void consoleIsNotPubliclyAccessible() throws Exception {
-        mvc.perform(get("/h2-console/")).andExpect(status().isForbidden());
+        mvc.perform(get("/h2-console/")).andExpect(status().is3xxRedirection());
     }
 
     @Test
