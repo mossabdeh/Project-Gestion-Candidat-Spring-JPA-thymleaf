@@ -3,6 +3,7 @@ package ntic.tlsi.gestiondoctorat2.service;
 import ntic.tlsi.gestiondoctorat2.entities.*;
 import ntic.tlsi.gestiondoctorat2.repo.CandidatRepo;
 import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
+import ntic.tlsi.gestiondoctorat2.repo.CompetitionEnrollmentRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +22,13 @@ import java.util.*;
 public class ResultPublicationService {
     private final CandidatRepo candidates;
     private final InfoConRepo competitions;
+    private final CompetitionEnrollmentRepo enrollments;
 
-    public ResultPublicationService(CandidatRepo candidates, InfoConRepo competitions) {
+    public ResultPublicationService(CandidatRepo candidates, InfoConRepo competitions,
+                                    CompetitionEnrollmentRepo enrollments) {
         this.candidates = candidates;
         this.competitions = competitions;
+        this.enrollments = enrollments;
     }
 
     @Transactional
@@ -55,6 +59,10 @@ public class ResultPublicationService {
     private InfoConcour unpublishedCompetition() {
         InfoConcour competition = competitions.findTopByOrderByIdDesc()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "Competition not configured"));
+        if (enrollments.existsByCompetition_Id(competition.getId())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Use enrollment-scoped publication for registered candidates");
+        }
         if (competition.getResultsPublishedAt() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Results are already published");
         }
