@@ -5,6 +5,10 @@ import ntic.tlsi.gestiondoctorat2.entities.InfoConcour;
 import ntic.tlsi.gestiondoctorat2.entities.Matier;
 import ntic.tlsi.gestiondoctorat2.repo.CandidatRepo;
 import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
+import ntic.tlsi.gestiondoctorat2.repo.CompetitionEnrollmentRepo;
+import ntic.tlsi.gestiondoctorat2.repo.EnrollmentResultSnapshotRepo;
+import ntic.tlsi.gestiondoctorat2.entities.CompetitionEnrollment;
+import ntic.tlsi.gestiondoctorat2.entities.EnrollmentResultSnapshot;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +25,16 @@ import java.util.List;
 public class CandidateResultsReadService {
     private final CandidatRepo candidates;
     private final InfoConRepo competitions;
+    private final CompetitionEnrollmentRepo enrollments;
+    private final EnrollmentResultSnapshotRepo snapshots;
 
-    public CandidateResultsReadService(CandidatRepo candidates, InfoConRepo competitions) {
+    public CandidateResultsReadService(CandidatRepo candidates, InfoConRepo competitions,
+                                       CompetitionEnrollmentRepo enrollments,
+                                       EnrollmentResultSnapshotRepo snapshots) {
         this.candidates = candidates;
         this.competitions = competitions;
+        this.enrollments = enrollments;
+        this.snapshots = snapshots;
     }
 
     @Transactional(readOnly = true)
@@ -34,6 +44,27 @@ public class CandidateResultsReadService {
                         "Candidate account not found"));
         InfoConcour competition = competitions.findTopByOrderByIdDesc().orElse(null);
         if (competition == null) return CandidateResultsView.noCompetition();
+        // Enrollment-based competitions must never fall back to Candidate-wide
+        // grades: those can belong to an entirely different competition.
+        if (enrollments.existsByCompetition_Id(competition.getId())) {
+            if (competition.getResultsPublishedAt() == null) {
+                return CandidateResultsView.pending();
+            }
+            CompetitionEnrollment enrollment = enrollments
+                    .findByCompetition_IdAndCandidate_Username(competition.getId(), username)
+                    .orElse(null);
+            if (enrollment == null) return CandidateResultsView.notAvailable();
+            EnrollmentResultSnapshot published = snapshots.findByEnrollment_Id(enrollment.getId())
+                    .orElse(null);
+            if (published == null) return CandidateResultsView.notAvailable();
+            return CandidateResultsView.published(
+                    published.getAnonymousCode(),
+                    List.of(new SubjectScore(published.getFirstSubject(), published.getFirstAverage()),
+                            new SubjectScore(published.getSecondSubject(), published.getSecondAverage())),
+                    published.getOverallAverage(), published.isAdmitted());
+        }
+        // Compatibility for competitions created before enrollment migration.
+
         if (competition.getResultsPublishedAt() == null) return CandidateResultsView.pending();
         if (candidate.getCode() == null || candidate.getCode().isBlank()) {
             return CandidateResultsView.notAvailable();
