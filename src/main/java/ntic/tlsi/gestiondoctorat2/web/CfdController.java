@@ -47,6 +47,8 @@ public class CfdController extends BaseController{
     private ntic.tlsi.gestiondoctorat2.service.EnrollmentExamPreparationService enrollmentExamPreparation;
     @Autowired
     private ntic.tlsi.gestiondoctorat2.service.EnrollmentGradingService enrollmentGrading;
+    @Autowired
+    private ntic.tlsi.gestiondoctorat2.service.EnrollmentResultPublicationService enrollmentResultPublication;
 
 
 
@@ -55,6 +57,42 @@ public class CfdController extends BaseController{
     public String assignEnrollmentThirdMarkers(@RequestParam("competitionId") Long competitionId) {
         enrollmentGrading.assignThirdMarkers(competitionId);
         return "redirect:/cfd/enrollmentPapers";
+    }
+
+    @GetMapping("/enrollmentResults")
+    @PreAuthorize("hasRole('ROLE_CFD')")
+    public String enrollmentResults(Model model) {
+        conRepo.findTopByOrderByIdDesc().ifPresent(competition -> {
+            model.addAttribute("competition", competition);
+            if (competition.getResultsPublishedAt() == null) {
+                // A failed validation is a conflict, never a partial score preview.
+                // Preview only when the CFD explicitly requests it from this page.
+                model.addAttribute("previewAvailable", true);
+            }
+        });
+        return "CFDEnrollmentResults";
+    }
+
+    @GetMapping("/previewEnrollmentResults")
+    @PreAuthorize("hasRole('ROLE_CFD')")
+    public String previewEnrollmentResults(Model model) {
+        var competition = conRepo.findTopByOrderByIdDesc()
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.CONFLICT, "No competition configured"));
+        if (competition.getResultsPublishedAt() != null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.CONFLICT, "Results already published");
+        }
+        model.addAttribute("competition", competition);
+        model.addAttribute("preview", enrollmentResultPublication.preview(competition.getId()));
+        return "CFDEnrollmentResults";
+    }
+
+    @PostMapping("/publishEnrollmentResults")
+    @PreAuthorize("hasRole('ROLE_CFD')")
+    public String publishEnrollmentResults(@RequestParam("competitionId") Long competitionId) {
+        enrollmentResultPublication.publish(competitionId);
+        return "redirect:/cfd/enrollmentResults";
     }
 
     @GetMapping("/enrollmentPapers")
