@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Competition results publication | Doctorat</title>
+  <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+</head>
+<body class="bg-light">
+<header class="bg-white border-bottom p-3"><div class="container d-flex justify-content-between align-items-center">
+  <a th:href="@{/cfdPage}" class="fw-bold text-decoration-none">Doctorat · CFD</a>
+  <form method="post" th:action="@{/logout}"><button class="btn btn-outline-secondary" type="submit">Logout</button></form>
+</div></header>
+<main class="container py-5">
+  <a th:href="@{/cfd/enrollmentPapers}">Back to exam preparation</a>
+  <h1 class="h3 mt-3">Competition results publication</h1>
+  <p class="text-muted">Review validated enrollment averages and rankings before publishing.</p>
+  <p th:if="${competition == null}" class="alert alert-info">No competition is configured.</p>
+  <section th:if="${competition != null}" class="card">
+    <div class="card-body">
+      <h2 class="h5" th:text="${competition.specialite}">Competition</h2>
+      <p th:if="${competition.resultsPublishedAt != null}" class="alert alert-success" role="status">
+        Official results have been published. The published snapshot cannot be recalculated.</p>
+      <div th:if="${competition.resultsPublishedAt == null}">
+        <p class="small text-muted">Every registered candidate needs two complete subject papers and any required third grade.</p>
+        <a th:href="@{/cfd/previewEnrollmentResults}" class="btn btn-outline-primary mb-3">Validate and preview ranking</a>
+        <div th:if="${preview != null}">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead><tr><th>Rank</th><th>Code</th><th>First subject /20</th><th>Second subject /20</th><th>Overall /20</th><th>Decision</th></tr></thead>
+              <tbody><tr th:each="entry : ${preview}">
+                <td th:text="${entry.rank}">1</td><td th:text="${entry.anonymousCode}">0000000</td>
+                <td th:text="${entry.firstAverage}">0.00</td><td th:text="${entry.secondAverage}">0.00</td>
+                <td th:text="${entry.overallAverage}">0.00</td>
+                <td th:text="${entry.admitted ? 'Admitted' : 'Not admitted'}">Decision</td>
+              </tr></tbody>
+            </table>
+          </div>
+          <form method="post" th:action="@{/cfd/publishEnrollmentResults}">
+            <input type="hidden" name="competitionId" th:value="${competition.id}">
+            <button class="btn btn-danger" type="submit">Publish official results</button>
+          </form>
+          <p class="small text-muted mt-2">Publishing recalculates and validates current grades atomically before saving the permanent snapshot.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
