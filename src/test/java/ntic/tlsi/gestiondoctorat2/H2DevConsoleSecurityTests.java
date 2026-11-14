@@ -35,6 +35,10 @@ class H2DevConsoleSecurityTests {
     @Test
     @WithMockUser(roles = "ADMIN")
     void adminMayAccessConsoleInDev() throws Exception {
-        mvc.perform(get("/h2-console/")).andExpect(status().isOk());
+        // MockMvc does not dispatch to the H2 console servlet itself; check
+        // that Spring Security allows the request past authorization.
+        int statusCode = mvc.perform(get("/h2-console/")).andReturn().getResponse().getStatus();
+        assertNotEquals(403, statusCode);
+        assertNotEquals(302, statusCode);
     }
 }
