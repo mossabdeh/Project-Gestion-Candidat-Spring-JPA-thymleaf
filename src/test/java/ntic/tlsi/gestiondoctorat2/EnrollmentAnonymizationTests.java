@@ -125,7 +125,7 @@ class EnrollmentAnonymizationTests {
         mvc.perform(post("/vd/assignEnrollmentCodes").with(csrf())
                 .param("competitionId", comp.getId().toString()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/vd/enrollmentCodes"));
+                .andExpect(redirectedUrl("/vd/enrollmentCodes?competitionId=" + comp.getId()));
     }
 
     @Test
