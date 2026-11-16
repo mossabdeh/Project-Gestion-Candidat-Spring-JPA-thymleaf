@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Max;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -31,6 +32,12 @@ public class InfoConcour {
     private Date DateConcour;
     private java.time.Instant resultsPublishedAt;
 
+    // Local competition time in Europe/Paris. Opens inclusive; closes exclusive.
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime registrationOpensAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime registrationClosesAt;
+
     // No place because it happen only in one departelent NTIC
     @ManyToOne
     private VD vd ;
@@ -45,6 +52,16 @@ public class InfoConcour {
         Matier1 = matier1;
         Matier2 = matier2;
         DateConcour = dateConcour;
+    }
+
+    @AssertTrue(message = "Registration must open before it closes, no later than the exam day")
+    public boolean isRegistrationWindowValid() {
+        if (registrationOpensAt == null && registrationClosesAt == null) return true; // legacy records
+        return registrationOpensAt != null && registrationClosesAt != null
+                && registrationOpensAt.isBefore(registrationClosesAt)
+                && DateConcour != null
+                && !registrationClosesAt.toLocalDate().isAfter(
+                        DateConcour.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate());
     }
 
     @AssertTrue(message = "matier1 and matier2 should have different values")
