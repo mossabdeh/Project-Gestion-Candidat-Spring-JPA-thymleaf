@@ -107,7 +107,7 @@ class EnrollmentExamPreparationTests {
     }
 
     @Test
-    void publishedAndHistoricalCompetitionsCannotBePrepared() {
+    void publishedCompetitionCannotBePreparedButPreviousCan() {
         InfoConcour closed = competition(true);
         registration(closed, candidate(), "0000003");
         assertEquals(org.springframework.http.HttpStatus.CONFLICT,
@@ -116,9 +116,7 @@ class EnrollmentExamPreparationTests {
         InfoConcour previous = competition(false);
         registration(previous, candidate(), "0000004");
         competition(false);
-        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
-                assertThrows(ResponseStatusException.class,
-                        () -> preparation.initializePapers(previous.getId())).getStatusCode());
+        assertEquals(2, preparation.initializePapers(previous.getId()));
     }
 
     @Test
