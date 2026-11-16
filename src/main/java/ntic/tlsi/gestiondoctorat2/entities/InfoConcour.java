@@ -57,11 +57,13 @@ public class InfoConcour {
     @AssertTrue(message = "Registration must open before it closes, no later than the exam day")
     public boolean isRegistrationWindowValid() {
         if (registrationOpensAt == null && registrationClosesAt == null) return true; // legacy records
-        return registrationOpensAt != null && registrationClosesAt != null
-                && registrationOpensAt.isBefore(registrationClosesAt)
-                && DateConcour != null
-                && !registrationClosesAt.toLocalDate().isAfter(
-                        DateConcour.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate());
+        if (registrationOpensAt == null || registrationClosesAt == null || DateConcour == null
+                || !registrationOpensAt.isBefore(registrationClosesAt)) return false;
+        // Hibernate may hydrate DATE columns as java.sql.Date, whose toInstant() throws.
+        java.time.LocalDate examDay = DateConcour instanceof java.sql.Date sqlDate
+                ? sqlDate.toLocalDate()
+                : DateConcour.toInstant().atZone(java.time.ZoneId.of("Europe/Paris")).toLocalDate();
+        return !registrationClosesAt.toLocalDate().isAfter(examDay);
     }
 
     @AssertTrue(message = "matier1 and matier2 should have different values")
