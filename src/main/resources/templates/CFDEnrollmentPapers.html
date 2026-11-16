@@ -16,7 +16,16 @@
 <main class="container py-5">
   <a th:href="@{/cfdPage}">Back to CFD dashboard</a>
   <h1 class="h3 mt-3">Competition exam preparation</h1>
-  <a class="btn btn-outline-success mb-3" th:href="@{/cfd/enrollmentResults}">4. Validate and publish competition results</a>
+  <a class="btn btn-outline-success mb-3" th:href="@{/cfd/enrollmentResults(competitionId=${competition != null ? competition.id : null})}">4. Validate and publish competition results</a>
+  <form method="get" th:action="@{/cfd/enrollmentPapers}" class="mb-3" th:if="${not #lists.isEmpty(competitions)}">
+    <label for="competitionId">Choose competition</label>
+    <select id="competitionId" name="competitionId" onchange="this.form.submit()">
+      <option th:each="item : ${competitions}" th:value="${item.id}"
+              th:selected="${competition != null and item.id == competition.id}"
+              th:text="|${item.specialite} (#${item.id})|"></option>
+    </select>
+    <button type="submit">View</button>
+  </form>
   <p class="text-muted">Prepare papers and teacher assignments for registered candidates with anonymization codes.</p>
   <div class="alert alert-info" th:if="${competition == null}" role="status">Create a competition before preparing papers.</div>
   <section class="card" th:if="${competition != null}">
