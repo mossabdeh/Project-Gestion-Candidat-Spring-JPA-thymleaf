@@ -39,10 +39,19 @@ public class CandidateResultsReadService {
 
     @Transactional(readOnly = true)
     public CandidateResultsView readFor(String username) {
+        return readFor(username, null);
+    }
+
+    @Transactional(readOnly = true)
+    public CandidateResultsView readFor(String username, Long competitionId) {
         Candidat candidate = candidates.findCandidatByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Candidate account not found"));
-        InfoConcour competition = competitions.findTopByOrderByIdDesc().orElse(null);
+        InfoConcour competition = competitionId == null
+                ? competitions.findTopByOrderByIdDesc().orElse(null)
+                : competitions.findById(competitionId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Competition not found"));
         if (competition == null) return CandidateResultsView.noCompetition();
         // Enrollment-based competitions must never fall back to Candidate-wide
         // grades: those can belong to an entirely different competition.
@@ -62,6 +71,12 @@ public class CandidateResultsReadService {
                     List.of(new SubjectScore(published.getFirstSubject(), published.getFirstAverage()),
                             new SubjectScore(published.getSecondSubject(), published.getSecondAverage())),
                     published.getOverallAverage(), published.isAdmitted());
+        }
+        // Legacy Candidate-wide scores cannot be attributed to a selected historical competition.
+        // Only the default latest competition may use this compatibility path.
+        if (competitionId != null &&
+                competitions.findTopByOrderByIdDesc().map(c -> !c.getId().equals(competitionId)).orElse(true)) {
+            return CandidateResultsView.notAvailable();
         }
         // Compatibility for competitions created before enrollment migration.
 
