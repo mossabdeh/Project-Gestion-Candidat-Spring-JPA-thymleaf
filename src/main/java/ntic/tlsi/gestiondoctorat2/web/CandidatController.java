@@ -52,6 +52,7 @@ public class CandidatController extends BaseController{
             model.addAttribute("lastConcour", competition);
             model.addAttribute("enrolled", enrollmentService.isRegistered(
                     competition.getId(), authentication.getName()));
+            model.addAttribute("registrationOpen", enrollmentService.registrationOpen(competition));
         });
         return "CandidatConcourInfo";
     }

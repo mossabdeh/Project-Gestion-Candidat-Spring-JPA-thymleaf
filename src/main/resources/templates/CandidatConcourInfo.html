@@ -27,16 +27,18 @@
     <dl class="detail-grid">
       <div><dt>Available places</dt><dd th:text="${lastConcour.nbrPostes}">2</dd></div>
       <div><dt>Competition date</dt><dd th:text="${lastConcour.dateConcour}">Date</dd></div>
+      <div><dt>Registration opens (Paris)</dt><dd th:text="${lastConcour.registrationOpensAt} ?: 'Not configured'">Date</dd></div>
+      <div><dt>Registration closes (Paris)</dt><dd th:text="${lastConcour.registrationClosesAt} ?: 'Not configured'">Date</dd></div>
       <div><dt>Common subject</dt><dd th:text="${lastConcour.matier1}">Subject 1</dd></div>
       <div><dt>Speciality subject</dt><dd th:text="${lastConcour.matier2}">Subject 2</dd></div>
     </dl>
     <div class="enrollment-status" role="status">
       <p th:if="${enrolled == true}"><strong>Registered</strong> — Your account is enrolled in this competition.</p>
-      <p th:if="${enrolled != true and lastConcour.resultsPublishedAt != null}">Registration is closed because results have been published.</p>
-      <p th:if="${enrolled != true and lastConcour.resultsPublishedAt == null}">You are not registered for this competition yet.</p>
+      <p th:if="${enrolled != true and registrationOpen != true}">Registration is currently closed.</p>
+      <p th:if="${enrolled != true and registrationOpen == true}">You are not registered for this competition yet.</p>
     </div>
     <div class="panel-actions">
-      <form method="post" th:action="@{/candidat/register}" th:if="${enrolled != true and lastConcour.resultsPublishedAt == null}">
+      <form method="post" th:action="@{/candidat/register}" th:if="${enrolled != true and registrationOpen == true}">
         <input type="hidden" name="competitionId" th:value="${lastConcour.id}">
         <button type="submit" class="button button-primary">Register for competition</button>
       </form>

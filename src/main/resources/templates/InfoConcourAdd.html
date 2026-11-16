@@ -97,6 +97,17 @@
                                 <input class="form-control" type="date" name="dateConcour" th:value="${infoConcour.dateConcour != null ? #dates.format(infoConcour.dateConcour, 'yyyy-MM-dd') : ''}">
                                 <span class="text-danger" th:errors="${infoConcour.dateConcour}"></span>
                             </div>
+                            <div class="form-group mt-1">
+                                <label for="registrationOpensAt"><b>Registration opens (Paris time)</b></label>
+                                <input id="registrationOpensAt" class="form-control" type="datetime-local" th:field="*{registrationOpensAt}" required>
+                                <span class="text-danger" th:errors="*{registrationOpensAt}"></span>
+                            </div>
+                            <div class="form-group mt-1">
+                                <label for="registrationClosesAt"><b>Registration closes (Paris time)</b></label>
+                                <input id="registrationClosesAt" class="form-control" type="datetime-local" th:field="*{registrationClosesAt}" required>
+                                <span class="text-danger" th:errors="*{registrationClosesAt}"></span>
+                            </div>
+                            <div class="text-danger" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
                             <div class="text-center mt-2">
                                 <button type="submit" class="btn btn-success">Save</button>
                             </div>
