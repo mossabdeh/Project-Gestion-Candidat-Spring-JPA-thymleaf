@@ -7,6 +7,8 @@ import ntic.tlsi.gestiondoctorat2.repo.CandidatRepo;
 import ntic.tlsi.gestiondoctorat2.repo.CompetitionEnrollmentRepo;
 import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
 import org.springframework.http.HttpStatus;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +26,17 @@ public class CompetitionEnrollmentService {
         this.enrollments = enrollments;
         this.competitions = competitions;
         this.candidates = candidates;
+    }
+
+    private static final ZoneId COMPETITION_ZONE = ZoneId.of("Europe/Paris");
+
+    @Transactional(readOnly = true)
+    public boolean registrationOpen(InfoConcour competition) {
+        if (competition.getResultsPublishedAt() != null || competition.getRegistrationOpensAt() == null
+                || competition.getRegistrationClosesAt() == null) return false;
+        LocalDateTime now = LocalDateTime.now(COMPETITION_ZONE);
+        return !now.isBefore(competition.getRegistrationOpensAt())
+                && now.isBefore(competition.getRegistrationClosesAt());
     }
 
     @Transactional(readOnly = true)
@@ -45,9 +58,9 @@ public class CompetitionEnrollmentService {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Registration is only available for the latest competition");
         }
-        if (competition.getResultsPublishedAt() != null) {
+        if (!registrationOpen(competition)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Registration is closed after results are published");
+                    "Registration is not open for this competition");
         }
         Candidat candidate = candidates.findCandidatByUsername(candidateUsername)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
