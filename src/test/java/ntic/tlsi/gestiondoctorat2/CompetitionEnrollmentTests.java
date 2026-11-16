@@ -43,7 +43,7 @@ class CompetitionEnrollmentTests {
         mvc.perform(post("/candidat/register").param("competitionId", comp.getId().toString())
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/candidat/getConcourInfo"));
+                .andExpect(redirectedUrl("/candidat/getConcourInfo?competitionId=" + comp.getId()));
         mvc.perform(post("/candidat/register").param("competitionId", comp.getId().toString())
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection());
@@ -71,7 +71,7 @@ class CompetitionEnrollmentTests {
     }
 
     @Test
-    void publishedOrOldCompetitionCannotAcceptNewRegistration() {
+    void publishedCompetitionRejectsRegistrationButOlderOpenCompetitionCanAccept() {
         Candidat alice = candidate("enroll-closed-" + UUID.randomUUID());
         InfoConcour published = competition(true);
         assertEquals(org.springframework.http.HttpStatus.CONFLICT,
@@ -79,9 +79,8 @@ class CompetitionEnrollmentTests {
                     () -> registration.register(published.getId(), alice.getUsername())).getStatusCode());
         InfoConcour old = competition(false);
         competition(false);
-        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
-                assertThrows(ResponseStatusException.class,
-                    () -> registration.register(old.getId(), alice.getUsername())).getStatusCode());
+        registration.register(old.getId(), alice.getUsername());
+        assertTrue(registration.isRegistered(old.getId(), alice.getUsername()));
     }
 
     @Test
