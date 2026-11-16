@@ -69,7 +69,7 @@ class EnrollmentGradingTests {
         competition(false);
         grading.recordGrade(assigned.getId(), owner.getUsername(), 12);
         assertEquals(12.0, corrections.findById(assigned.getId()).orElseThrow().getGrade());
-        assertNull(assigned.getGrade());
+        assertEquals(12.0, assigned.getGrade());
     }
 
     @Test
