@@ -118,6 +118,9 @@ class EnrollmentResultPublicationTests {
         publication.publish(next.getId());
         assertEquals(CandidateResultsReadService.CandidateResultsView.Status.NOT_AVAILABLE,
                 candidateView.readFor(participant.getUsername()).status());
+        var history = candidateView.readFor(participant.getUsername(), previous.getId());
+        assertEquals(CandidateResultsReadService.CandidateResultsView.Status.PUBLISHED, history.status());
+        assertEquals(18.0, history.overallAverage().doubleValue());
         assertEquals(4.0, candidateView.readFor(other.getUsername()).overallAverage().doubleValue());
     }
 
