@@ -56,7 +56,7 @@ class EnrollmentGradingTests {
     }
 
     @Test
-    void teacherCannotChangeAnotherTeachersGradeOrAnOldCompetition() {
+    void teacherCannotChangeAnotherTeachersGradeButMayGradeOlderOpenCompetition() {
         InfoConcour oldCompetition = competition(false);
         EnrollmentExamPaper paper = paper(oldCompetition, Matier.ALGO);
         Enseignant owner = teacher(Matier.ALGO);
@@ -67,10 +67,8 @@ class EnrollmentGradingTests {
                         () -> grading.recordGrade(assigned.getId(), stranger.getUsername(), 12))
                         .getStatusCode());
         competition(false);
-        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
-                assertThrows(ResponseStatusException.class,
-                        () -> grading.recordGrade(assigned.getId(), owner.getUsername(), 12))
-                        .getStatusCode());
+        grading.recordGrade(assigned.getId(), owner.getUsername(), 12);
+        assertEquals(12.0, corrections.findById(assigned.getId()).orElseThrow().getGrade());
         assertNull(assigned.getGrade());
     }
 
