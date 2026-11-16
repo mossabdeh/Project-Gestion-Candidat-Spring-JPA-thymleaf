@@ -109,9 +109,7 @@ public class EnrollmentGradingService {
     private InfoConcour requireEditable(Long competitionId) {
         InfoConcour competition = competitions.findLockedById(competitionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not found"));
-        InfoConcour current = competitions.findTopByOrderByIdDesc()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "No competition configured"));
-        if (!competition.getId().equals(current.getId()) || competition.getResultsPublishedAt() != null) {
+        if (competition.getResultsPublishedAt() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition is not open for grading");
         }
         return competition;
