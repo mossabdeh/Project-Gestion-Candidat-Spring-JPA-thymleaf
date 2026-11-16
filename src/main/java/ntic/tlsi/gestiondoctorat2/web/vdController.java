@@ -55,6 +55,15 @@ public class vdController extends BaseController{
 
     @PostMapping("/saveInfoConcour")
     public String saveInfoConcour(Model model , @Valid InfoConcour infoConcour , BindingResult bindingResult, Authentication authentication){
+        if (infoConcour.getRegistrationOpensAt() == null) {
+            bindingResult.rejectValue("registrationOpensAt", "required", "Opening date and time required");
+        }
+        if (infoConcour.getRegistrationClosesAt() == null) {
+            bindingResult.rejectValue("registrationClosesAt", "required", "Closing date and time required");
+        }
+        if (!infoConcour.isRegistrationWindowValid()) {
+            bindingResult.reject("invalidWindow", "Registration must open before closing, no later than exam day");
+        }
         if (bindingResult.hasErrors()) return "InfoConcourAdd";
         // getting VD name from authentication
         String nameVD = authentication.getName();
