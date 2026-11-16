@@ -119,6 +119,38 @@ class CompetitionEnrollmentTests {
     }
 
     @Test
+    @WithMockUser(username = "enroll-closed-ui", roles = "CANDIDAT")
+    void closedWindowHidesRegistrationForm() throws Exception {
+        candidate("enroll-closed-ui");
+        InfoConcour comp = competition(false);
+        comp.setRegistrationClosesAt(parisNow().minusMinutes(1));
+        comp.setRegistrationOpensAt(parisNow().minusDays(1));
+        competitions.saveAndFlush(comp);
+        String html = mvc.perform(get("/candidat/getConcourInfo"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("registrationOpen", false))
+                .andReturn().getResponse().getContentAsString();
+        assertTrue(html.contains("Registration is currently closed"));
+        assertFalse(html.contains("Register for competition"));
+    }
+
+    @Test
+    @WithMockUser(username = "vice-dean", roles = "VD")
+    void invalidCompetitionWindowReturnsValidationErrors() throws Exception {
+        mvc.perform(post("/vd/saveInfoConcour").with(csrf())
+                        .param("nbrPostes", "2")
+                        .param("specialite", "TEST")
+                        .param("matier1", "ALGO")
+                        .param("matier2", "EDL")
+                        .param("dateConcour", "2030-01-20")
+                        .param("registrationOpensAt", "2030-01-19T14:00")
+                        .param("registrationClosesAt", "2030-01-19T13:00"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("InfoConcourAdd"))
+                .andExpect(model().hasErrors());
+    }
+
+    @Test
     @WithMockUser(username = "enroll-no-account", roles = "CANDIDAT")
     void missingAccountAndMissingCompetitionAreNotCreated() {
         InfoConcour comp = competition(false);
