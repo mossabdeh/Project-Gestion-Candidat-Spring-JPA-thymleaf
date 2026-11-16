@@ -135,9 +135,7 @@ public class EnrollmentExamPreparationService {
     private InfoConcour openCompetition(Long competitionId) {
         InfoConcour competition = competitions.findLockedById(competitionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not found"));
-        InfoConcour latest = competitions.findTopByOrderByIdDesc()
-                .orElseThrow(() -> conflict("No competition available"));
-        if (!competition.getId().equals(latest.getId()) || competition.getResultsPublishedAt() != null) {
+        if (competition.getResultsPublishedAt() != null) {
             throw conflict("Only the latest unpublished competition may be prepared");
         }
         return competition;
