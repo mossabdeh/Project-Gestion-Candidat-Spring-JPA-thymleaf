@@ -134,6 +134,46 @@ class EnrollmentGradingTests {
     }
 
     @Test
+    @WithMockUser(username = "legacy-teacher", roles = "ENSEIGNANT")
+    void legacyCorrectionScreenRedirectsToCurrentAssignments() throws Exception {
+        mvc.perform(get("/enseignant/getCorrection"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/enseignant/enrollmentGrades"));
+    }
+
+    @Test
+    @WithMockUser(username = "legacy-teacher", roles = "ENSEIGNANT")
+    void legacySaveNotesIsRetiredAndCannotModifyGrades() throws Exception {
+        InfoConcour competition = competition(false);
+        EnrollmentExamPaper paper = paper(competition, Matier.ALGO);
+        Enseignant assignedTeacher = teacher(Matier.ALGO);
+        EnrollmentExamCorrection assigned = corrections.saveAndFlush(
+                new EnrollmentExamCorrection(paper, assignedTeacher));
+        mvc.perform(post("/enseignant/saveNotes").with(csrf())
+                        .param("correctionIds", assigned.getId().toString())
+                        .param("notes", "19"))
+                .andExpect(status().isGone());
+        assertNull(corrections.findById(assigned.getId()).orElseThrow().getGrade());
+    }
+
+    @Test
+    @WithMockUser(username = "legacy-candidate", roles = "CANDIDAT")
+    void candidateCannotAccessLegacyTeacherEndpoints() throws Exception {
+        mvc.perform(get("/enseignant/getCorrection")).andExpect(status().isForbidden());
+        mvc.perform(post("/enseignant/saveNotes").with(csrf())
+                .param("correctionIds", "1").param("notes", "10"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "legacy-teacher", roles = "ENSEIGNANT")
+    void legacySaveNotesStillRequiresCsrf() throws Exception {
+        mvc.perform(post("/enseignant/saveNotes")
+                .param("correctionIds", "1").param("notes", "10"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser(username = "test-teacher", roles = "ENSEIGNANT")
     void gradeEntryRequiresCsrfAndTheTeacherRole() throws Exception {
         mvc.perform(get("/enseignant/enrollmentGrades"))
