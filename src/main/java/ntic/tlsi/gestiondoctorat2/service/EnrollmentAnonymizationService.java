@@ -35,9 +35,7 @@ public class EnrollmentAnonymizationService {
         // Lock the competition so concurrent allocations cannot issue duplicates.
         InfoConcour competition = competitions.findLockedById(competitionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not found"));
-        InfoConcour latest = competitions.findTopByOrderByIdDesc()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "No competition available"));
-        if (!competition.getId().equals(latest.getId()) || competition.getResultsPublishedAt() != null) {
+        if (competition.getResultsPublishedAt() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition is closed for code allocation");
         }
 

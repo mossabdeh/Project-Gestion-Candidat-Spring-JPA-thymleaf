@@ -14,6 +14,15 @@
 <main class="container py-5">
   <div class="mb-4"><a th:href="@{/vdPage}">Back to dashboard</a><h1 class="h3 mt-3">Competition anonymization codes</h1>
     <p class="text-muted">Codes are scoped to individual competition registrations and are not published to candidates here.</p></div>
+  <form method="get" th:action="@{/vd/enrollmentCodes}" class="mb-3" th:if="${not #lists.isEmpty(competitions)}">
+    <label for="competitionId">Choose competition</label>
+    <select id="competitionId" name="competitionId" onchange="this.form.submit()">
+      <option th:each="item : ${competitions}" th:value="${item.id}"
+              th:selected="${competition != null and item.id == competition.id}"
+              th:text="|${item.specialite} (#${item.id})|"></option>
+    </select>
+    <button type="submit">View</button>
+  </form>
   <div th:if="${competition == null}" class="alert alert-info" role="status">No competition is configured.</div>
   <section th:if="${competition != null}" class="card">
     <div class="card-body">

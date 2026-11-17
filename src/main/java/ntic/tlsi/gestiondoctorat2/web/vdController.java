@@ -47,6 +47,13 @@ public class vdController extends BaseController{
         this.serviceUser = serviceUser;
     }
 
+    private Optional<InfoConcour> chosenCompetition(Long competitionId) {
+        if (competitionId == null) return conRepo.findTopByOrderByIdDesc();
+        return Optional.of(conRepo.findById(competitionId)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Competition not found")));
+    }
+
     @GetMapping("/InfoConcourAdd")
     public String VDInfoConcourAdd(Model model){
         model.addAttribute("infoConcour",new InfoConcour());
@@ -103,8 +110,11 @@ public class vdController extends BaseController{
 
     @GetMapping("/enrollmentCodes")
     @PreAuthorize("hasRole('ROLE_VD')")
-    public String enrollmentCodes(Model model) {
-        conRepo.findTopByOrderByIdDesc().ifPresent(competition -> {
+    public String enrollmentCodes(Model model,
+                                  @RequestParam(name = "competitionId", required = false) Long competitionId) {
+        model.addAttribute("competitions", conRepo.findAll(org.springframework.data.domain.Sort.by(
+                org.springframework.data.domain.Sort.Direction.DESC, "id")));
+        chosenCompetition(competitionId).ifPresent(competition -> {
             model.addAttribute("competition", competition);
             model.addAttribute("enrollmentCodes",
                     anonymizationService.listCodes(competition.getId()));
@@ -116,7 +126,7 @@ public class vdController extends BaseController{
     @PreAuthorize("hasRole('ROLE_VD')")
     public String assignEnrollmentCodes(@RequestParam("competitionId") Long competitionId) {
         anonymizationService.assignCodes(competitionId);
-        return "redirect:/vd/enrollmentCodes";
+        return "redirect:/vd/enrollmentCodes?competitionId=" + competitionId;
     }
 
     @GetMapping("/getVDs")

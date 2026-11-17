@@ -75,7 +75,7 @@ class EnrollmentAnonymizationTests {
     }
 
     @Test
-    void rejectsPublishedOrHistoricalCompetitions() {
+    void rejectsPublishedButAllowsPreviousUnpublishedCompetitions() {
         InfoConcour published = competition(true);
         enrollments.saveAndFlush(new CompetitionEnrollment(published, candidate()));
         assertEquals(org.springframework.http.HttpStatus.CONFLICT,
@@ -85,9 +85,7 @@ class EnrollmentAnonymizationTests {
         InfoConcour previous = competition(false);
         enrollments.saveAndFlush(new CompetitionEnrollment(previous, candidate()));
         competition(false);
-        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
-                assertThrows(ResponseStatusException.class,
-                    () -> codes.assignCodes(previous.getId())).getStatusCode());
+        assertEquals(1, codes.assignCodes(previous.getId()));
     }
 
     @Test
@@ -127,7 +125,7 @@ class EnrollmentAnonymizationTests {
         mvc.perform(post("/vd/assignEnrollmentCodes").with(csrf())
                 .param("competitionId", comp.getId().toString()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/vd/enrollmentCodes"));
+                .andExpect(redirectedUrl("/vd/enrollmentCodes?competitionId=" + comp.getId()));
     }
 
     @Test

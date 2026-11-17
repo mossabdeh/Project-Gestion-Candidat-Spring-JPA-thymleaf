@@ -52,17 +52,27 @@ public class CfdController extends BaseController{
 
 
 
+    private Optional<InfoConcour> chosenCompetition(Long competitionId) {
+        if (competitionId == null) return conRepo.findTopByOrderByIdDesc();
+        return Optional.of(conRepo.findById(competitionId)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Competition not found")));
+    }
+
     @PostMapping("/assignEnrollmentThirdMarkers")
     @PreAuthorize("hasRole('ROLE_CFD')")
     public String assignEnrollmentThirdMarkers(@RequestParam("competitionId") Long competitionId) {
         enrollmentGrading.assignThirdMarkers(competitionId);
-        return "redirect:/cfd/enrollmentPapers";
+        return "redirect:/cfd/enrollmentPapers?competitionId=" + competitionId;
     }
 
     @GetMapping("/enrollmentResults")
     @PreAuthorize("hasRole('ROLE_CFD')")
-    public String enrollmentResults(Model model) {
-        conRepo.findTopByOrderByIdDesc().ifPresent(competition -> {
+    public String enrollmentResults(Model model,
+                                    @RequestParam(name = "competitionId", required = false) Long competitionId) {
+        model.addAttribute("competitions", conRepo.findAll(org.springframework.data.domain.Sort.by(
+                org.springframework.data.domain.Sort.Direction.DESC, "id")));
+        chosenCompetition(competitionId).ifPresent(competition -> {
             model.addAttribute("competition", competition);
             if (competition.getResultsPublishedAt() == null) {
                 // A failed validation is a conflict, never a partial score preview.
@@ -75,8 +85,11 @@ public class CfdController extends BaseController{
 
     @GetMapping("/previewEnrollmentResults")
     @PreAuthorize("hasRole('ROLE_CFD')")
-    public String previewEnrollmentResults(Model model) {
-        var competition = conRepo.findTopByOrderByIdDesc()
+    public String previewEnrollmentResults(Model model,
+                                          @RequestParam(name = "competitionId", required = false) Long competitionId) {
+        model.addAttribute("competitions", conRepo.findAll(org.springframework.data.domain.Sort.by(
+                org.springframework.data.domain.Sort.Direction.DESC, "id")));
+        var competition = chosenCompetition(competitionId)
                 .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
                         org.springframework.http.HttpStatus.CONFLICT, "No competition configured"));
         if (competition.getResultsPublishedAt() != null) {
@@ -92,13 +105,16 @@ public class CfdController extends BaseController{
     @PreAuthorize("hasRole('ROLE_CFD')")
     public String publishEnrollmentResults(@RequestParam("competitionId") Long competitionId) {
         enrollmentResultPublication.publish(competitionId);
-        return "redirect:/cfd/enrollmentResults";
+        return "redirect:/cfd/enrollmentResults?competitionId=" + competitionId;
     }
 
     @GetMapping("/enrollmentPapers")
     @PreAuthorize("hasRole('ROLE_CFD')")
-    public String enrollmentPapers(Model model) {
-        conRepo.findTopByOrderByIdDesc().ifPresent(competition -> {
+    public String enrollmentPapers(Model model,
+                                   @RequestParam(name = "competitionId", required = false) Long competitionId) {
+        model.addAttribute("competitions", conRepo.findAll(org.springframework.data.domain.Sort.by(
+                org.springframework.data.domain.Sort.Direction.DESC, "id")));
+        chosenCompetition(competitionId).ifPresent(competition -> {
             model.addAttribute("competition", competition);
             model.addAttribute("papers", enrollmentExamPreparation.listPapers(competition.getId()));
         });
@@ -109,14 +125,14 @@ public class CfdController extends BaseController{
     @PreAuthorize("hasRole('ROLE_CFD')")
     public String initEnrollmentPapers(@RequestParam("competitionId") Long competitionId) {
         enrollmentExamPreparation.initializePapers(competitionId);
-        return "redirect:/cfd/enrollmentPapers";
+        return "redirect:/cfd/enrollmentPapers?competitionId=" + competitionId;
     }
 
     @PostMapping("/initEnrollmentCorrections")
     @PreAuthorize("hasRole('ROLE_CFD')")
     public String initEnrollmentCorrections(@RequestParam("competitionId") Long competitionId) {
         enrollmentExamPreparation.initializeCorrections(competitionId);
-        return "redirect:/cfd/enrollmentPapers";
+        return "redirect:/cfd/enrollmentPapers?competitionId=" + competitionId;
     }
 
     @PostMapping("/initCopie")

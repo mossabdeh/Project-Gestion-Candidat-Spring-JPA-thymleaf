@@ -16,6 +16,13 @@
     <p>View your official competition outcome when it is published.</p>
   </header>
 
+  <form method="get" th:action="@{/candidat/ResultatCandidat}" th:if="${not #lists.isEmpty(competitions)}" class="panel-actions">
+    <label for="competitionId">Competition</label>
+    <select id="competitionId" name="competitionId">
+      <option th:each="item : ${competitions}" th:value="${item.id}" th:selected="${selectedCompetitionId != null and item.id == selectedCompetitionId}" th:text="|${item.specialite} (#${item.id})|"></option>
+    </select>
+    <button type="submit" class="button button-outline">View results</button>
+  </form>
   <section class="empty-panel" role="status" th:if="${results.status.name() == 'NO_COMPETITION'}">
     <span class="empty-icon" aria-hidden="true">▤</span>
     <h2>No competition announced</h2>

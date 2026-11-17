@@ -15,6 +15,13 @@
     <h1>Competition details</h1>
     <p>Find the most recently announced doctoral competition.</p>
   </header>
+  <form method="get" th:action="@{/candidat/getConcourInfo}" th:if="${not #lists.isEmpty(competitions)}" class="panel-actions">
+    <label for="competitionId">Competition</label>
+    <select id="competitionId" name="competitionId">
+      <option th:each="item : ${competitions}" th:value="${item.id}" th:selected="${lastConcour != null and item.id == lastConcour.id}" th:text="|${item.specialite} (#${item.id})|"></option>
+    </select>
+    <button type="submit" class="button button-outline">View competition</button>
+  </form>
   <section class="detail-panel" th:if="${lastConcour != null}" aria-labelledby="competition-title">
     <div class="panel-heading">
       <span class="panel-icon" aria-hidden="true">▤</span>
@@ -42,7 +49,7 @@
         <input type="hidden" name="competitionId" th:value="${lastConcour.id}">
         <button type="submit" class="button button-primary">Register for competition</button>
       </form>
-      <a class="button button-outline" th:href="@{/candidat/ResultatCandidat}">Go to my results</a>
+      <a class="button button-outline" th:href="@{/candidat/ResultatCandidat(competitionId=${lastConcour.id})}">Go to my results</a>
       <a class="button button-outline" th:href="@{/candidatPage}">Back to dashboard</a>
     </div>
   </section>

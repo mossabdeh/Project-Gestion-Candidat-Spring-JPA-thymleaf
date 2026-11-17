@@ -11,8 +11,17 @@
   <form method="post" th:action="@{/logout}"><button class="btn btn-outline-secondary" type="submit">Logout</button></form>
 </div></header>
 <main class="container py-5">
-  <a th:href="@{/cfd/enrollmentPapers}">Back to exam preparation</a>
+  <a th:href="@{/cfd/enrollmentPapers(competitionId=${competition != null ? competition.id : null})}">Back to exam preparation</a>
   <h1 class="h3 mt-3">Competition results publication</h1>
+  <form method="get" th:action="@{/cfd/enrollmentResults}" class="mb-3" th:if="${not #lists.isEmpty(competitions)}">
+    <label for="competitionId">Choose competition</label>
+    <select id="competitionId" name="competitionId" onchange="this.form.submit()">
+      <option th:each="item : ${competitions}" th:value="${item.id}"
+              th:selected="${competition != null and item.id == competition.id}"
+              th:text="|${item.specialite} (#${item.id})|"></option>
+    </select>
+    <button type="submit">View</button>
+  </form>
   <p class="text-muted">Review validated enrollment averages and rankings before publishing.</p>
   <p th:if="${competition == null}" class="alert alert-info">No competition is configured.</p>
   <section th:if="${competition != null}" class="card">
@@ -22,7 +31,7 @@
         Official results have been published. The published snapshot cannot be recalculated.</p>
       <div th:if="${competition.resultsPublishedAt == null}">
         <p class="small text-muted">Every registered candidate needs two complete subject papers and any required third grade.</p>
-        <a th:href="@{/cfd/previewEnrollmentResults}" class="btn btn-outline-primary mb-3">Validate and preview ranking</a>
+        <a th:href="@{/cfd/previewEnrollmentResults(competitionId=${competition.id})}" class="btn btn-outline-primary mb-3">Validate and preview ranking</a>
         <div th:if="${preview != null}">
           <div class="table-responsive">
             <table class="table table-striped">

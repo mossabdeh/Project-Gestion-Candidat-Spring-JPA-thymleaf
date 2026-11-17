@@ -43,11 +43,6 @@ public class EnrollmentResultPublicationService {
         // All preparation and grading writes lock the same competition row.
         InfoConcour competition = competitions.findLockedById(competitionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not found"));
-        InfoConcour latest = competitions.findTopByOrderByIdDesc()
-                .orElseThrow(() -> conflict("No competition configured"));
-        if (!competition.getId().equals(latest.getId())) {
-            throw conflict("Only the latest competition may be published");
-        }
         if (competition.getResultsPublishedAt() != null ||
                 snapshots.existsByEnrollment_Competition_Id(competitionId)) {
             throw conflict("Results are already published");

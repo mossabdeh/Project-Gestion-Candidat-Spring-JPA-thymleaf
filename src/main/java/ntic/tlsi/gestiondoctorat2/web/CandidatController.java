@@ -45,10 +45,20 @@ public class CandidatController extends BaseController{
         this.enrollmentService = enrollmentService;
     }
 
+    private Optional<InfoConcour> chosenCompetition(Long competitionId) {
+        if (competitionId == null) return conRepo.findTopByOrderByIdDesc();
+        return Optional.of(conRepo.findById(competitionId)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Competition not found")));
+    }
+
     @GetMapping("/getConcourInfo")
     @PreAuthorize("hasRole('ROLE_CANDIDAT')")
-    public String GetConcourInfo(Model model, Authentication authentication) {
-        conRepo.findTopByOrderByIdDesc().ifPresent(competition -> {
+    public String GetConcourInfo(Model model, Authentication authentication,
+                                    @RequestParam(name = "competitionId", required = false) Long competitionId) {
+        model.addAttribute("competitions", conRepo.findAll(org.springframework.data.domain.Sort.by(
+                org.springframework.data.domain.Sort.Direction.DESC, "id")));
+        chosenCompetition(competitionId).ifPresent(competition -> {
             model.addAttribute("lastConcour", competition);
             model.addAttribute("enrolled", enrollmentService.isRegistered(
                     competition.getId(), authentication.getName()));
@@ -62,7 +72,7 @@ public class CandidatController extends BaseController{
     public String registerForCompetition(@RequestParam("competitionId") Long competitionId,
                                          Authentication authentication) {
         enrollmentService.register(competitionId, authentication.getName());
-        return "redirect:/candidat/getConcourInfo";
+        return "redirect:/candidat/getConcourInfo?competitionId=" + competitionId;
     }
 
 
@@ -175,8 +185,12 @@ public class CandidatController extends BaseController{
     }
 
     @GetMapping("/ResultatCandidat")
-    public String ResultatCandidats(Model model, Authentication authentication) {
-        model.addAttribute("results", resultsReadService.readFor(authentication.getName()));
+    public String ResultatCandidats(Model model, Authentication authentication,
+                                   @RequestParam(name = "competitionId", required = false) Long competitionId) {
+        model.addAttribute("competitions", conRepo.findAll(org.springframework.data.domain.Sort.by(
+                org.springframework.data.domain.Sort.Direction.DESC, "id")));
+        model.addAttribute("selectedCompetitionId", competitionId);
+        model.addAttribute("results", resultsReadService.readFor(authentication.getName(), competitionId));
         return "CandidatResultats";
     }
     }
