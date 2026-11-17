@@ -155,63 +155,24 @@ public class EnseignantController extends BaseController{
         return "redirect:/enseignant/getEnseignants";
     }
 
+    /**
+     * Retired legacy endpoint: never write Candidate-wide grades here.
+     * Existing legacy records remain in storage, but new grading must use
+     * enrollment-scoped assignments.
+     */
     @PostMapping("/saveNotes")
-    public String saveNotes(@RequestParam("correctionIds") Long[] correctionIds,
-                            @RequestParam("notes") double[] notes,
-                            Authentication authentication) {
-        if (infoConRepo.findTopByOrderByIdDesc()
-                .map(c -> c.getResultsPublishedAt() != null).orElse(false)) {
-            throw new org.springframework.web.server.ResponseStatusException(
-                    org.springframework.http.HttpStatus.CONFLICT, "Published results cannot be changed");
-        }
-        if (correctionIds.length != notes.length) {
-            throw new org.springframework.web.server.ResponseStatusException(
-                    org.springframework.http.HttpStatus.BAD_REQUEST, "Each correction needs a mark");
-        }
-        for (double note : notes) {
-            if (!Double.isFinite(note) || note < 0 || note > 20) {
-                throw new org.springframework.web.server.ResponseStatusException(
-                        org.springframework.http.HttpStatus.BAD_REQUEST, "Marks must be between 0 and 20");
-            }
-        }
-        String username = authentication.getName();
-        Optional<User> enseignant = enseignantRepo.findByUsername(username);
-        Long loggedInEnseignantId = enseignant.get().getId();
-
-        // Update the notes for each correction using the provided IDs
-        for (int i = 0; i < correctionIds.length; i++) {
-            Long correctionId = correctionIds[i];
-            double note = notes[i];
-
-            Correction correction = correctionRepo.findByIdAndEnseignantId(correctionId, loggedInEnseignantId);
-            correction.setNote(note);
-            correctionRepo.save(correction);
-        }
-
-        return "redirect:/enseignant/getCorrection";
+    @PreAuthorize("hasRole('ROLE_ENSEIGNANT')")
+    public String saveNotes() {
+        throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.GONE,
+                "Legacy grading is retired; use /enseignant/enrollmentGrades");
     }
-
 
     @GetMapping("/getCorrection")
-    public String getCorrection(Model model,
-                                @RequestParam(name = "page", defaultValue = "0") int page,
-                                @RequestParam(name = "size", defaultValue = "5") int size,
-                                @RequestParam(name = "keyword", defaultValue = "") String keyword,
-                                Authentication authentication) {
-        String username = authentication.getName();
-        Optional<User> enseignant = enseignantRepo.findByUsername(username);
-        Long loggedInEnseignantId = enseignant.get().getId();
-
-        Page<Correction> pageCorrections = correctionRepo.findByEnseignantId(loggedInEnseignantId, PageRequest.of(page, size));
-        model.addAttribute("corrections", pageCorrections.getContent());
-        model.addAttribute("pages", new int[pageCorrections.getTotalPages()]);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("keyword", keyword);
-
-        return "EnseignantCopieCorrection"; // Replace "correctionPage" with the actual name of your correction page view
+    @PreAuthorize("hasRole('ROLE_ENSEIGNANT')")
+    public String getCorrection() {
+        return "redirect:/enseignant/enrollmentGrades";
     }
-
-
 
 
 }
