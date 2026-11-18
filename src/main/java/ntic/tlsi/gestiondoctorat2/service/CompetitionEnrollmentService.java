@@ -40,7 +40,9 @@ public class CompetitionEnrollmentService {
                 || competition.getRegistrationClosesAt() == null) return false;
         LocalDateTime now = LocalDateTime.now(COMPETITION_ZONE);
         return !now.isBefore(competition.getRegistrationOpensAt())
-                && now.isBefore(competition.getRegistrationClosesAt());
+                && now.isBefore(competition.getRegistrationClosesAt())
+                && !enrollments.existsByCompetition_IdAndAnonymousCodeIsNotNull(competition.getId())
+                && !papers.existsByEnrollment_Competition_Id(competition.getId());
     }
 
     @Transactional(readOnly = true)
