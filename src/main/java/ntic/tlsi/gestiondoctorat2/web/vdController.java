@@ -57,31 +57,27 @@ public class vdController extends BaseController{
     }
 
     @GetMapping("/InfoConcourAdd")
-    public String VDInfoConcourAdd(Model model){
-        model.addAttribute("infoConcour",new InfoConcour());
+    @PreAuthorize("hasRole('ROLE_VD')")
+    public String VDInfoConcourAdd(Model model) {
+        model.addAttribute("infoConcour", new CompetitionCreateForm());
         return "InfoConcourAdd";
     }
 
     @PostMapping("/saveInfoConcour")
-    public String saveInfoConcour(Model model , @Valid InfoConcour infoConcour , BindingResult bindingResult, Authentication authentication){
-        if (infoConcour.getRegistrationOpensAt() == null) {
-            bindingResult.rejectValue("registrationOpensAt", "required", "Opening date and time required");
-        }
-        if (infoConcour.getRegistrationClosesAt() == null) {
-            bindingResult.rejectValue("registrationClosesAt", "required", "Closing date and time required");
-        }
-        if (!infoConcour.isRegistrationWindowValid()) {
-            bindingResult.reject("invalidWindow", "Registration must open before closing, no later than exam day");
-        }
+    @PreAuthorize("hasRole('ROLE_VD')")
+    public String saveInfoConcour(
+            @Valid @ModelAttribute("infoConcour") CompetitionCreateForm form,
+            BindingResult bindingResult, Authentication authentication) {
         if (bindingResult.hasErrors()) return "InfoConcourAdd";
-        // getting VD name from authentication
-        String nameVD = authentication.getName();
 
-        VD vd = vdRepo.findByNom(nameVD);
-        // set vd into infoConcour
-        infoConcour.setVd(vd);
-
-        conRepo.save(infoConcour);
+        VD viceDean = vdRepo.findByUsername(authentication.getName())
+                .filter(VD.class::isInstance)
+                .map(VD.class::cast)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Vice Dean account not found"));
+        InfoConcour competition = form.toCompetition();
+        competition.setVd(viceDean);
+        conRepo.save(competition);
         return "redirect:/vdPage";
     }
 
