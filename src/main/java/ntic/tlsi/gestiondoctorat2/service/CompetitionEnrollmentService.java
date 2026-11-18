@@ -6,6 +6,7 @@ import ntic.tlsi.gestiondoctorat2.entities.InfoConcour;
 import ntic.tlsi.gestiondoctorat2.repo.CandidatRepo;
 import ntic.tlsi.gestiondoctorat2.repo.CompetitionEnrollmentRepo;
 import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
+import ntic.tlsi.gestiondoctorat2.repo.EnrollmentExamPaperRepo;
 import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -19,13 +20,16 @@ public class CompetitionEnrollmentService {
     private final CompetitionEnrollmentRepo enrollments;
     private final InfoConRepo competitions;
     private final CandidatRepo candidates;
+    private final EnrollmentExamPaperRepo papers;
 
     public CompetitionEnrollmentService(CompetitionEnrollmentRepo enrollments,
                                         InfoConRepo competitions,
-                                        CandidatRepo candidates) {
+                                        CandidatRepo candidates,
+                                        EnrollmentExamPaperRepo papers) {
         this.enrollments = enrollments;
         this.competitions = competitions;
         this.candidates = candidates;
+        this.papers = papers;
     }
 
     private static final ZoneId COMPETITION_ZONE = ZoneId.of("Europe/Paris");
@@ -60,6 +64,13 @@ public class CompetitionEnrollmentService {
                         "Candidate account not found"));
         if (enrollments.existsByCompetition_IdAndCandidate_Username(competitionId, candidateUsername)) {
             return; // Repeat POST from the same Candidate is safe.
+        }
+        // Code allocation and paper preparation lock the same competition row.
+        // Once either begins, the cohort is frozen even if the configured window is still open.
+        if (enrollments.existsByCompetition_IdAndAnonymousCodeIsNotNull(competitionId)
+                || papers.existsByEnrollment_Competition_Id(competitionId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Registration is frozen because competition preparation has started");
         }
         enrollments.saveAndFlush(new CompetitionEnrollment(competition, candidate));
     }
