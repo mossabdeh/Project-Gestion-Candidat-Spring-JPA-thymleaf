@@ -154,7 +154,7 @@ class CandidateResultsPublicationTests {
 
     @Test
     @WithMockUser(username = "teacher", roles = "ENSEIGNANT")
-    void teacherCannotUpdateMarksAfterPublication() throws Exception {
+    void retiredLegacyEndpointCannotUpdateMarksAfterPublication() throws Exception {
         competition(1);
         Candidat candidate = candidate("marked");
         gradedPapers(candidate, 16, 16, 17, 17);
@@ -163,7 +163,7 @@ class CandidateResultsPublicationTests {
         mvc.perform(post("/enseignant/saveNotes").with(csrf())
                         .param("correctionIds", "1")
                         .param("notes", "11"))
-                .andExpect(status().isConflict());
+                .andExpect(status().isGone());
     }
 
     private InfoConcour competition(int places) {
