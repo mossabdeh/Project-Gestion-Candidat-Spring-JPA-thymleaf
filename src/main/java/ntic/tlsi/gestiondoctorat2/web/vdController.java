@@ -36,6 +36,8 @@ public class vdController extends BaseController{
     @Autowired
     private VDRepo vdRepo;
     @Autowired
+    private StaffProfileService staffProfiles;
+    @Autowired
     private CandidatRepo candidatRepo;
     @Autowired
     private ntic.tlsi.gestiondoctorat2.service.CompetitionPreparationService preparationService;
@@ -147,38 +149,26 @@ public class vdController extends BaseController{
     @GetMapping("/editVD")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editVD(Model model, @RequestParam("id") Long id) {
-        User vd = vdRepo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid vd Id:" + id));
-        model.addAttribute("vd", vd);
+        model.addAttribute("vd", staffProfiles.viceDeanForm(id));
         return "AdminVDEdit";
     }
 
     @PostMapping("/saveEditedVD")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String saveEditedVD(Model model, @Valid VD vd, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
+    public String saveEditedVD(
+            @Valid @ModelAttribute("vd") StaffProfileForm vd,
+            BindingResult bindingResult) {
+        staffProfiles.viceDeanForm(vd.getId());
+        if (bindingResult.hasErrors()) return "AdminVDEdit";
+        try {
+            staffProfiles.updateViceDean(vd);
+        } catch (StaffProfileService.UsernameAlreadyUsedException ex) {
+            bindingResult.rejectValue("username", "duplicate", "Username already exists");
             return "AdminVDEdit";
         }
-
-        // Check if username already exists (excluding the current admin being edited)
-        if (vdRepo.existsByUsernameAndIdNot(vd.getUsername(), vd.getId())) {
-            bindingResult.rejectValue("username", "error.vd", "Username already exists");
-            return "AdminVDEdit";
-        }
-
-        // Retrieve the existing admin from the database
-        User existingAdmin = vdRepo.findById(vd.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid vd Id:" + vd.getId()));
-
-        // Set the existing password on the edited admin
-        vd.setPassword(existingAdmin.getPassword());
-
-        vd.setTypeRole(Role.VD);
-        vd.setLogDate(new Date());
-
-        vdRepo.save(vd);
         return "redirect:/vd/getVDs";
     }
+
 
 }
 
