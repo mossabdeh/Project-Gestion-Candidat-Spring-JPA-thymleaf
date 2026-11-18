@@ -76,26 +76,26 @@
                             <div class="form-group mt-1">
                                 <label><b>Specialite</b></label>
                                 <input class="form-control" type="text" name="specialite" th:value="${infoConcour.specialite}">
-                                <span class="text-danger" th:errors="${infoConcour.specialite}"></span>
+                                <span class="text-danger" th:errors="*{specialite}"></span>
                             </div>
                             <div class="form-group mt-1">
                                 <label><b>Matier Commune</b></label>
                                 <select class="form-control" name="matier1">
                                     <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}"></option>
                                 </select>
-                                <span class="text-danger" th:errors="${infoConcour.matier1}"></span>
+                                <span class="text-danger" th:errors="*{matier1}"></span>
                             </div>
                             <div class="form-group mt-1">
                                 <label><b>Matier Specialite</b></label>
                                 <select class="form-control" name="matier2">
                                     <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}"></option>
                                 </select>
-                                <span class="text-danger" th:errors="${infoConcour.matier2}"></span>
+                                <span class="text-danger" th:errors="*{matier2}"></span>
                             </div>
                             <div class="form-group mt-1">
                                 <label><b>Date</b></label>
                                 <input class="form-control" type="date" name="dateConcour" th:value="${infoConcour.dateConcour != null ? #dates.format(infoConcour.dateConcour, 'yyyy-MM-dd') : ''}">
-                                <span class="text-danger" th:errors="${infoConcour.dateConcour}"></span>
+                                <span class="text-danger" th:errors="*{dateConcour}"></span>
                             </div>
                             <div class="form-group mt-1">
                                 <label for="registrationOpensAt"><b>Registration opens (Paris time)</b></label>
