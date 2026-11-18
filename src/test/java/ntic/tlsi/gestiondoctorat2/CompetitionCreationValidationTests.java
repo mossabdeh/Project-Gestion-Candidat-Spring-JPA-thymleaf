@@ -70,8 +70,12 @@ class CompetitionCreationValidationTests {
     @Test
     @WithMockUser(roles = "VD")
     void identicalSubjectsAndInvalidRegistrationWindowAreRejected() throws Exception {
-        mvc.perform(validCreation()
+        mvc.perform(post("/vd/saveInfoConcour").with(csrf())
+                        .param("nbrPostes", "2")
+                        .param("specialite", "Doctoral Studies")
+                        .param("matier1", "ALGO")
                         .param("matier2", "ALGO")
+                        .param("dateConcour", "2030-01-20")
                         .param("registrationOpensAt", "2030-01-19T15:00")
                         .param("registrationClosesAt", "2030-01-19T14:00"))
                 .andExpect(status().isOk())
