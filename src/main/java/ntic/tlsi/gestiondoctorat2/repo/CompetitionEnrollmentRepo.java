@@ -11,4 +11,5 @@ public interface CompetitionEnrollmentRepo extends JpaRepository<CompetitionEnro
     List<CompetitionEnrollment> findByCompetition_IdOrderByIdAsc(Long competitionId);
     Optional<CompetitionEnrollment> findByCompetition_IdAndCandidate_Username(Long competitionId, String username);
     boolean existsByCompetition_Id(Long competitionId);
+    boolean existsByCompetition_IdAndAnonymousCodeIsNotNull(Long competitionId);
 }
