@@ -43,13 +43,13 @@ public class EnrollmentAnonymizationService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition is closed for code allocation");
         }
 
-        // Do not issue late codes after paper preparation: it would mutate the exam cohort.
-        if (papers.existsByEnrollment_Competition_Id(competitionId)) {
+        List<CompetitionEnrollment> registered = enrollments.findByCompetition_IdOrderByIdAsc(competitionId);
+        // Preserve idempotent retries after preparation while prohibiting new code issuance.
+        if (papers.existsByEnrollment_Competition_Id(competitionId)
+                && registered.stream().anyMatch(e -> e.getAnonymousCode() == null)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Codes cannot be assigned after exam preparation begins");
         }
-
-        List<CompetitionEnrollment> registered = enrollments.findByCompetition_IdOrderByIdAsc(competitionId);
         if (registered.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "No registered candidates");
         }
