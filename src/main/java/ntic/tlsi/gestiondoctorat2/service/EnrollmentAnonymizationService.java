@@ -4,6 +4,7 @@ import ntic.tlsi.gestiondoctorat2.entities.CompetitionEnrollment;
 import ntic.tlsi.gestiondoctorat2.entities.InfoConcour;
 import ntic.tlsi.gestiondoctorat2.repo.CompetitionEnrollmentRepo;
 import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
+import ntic.tlsi.gestiondoctorat2.repo.EnrollmentExamPaperRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +24,14 @@ public class EnrollmentAnonymizationService {
     private static final int CODE_SPACE = 10_000_000;
     private final CompetitionEnrollmentRepo enrollments;
     private final InfoConRepo competitions;
+    private final EnrollmentExamPaperRepo papers;
     private final SecureRandom random = new SecureRandom();
 
-    public EnrollmentAnonymizationService(CompetitionEnrollmentRepo enrollments, InfoConRepo competitions) {
+    public EnrollmentAnonymizationService(CompetitionEnrollmentRepo enrollments, InfoConRepo competitions,
+                                          EnrollmentExamPaperRepo papers) {
         this.enrollments = enrollments;
         this.competitions = competitions;
+        this.papers = papers;
     }
 
     @Transactional
@@ -37,6 +41,12 @@ public class EnrollmentAnonymizationService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not found"));
         if (competition.getResultsPublishedAt() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition is closed for code allocation");
+        }
+
+        // Do not issue late codes after paper preparation: it would mutate the exam cohort.
+        if (papers.existsByEnrollment_Competition_Id(competitionId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Codes cannot be assigned after exam preparation begins");
         }
 
         List<CompetitionEnrollment> registered = enrollments.findByCompetition_IdOrderByIdAsc(competitionId);
