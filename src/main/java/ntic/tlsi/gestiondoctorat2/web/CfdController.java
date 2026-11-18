@@ -32,6 +32,8 @@ public class CfdController extends BaseController{
     @Autowired
     private CFDRepo cfdRepo;
     @Autowired
+    private StaffProfileService staffProfiles;
+    @Autowired
     private CopieRepo copieRepo;
     @Autowired
     private InfoConRepo conRepo;
@@ -259,36 +261,23 @@ public class CfdController extends BaseController{
     @GetMapping("/editCFD")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editCFD(Model model, @RequestParam("id") Long id) {
-        User cfd = cfdRepo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid cfd Id:" + id));
-        model.addAttribute("cfd", cfd);
+        model.addAttribute("cfd", staffProfiles.cfdForm(id));
         return "AdminCFDEdit";
     }
 
     @PostMapping("/saveEditedCFD")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String saveEditedCFD(Model model, @Valid CFD cfd, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
+    public String saveEditedCFD(
+            @Valid @ModelAttribute("cfd") StaffProfileForm cfd,
+            BindingResult bindingResult) {
+        staffProfiles.cfdForm(cfd.getId());
+        if (bindingResult.hasErrors()) return "AdminCFDEdit";
+        try {
+            staffProfiles.updateCfd(cfd);
+        } catch (StaffProfileService.UsernameAlreadyUsedException ex) {
+            bindingResult.rejectValue("username", "duplicate", "Username already exists");
             return "AdminCFDEdit";
         }
-
-        // Check if username already exists (excluding the current admin being edited)
-        if (cfdRepo.existsByUsernameAndIdNot(cfd.getUsername(), cfd.getId())) {
-            bindingResult.rejectValue("username", "error.cfd", "Username already exists");
-            return "AdminCFDEdit";
-        }
-
-        // Retrieve the existing admin from the database
-        User existingAdmin = cfdRepo.findById(cfd.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid cfd Id:" + cfd.getId()));
-
-        // Set the existing password on the edited admin
-        cfd.setPassword(existingAdmin.getPassword());
-
-        cfd.setTypeRole(Role.CFD);
-        cfd.setLogDate(new Date());
-
-        cfdRepo.save(cfd);
         return "redirect:/cfd/getCFDs";
     }
 
