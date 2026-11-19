@@ -38,7 +38,7 @@ class CompetitionEditTests {
         InfoConcour comp = competition(owner);
         mvc.perform(get("/vd/editCompetition").param("id", comp.getId().toString()))
                 .andExpect(status().isOk()).andExpect(view().name("InfoConcourEdit"));
-        mvc.perform(validEdit(comp).param("specialite", "Updated")
+        mvc.perform(validEdit(comp)
                         .param("resultsPublishedAt", "2020-01-01T00:00:00Z")
                         .param("phase", "PUBLISHED").param("vd.id", "-1"))
                 .andExpect(status().is3xxRedirection())
