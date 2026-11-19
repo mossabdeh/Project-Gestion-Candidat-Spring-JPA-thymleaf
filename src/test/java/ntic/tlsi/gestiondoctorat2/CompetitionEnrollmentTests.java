@@ -106,6 +106,18 @@ class CompetitionEnrollmentTests {
     }
 
     @Test
+    void explicitPreparationPhaseRejectsRegistrationEvenWithoutCodes() {
+        InfoConcour comp = competition(false);
+        comp.advanceTo(CompetitionPhase.PREPARATION);
+        competitions.flush();
+        assertFalse(registration.registrationOpen(comp));
+        Candidat late = candidate("phase-late-" + UUID.randomUUID());
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> registration.register(comp.getId(), late.getUsername())).getStatusCode());
+    }
+
+    @Test
     void registrationFreezesWhenAnyCodeIsAllocated() {
         InfoConcour comp = competition(false);
         Candidat first = candidate("freeze-first-" + UUID.randomUUID());
