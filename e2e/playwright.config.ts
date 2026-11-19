@@ -28,9 +28,11 @@ export default defineConfig({
   webServer: {
     // Playwright runs in e2e/, but Maven must run from the repository root (pom.xml).
     cwd: '..',
-    command: process.platform === 'win32'
-      ? '.\\mvnw.cmd -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > e2e/spring-boot.log 2>&1'
-      : './mvnw -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > e2e/spring-boot.log 2>&1',
+    command: process.env.CI
+      ? 'mvn -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > e2e/spring-boot.log 2>&1'
+      : process.platform === 'win32'
+        ? '.\\mvnw.cmd -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > e2e/spring-boot.log 2>&1'
+        : './mvnw -B -DskipTests spring-boot:run -Dspring-boot.run.profiles=dev > e2e/spring-boot.log 2>&1',
     url: `${baseURL}/login`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
