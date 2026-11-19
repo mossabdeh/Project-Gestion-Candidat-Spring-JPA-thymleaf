@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit competition</title>
+    <!-- Favicons -->
+    <link href="/img/favicon.png" rel="icon">
+    <link href="/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="/vendor/animate.css/animate.min.css" rel="stylesheet">
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="/css/style.css" rel="stylesheet">
+
+</head>
+<body>
+<!-- ======= Header ======= -->
+<header id="header" class="d-flex align-items-center">
+    <div class="container d-flex justify-content-between align-items-center">
+
+        <div class="logo">
+            <h1><a href="">Doctorat</a></h1>
+            <!-- Uncomment below if you prefer to use an image logo -->
+            <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+        </div>
+
+        <nav id="navbar" class="navbar">
+            <ul>
+                <li><a  th:href="@{/vdPage}">Home</a></li>
+                <li><a href="">About</a></li>
+                <li><a href="">Contact</a></li>
+                <li><a th:text="${#authentication.name}" class="btn-get-started animate__animated animate__fadeInUp disabled"></a></li>
+                <li>
+                    <form method="post" th:action="@{/logout}">
+                        <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">Logout</button>
+                    </form>
+                </li>
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+
+    </div>
+</header><!-- End Header -->
+
+<!-- mossab -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Edit competition</h2>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-6 offset-3">
+                        <form method="post" th:action="@{/vd/saveEditedCompetition}" th:object="${infoConcour}">
+                            <input type="hidden" th:field="*{id}">
+                            <div class="form-group mt-1">
+                                <label><b>Number of Postes</b></label>
+                                <input class="form-control" type="number" name="nbrPostes" th:value="${infoConcour.nbrPostes}">
+                                <span class="text-danger" th:if="${#fields.hasErrors('nbrPostes')}" th:errors="*{nbrPostes}"></span>
+                                <span class="text-danger" th:unless="${#fields.hasErrors('nbrPostes')}" th:if="${infoConcour.nbrPostes gt 3}">The maximum number of Postes is 3</span>
+                            </div>
+
+
+                            <div class="form-group mt-1">
+                                <label><b>Specialite</b></label>
+                                <input class="form-control" type="text" name="specialite" th:value="${infoConcour.specialite}">
+                                <span class="text-danger" th:errors="*{specialite}"></span>
+                            </div>
+                            <div class="form-group mt-1">
+                                <label><b>Matier Commune</b></label>
+                                <select class="form-control" name="matier1">
+                                    <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}" th:selected="${matier == infoConcour.matier1}"></option>
+                                </select>
+                                <span class="text-danger" th:errors="*{matier1}"></span>
+                            </div>
+                            <div class="form-group mt-1">
+                                <label><b>Matier Specialite</b></label>
+                                <select class="form-control" name="matier2">
+                                    <option th:each="matier : ${T(ntic.tlsi.gestiondoctorat2.entities.Matier).values()}" th:value="${matier}" th:text="${matier}" th:selected="${matier == infoConcour.matier2}"></option>
+                                </select>
+                                <span class="text-danger" th:errors="*{matier2}"></span>
+                            </div>
+                            <div class="form-group mt-1">
+                                <label><b>Date</b></label>
+                                <input class="form-control" type="date" name="dateConcour" th:value="${infoConcour.dateConcour != null ? #dates.format(infoConcour.dateConcour, 'yyyy-MM-dd') : ''}">
+                                <span class="text-danger" th:errors="*{dateConcour}"></span>
+                            </div>
+                            <div class="form-group mt-1">
+                                <label for="registrationOpensAt"><b>Registration opens (Paris time)</b></label>
+                                <input id="registrationOpensAt" class="form-control" type="datetime-local" th:field="*{registrationOpensAt}" required>
+                                <span class="text-danger" th:errors="*{registrationOpensAt}"></span>
+                            </div>
+                            <div class="form-group mt-1">
+                                <label for="registrationClosesAt"><b>Registration closes (Paris time)</b></label>
+                                <input id="registrationClosesAt" class="form-control" type="datetime-local" th:field="*{registrationClosesAt}" required>
+                                <span class="text-danger" th:errors="*{registrationClosesAt}"></span>
+                            </div>
+                            <div class="text-danger" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+                            <div class="text-center mt-2">
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Vendor JS Files -->
+<script src="/vendor/purecounter/purecounter_vanilla.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="/vendor/waypoints/noframework.waypoints.js"></script>
+<script src="/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="/js/main.js"></script>
+</body>
+</html>
