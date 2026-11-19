@@ -7,4 +7,5 @@ import java.util.List;
 public interface EnrollmentExamPaperRepo extends JpaRepository<EnrollmentExamPaper, Long> {
     List<EnrollmentExamPaper> findByEnrollment_Competition_IdOrderByIdAsc(Long competitionId);
     List<EnrollmentExamPaper> findByEnrollment_Id(Long enrollmentId);
+    boolean existsByEnrollment_Competition_Id(Long competitionId);
 }

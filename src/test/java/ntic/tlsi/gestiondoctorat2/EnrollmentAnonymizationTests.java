@@ -31,6 +31,7 @@ class EnrollmentAnonymizationTests {
     @Autowired private CompetitionEnrollmentRepo enrollments;
     @Autowired private InfoConRepo competitions;
     @Autowired private CandidatRepo candidates;
+    @Autowired private EnrollmentExamPaperRepo papers;
     @Autowired private MockMvc mvc;
 
     @Test
@@ -86,6 +87,27 @@ class EnrollmentAnonymizationTests {
         enrollments.saveAndFlush(new CompetitionEnrollment(previous, candidate()));
         competition(false);
         assertEquals(1, codes.assignCodes(previous.getId()));
+    }
+
+    @Test
+    void preparationBlocksLateCodeAssignmentButPreservesIdempotentRetry() {
+        InfoConcour comp = competition(false);
+        CompetitionEnrollment coded = enrollments.saveAndFlush(
+                new CompetitionEnrollment(comp, candidate()));
+        coded.assignAnonymousCode("0000020");
+        enrollments.flush();
+        papers.saveAndFlush(new EnrollmentExamPaper(coded, Matier.ALGO));
+
+        // Already assigned codes remain stable on retry.
+        assertEquals(0, codes.assignCodes(comp.getId()));
+        assertEquals("0000020", coded.getAnonymousCode());
+
+        CompetitionEnrollment pending = enrollments.saveAndFlush(
+                new CompetitionEnrollment(comp, candidate()));
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> codes.assignCodes(comp.getId())).getStatusCode());
+        assertNull(pending.getAnonymousCode());
     }
 
     @Test

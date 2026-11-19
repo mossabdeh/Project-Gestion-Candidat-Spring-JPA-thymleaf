@@ -33,6 +33,7 @@ class CompetitionEnrollmentTests {
     @Autowired CompetitionEnrollmentService registration;
     @Autowired CandidatRepo candidates;
     @Autowired InfoConRepo competitions;
+    @Autowired EnrollmentExamPaperRepo papers;
     @Autowired MockMvc mvc;
 
     @Test
@@ -102,6 +103,46 @@ class CompetitionEnrollmentTests {
                 assertThrows(ResponseStatusException.class,
                         () -> registration.register(after.getId(), candidate.getUsername())).getStatusCode());
         assertEquals(0, enrollments.countByCompetition_IdAndCandidate_Id(after.getId(), candidate.getId()));
+    }
+
+    @Test
+    void registrationFreezesWhenAnyCodeIsAllocated() {
+        InfoConcour comp = competition(false);
+        Candidat first = candidate("freeze-first-" + UUID.randomUUID());
+        Candidat late = candidate("freeze-late-" + UUID.randomUUID());
+        registration.register(comp.getId(), first.getUsername());
+        CompetitionEnrollment enrolled = enrollments.findByCompetition_IdAndCandidate_Username(
+                comp.getId(), first.getUsername()).orElseThrow();
+        enrolled.assignAnonymousCode("0000011");
+        enrollments.flush();
+
+        assertFalse(registration.registrationOpen(comp));
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> registration.register(comp.getId(), late.getUsername())).getStatusCode());
+        assertEquals(0, enrollments.countByCompetition_IdAndCandidate_Id(comp.getId(), late.getId()));
+        // An existing registration remains unchanged, and repeat POSTs cannot duplicate it.
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> registration.register(comp.getId(), first.getUsername())).getStatusCode());
+        assertEquals(1, enrollments.countByCompetition_IdAndCandidate_Id(comp.getId(), first.getId()));
+    }
+
+    @Test
+    void registrationFreezesWhenPapersExistEvenWithoutCodes() {
+        InfoConcour comp = competition(false);
+        Candidat first = candidate("papers-first-" + UUID.randomUUID());
+        Candidat late = candidate("papers-late-" + UUID.randomUUID());
+        registration.register(comp.getId(), first.getUsername());
+        CompetitionEnrollment enrolled = enrollments.findByCompetition_IdAndCandidate_Username(
+                comp.getId(), first.getUsername()).orElseThrow();
+        papers.saveAndFlush(new EnrollmentExamPaper(enrolled, Matier.ALGO));
+
+        assertFalse(registration.registrationOpen(comp));
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> registration.register(comp.getId(), late.getUsername())).getStatusCode());
+        assertFalse(registration.isRegistered(comp.getId(), late.getUsername()));
     }
 
     @Test
