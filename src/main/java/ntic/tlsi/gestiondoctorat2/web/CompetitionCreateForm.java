@@ -57,6 +57,7 @@ public class CompetitionCreateForm {
                 matier1, matier2, dateConcour);
         competition.setRegistrationOpensAt(registrationOpensAt);
         competition.setRegistrationClosesAt(registrationClosesAt);
+        competition.setPhase(ntic.tlsi.gestiondoctorat2.entities.CompetitionPhase.REGISTRATION);
         return competition;
     }
 }
