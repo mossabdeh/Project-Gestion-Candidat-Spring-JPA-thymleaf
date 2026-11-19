@@ -46,6 +46,7 @@ class CompetitionCreationValidationTests {
         assertNull(saved.getResultsPublishedAt());
         assertEquals(vd.getId(), saved.getVd().getId());
         assertEquals("Doctoral Studies", saved.getSpecialite());
+        assertEquals(CompetitionPhase.REGISTRATION, saved.effectivePhase());
         assertEquals(2, saved.getNbrPostes());
     }
 
