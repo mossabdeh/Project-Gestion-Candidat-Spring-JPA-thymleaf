@@ -3,6 +3,7 @@ package ntic.tlsi.gestiondoctorat2.service;
 import ntic.tlsi.gestiondoctorat2.entities.Candidat;
 import ntic.tlsi.gestiondoctorat2.entities.CompetitionEnrollment;
 import ntic.tlsi.gestiondoctorat2.entities.InfoConcour;
+import ntic.tlsi.gestiondoctorat2.entities.CompetitionPhase;
 import ntic.tlsi.gestiondoctorat2.repo.CandidatRepo;
 import ntic.tlsi.gestiondoctorat2.repo.CompetitionEnrollmentRepo;
 import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
@@ -36,7 +37,7 @@ public class CompetitionEnrollmentService {
 
     @Transactional(readOnly = true)
     public boolean registrationOpen(InfoConcour competition) {
-        if (competition.getResultsPublishedAt() != null || competition.getRegistrationOpensAt() == null
+        if (competition.effectivePhase() != CompetitionPhase.REGISTRATION || competition.getRegistrationOpensAt() == null
                 || competition.getRegistrationClosesAt() == null) return false;
         LocalDateTime now = LocalDateTime.now(COMPETITION_ZONE);
         return !now.isBefore(competition.getRegistrationOpensAt())
