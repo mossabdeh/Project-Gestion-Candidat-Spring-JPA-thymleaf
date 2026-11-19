@@ -57,6 +57,8 @@ public class EnrollmentGradingService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Teacher is not qualified for this subject");
         }
         correction.recordGrade(grade);
+        InfoConcour competition = competitions.findById(competitionId).orElseThrow();
+        competition.advanceTo(CompetitionPhase.GRADING);
         corrections.flush();
     }
 
@@ -109,7 +111,7 @@ public class EnrollmentGradingService {
     private InfoConcour requireEditable(Long competitionId) {
         InfoConcour competition = competitions.findLockedById(competitionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not found"));
-        if (competition.getResultsPublishedAt() != null) {
+        if (competition.effectivePhase() == CompetitionPhase.PUBLISHED) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition is not open for grading");
         }
         return competition;
