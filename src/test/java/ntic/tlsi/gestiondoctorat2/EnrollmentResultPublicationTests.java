@@ -52,6 +52,7 @@ class EnrollmentResultPublicationTests {
         assertEquals(2, publication.preview(competition.getId()).size());
         assertEquals(0, snapshots.count());
         assertEquals(2, publication.publish(competition.getId()));
+        assertEquals(CompetitionPhase.PUBLISHED, competition.effectivePhase());
         assertNotNull(competition.getResultsPublishedAt());
         assertEquals(2, snapshots.count());
         var first = candidateView.readFor(top.getUsername());
