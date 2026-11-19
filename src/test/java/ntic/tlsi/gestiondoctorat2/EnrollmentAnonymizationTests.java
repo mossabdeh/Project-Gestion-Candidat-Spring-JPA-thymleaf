@@ -43,6 +43,7 @@ class EnrollmentAnonymizationTests {
         CompetitionEnrollment b = enrollments.saveAndFlush(new CompetitionEnrollment(competition, second));
 
         assertEquals(2, codes.assignCodes(competition.getId()));
+        assertEquals(CompetitionPhase.PREPARATION, competition.effectivePhase());
         String firstCode = a.getAnonymousCode();
         String secondCode = b.getAnonymousCode();
         assertNotNull(firstCode);

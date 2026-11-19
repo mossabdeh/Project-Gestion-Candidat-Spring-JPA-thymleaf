@@ -42,6 +42,7 @@ class EnrollmentExamPreparationTests {
         InfoConcour first = competition(false);
         CompetitionEnrollment firstEnrollment = registration(first, sameCandidate, "0000001");
         assertEquals(2, preparation.initializePapers(first.getId()));
+        assertEquals(CompetitionPhase.PREPARATION, first.effectivePhase());
         assertEquals(0, preparation.initializePapers(first.getId()));
         List<EnrollmentExamPaper> firstPapers = papers.findByEnrollment_Id(firstEnrollment.getId());
         assertEquals(2, firstPapers.size());

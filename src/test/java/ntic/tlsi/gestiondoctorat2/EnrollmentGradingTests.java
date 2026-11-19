@@ -43,6 +43,7 @@ class EnrollmentGradingTests {
         EnrollmentExamCorrection assignment = corrections.saveAndFlush(new EnrollmentExamCorrection(paper, teacher));
         assertEquals(1, grading.assignments(teacher.getUsername()).size());
         grading.recordGrade(assignment.getId(), teacher.getUsername(), 0);
+        assertEquals(CompetitionPhase.GRADING, competition.effectivePhase());
         assertEquals(0.0, assignment.getGrade());
         grading.recordGrade(assignment.getId(), teacher.getUsername(), 20);
         assertEquals(20.0, assignment.getGrade());

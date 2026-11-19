@@ -2,6 +2,7 @@ package ntic.tlsi.gestiondoctorat2.service;
 
 import ntic.tlsi.gestiondoctorat2.entities.CompetitionEnrollment;
 import ntic.tlsi.gestiondoctorat2.entities.InfoConcour;
+import ntic.tlsi.gestiondoctorat2.entities.CompetitionPhase;
 import ntic.tlsi.gestiondoctorat2.repo.CompetitionEnrollmentRepo;
 import ntic.tlsi.gestiondoctorat2.repo.InfoConRepo;
 import ntic.tlsi.gestiondoctorat2.repo.EnrollmentExamPaperRepo;
@@ -39,7 +40,8 @@ public class EnrollmentAnonymizationService {
         // Lock the competition so concurrent allocations cannot issue duplicates.
         InfoConcour competition = competitions.findLockedById(competitionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not found"));
-        if (competition.getResultsPublishedAt() != null) {
+        if (competition.effectivePhase() == CompetitionPhase.PUBLISHED
+                || competition.effectivePhase() == CompetitionPhase.GRADING) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition is closed for code allocation");
         }
 
@@ -78,6 +80,7 @@ public class EnrollmentAnonymizationService {
             enrollment.assignAnonymousCode(code);
             assigned++;
         }
+        if (assigned > 0) competition.advanceTo(CompetitionPhase.PREPARATION);
         enrollments.flush();
         return assigned;
     }

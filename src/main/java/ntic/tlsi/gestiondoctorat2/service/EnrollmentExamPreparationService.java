@@ -66,6 +66,7 @@ public class EnrollmentExamPreparationService {
                 created++;
             }
         }
+        if (created > 0) competition.advanceTo(CompetitionPhase.PREPARATION);
         papers.flush();
         return created;
     }
@@ -117,6 +118,7 @@ public class EnrollmentExamPreparationService {
                 }
             }
         }
+        if (created > 0) competition.advanceTo(CompetitionPhase.PREPARATION);
         corrections.flush();
         return created;
     }
@@ -135,8 +137,8 @@ public class EnrollmentExamPreparationService {
     private InfoConcour openCompetition(Long competitionId) {
         InfoConcour competition = competitions.findLockedById(competitionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not found"));
-        if (competition.getResultsPublishedAt() != null) {
-            throw conflict("Only the latest unpublished competition may be prepared");
+        if (competition.effectivePhase() == CompetitionPhase.PUBLISHED) {
+            throw conflict("Published competition cannot be prepared");
         }
         return competition;
     }

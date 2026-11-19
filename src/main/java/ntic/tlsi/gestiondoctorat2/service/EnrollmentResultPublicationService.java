@@ -57,6 +57,7 @@ public class EnrollmentResultPublicationService {
         }
         snapshots.flush();
         competition.setResultsPublishedAt(publishedAt);
+        competition.advanceTo(CompetitionPhase.PUBLISHED);
         return ranked.size();
     }
 

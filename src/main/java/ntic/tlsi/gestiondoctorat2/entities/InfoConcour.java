@@ -32,6 +32,23 @@ public class InfoConcour {
     private Date DateConcour;
     private java.time.Instant resultsPublishedAt;
 
+    // Null remains supported for competitions created before the lifecycle migration.
+    @Enumerated(EnumType.STRING)
+    private CompetitionPhase phase;
+
+    public CompetitionPhase effectivePhase() {
+        if (resultsPublishedAt != null) return CompetitionPhase.PUBLISHED;
+        return phase == null ? CompetitionPhase.REGISTRATION : phase;
+    }
+
+    /** Only forward transitions are allowed. Lock the competition row before calling. */
+    public void advanceTo(CompetitionPhase next) {
+        if (next.ordinal() < effectivePhase().ordinal()) {
+            throw new IllegalStateException("Competition cannot return to an earlier phase");
+        }
+        this.phase = next;
+    }
+
     // Local competition time in Europe/Paris. Opens inclusive; closes exclusive.
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime registrationOpensAt;
