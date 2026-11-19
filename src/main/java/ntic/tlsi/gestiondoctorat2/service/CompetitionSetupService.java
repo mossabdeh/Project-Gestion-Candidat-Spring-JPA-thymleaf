@@ -14,15 +14,13 @@ public class CompetitionSetupService {
     private final InfoConRepo competitions;
     private final CompetitionEnrollmentRepo enrollments;
     private final EnrollmentExamPaperRepo papers;
-    private final VDRepo viceDeans;
 
     public CompetitionSetupService(InfoConRepo competitions,
                                    CompetitionEnrollmentRepo enrollments,
-                                   EnrollmentExamPaperRepo papers, VDRepo viceDeans) {
+                                   EnrollmentExamPaperRepo papers) {
         this.competitions = competitions;
         this.enrollments = enrollments;
         this.papers = papers;
-        this.viceDeans = viceDeans;
     }
 
     @Transactional(readOnly = true)
