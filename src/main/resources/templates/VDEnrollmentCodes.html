@@ -27,6 +27,7 @@
   <section th:if="${competition != null}" class="card">
     <div class="card-body">
       <h2 class="h5" th:text="${competition.specialite}">Competition</h2>
+      <a class="btn btn-outline-secondary mb-3" th:if="${competition.effectivePhase().name() == 'REGISTRATION' and #lists.isEmpty(enrollmentCodes) and competition.vd != null and competition.vd.username == #authentication.name}" th:href="@{/vd/editCompetition(id=${competition.id})}">Edit competition setup</a>
       <p th:if="${competition.resultsPublishedAt != null}" class="alert alert-secondary">This competition is closed.</p>
       <form method="post" th:action="@{/vd/assignEnrollmentCodes}"
             th:if="${competition.resultsPublishedAt == null and not #lists.isEmpty(enrollmentCodes)}">
