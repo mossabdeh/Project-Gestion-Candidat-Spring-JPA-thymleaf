@@ -121,6 +121,48 @@ class EnrollmentExamPreparationTests {
     }
 
     @Test
+    void preparationCannotBeRetriedAfterGradingStarts() {
+        InfoConcour comp = competition(false);
+        CompetitionEnrollment enrollment = registration(comp, candidate(), "0000091");
+        preparation.initializePapers(comp.getId());
+        teacher(Matier.ALGO);
+        teacher(Matier.ALGO);
+        teacher(Matier.EDL);
+        teacher(Matier.EDL);
+        preparation.initializeCorrections(comp.getId());
+        comp.advanceTo(CompetitionPhase.GRADING);
+        competitions.flush();
+
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> preparation.initializePapers(comp.getId())).getStatusCode());
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> preparation.initializeCorrections(comp.getId())).getStatusCode());
+        assertEquals(2, papers.findByEnrollment_Id(enrollment.getId()).size());
+        assertEquals(4, corrections.count());
+    }
+
+    @Test
+    void incompleteEnrollmentPapersCannotReceiveAnyTeacherAssignments() {
+        InfoConcour comp = competition(false);
+        CompetitionEnrollment first = registration(comp, candidate(), "0000092");
+        CompetitionEnrollment second = registration(comp, candidate(), "0000093");
+        papers.saveAndFlush(new EnrollmentExamPaper(first, Matier.ALGO));
+        papers.saveAndFlush(new EnrollmentExamPaper(first, Matier.EDL));
+        papers.saveAndFlush(new EnrollmentExamPaper(second, Matier.ALGO));
+        teacher(Matier.ALGO);
+        teacher(Matier.ALGO);
+        teacher(Matier.EDL);
+        teacher(Matier.EDL);
+
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> preparation.initializeCorrections(comp.getId())).getStatusCode());
+        assertEquals(0, corrections.count());
+    }
+
+    @Test
     @WithMockUser(username = "cfd-test", roles = "CFD")
     void cfdCanOpenPreparationAndPostsRequireCsrf() throws Exception {
         InfoConcour comp = competition(false);
