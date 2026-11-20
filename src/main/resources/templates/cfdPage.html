@@ -56,11 +56,7 @@
             <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">Logout</button>
           </form>
         </li>
-          <li>
-              <form method="post" th:action="@{/cfd/initCopie}">
-                  <button class="btn-get-started animate__animated animate__fadeInUp"  type="submit">init</button>
-              </form>
-          </li>
+          
       </ul>
       <i class="bi bi-list mobile-nav-toggle"></i>
     </nav><!-- .navbar -->
@@ -90,23 +86,23 @@
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
             <div class="icon-box">
               <div class="icon"><i class="bx bx-file"></i></div>
-              <h4><form method="post" th:action="@{/cfd/InitCorrection}"><button type="submit" class="btn btn-primary">Initialize corrections</button></form></h4>
-              <p>Check your Code here </p>
+              <h4><a th:href="@{/cfd/enrollmentPapers}">Assign qualified teachers</a></h4>
+               <p>Allocate markers to competition-scoped exam papers.</p>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
             <div class="icon-box">
               <div class="icon"><i class="bx bx-file"></i></div>
-              <h4><a th:href="@{cfd/getCorrectionCopie}">Check Correction</a></h4>
-              <p>Check your Code here </p>
+              <h4><a th:href="@{/cfd/enrollmentPapers}">Review paper assignments</a></h4>
+               <p>Inspect anonymized papers for the selected competition.</p>
             </div>
           </div>
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
             <div class="icon-box">
               <div class="icon"><i class="bx bx-file"></i></div>
-              <h4><a th:href="@{cfd/ResultatCandidats}">Resultat Candidats</a></h4>
-              <p>Check your Code here </p>
+              <h4><a th:href="@{/cfd/enrollmentResults}">Competition results</a></h4>
+               <p>Preview and publish results for a selected competition.</p>
             </div>
           </div>
 

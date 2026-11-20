@@ -161,6 +161,54 @@ class CompetitionPreparationTests {
     }
 
     @Test
+    @WithMockUser(roles = "CFD")
+    void legacyCfdPreparationWritesReturnGoneAndLeaveLegacyInventoryUntouched() throws Exception {
+        competition();
+        Candidat candidate = candidate();
+        candidate.setCode("1234567");
+        candidates.saveAndFlush(candidate);
+        long papersBefore = papers.count();
+        long correctionsBefore = corrections.count();
+
+        for (String endpoint : List.of("/cfd/initCopie", "/cfd/InitCorrection",
+                "/cfd/ThirdCorrectionCheck")) {
+            mvc.perform(post(endpoint).with(csrf()))
+                    .andExpect(status().isGone());
+        }
+        entityManager.flush();
+        assertEquals(papersBefore, papers.count());
+        assertEquals(correctionsBefore, corrections.count());
+    }
+
+    @Test
+    @WithMockUser(roles = "CFD")
+    void retiredLegacyCorrectionPageRedirectsToCompetitionScopedPreparation() throws Exception {
+        mvc.perform(get("/cfd/getCorrectionCopie"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/cfd/enrollmentPapers"));
+    }
+
+    @Test
+    @WithMockUser(roles = "CFD")
+    void cfdDashboardLinksOnlySupportedPreparationAndResults() throws Exception {
+        String html = mvc.perform(get("/cfdPage"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        assertTrue(html.contains("/cfd/enrollmentPapers"));
+        assertTrue(html.contains("/cfd/enrollmentResults"));
+        assertFalse(html.contains("/cfd/initCopie"));
+        assertFalse(html.contains("/cfd/InitCorrection"));
+        assertFalse(html.contains("/cfd/getCorrectionCopie"));
+    }
+
+    @Test
+    @WithMockUser(roles = "CANDIDAT")
+    void candidateCannotUseLegacyThirdMarkerEndpoint() throws Exception {
+        mvc.perform(post("/cfd/ThirdCorrectionCheck").with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser(roles = "VD")
     void assigningCodesIsPostOnlyAndCsrfProtected() throws Exception {
         mvc.perform(get("/vd/generateCodes")).andExpect(status().isMethodNotAllowed());
