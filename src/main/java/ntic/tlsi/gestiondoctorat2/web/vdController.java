@@ -38,6 +38,8 @@ public class vdController extends BaseController{
     @Autowired
     private StaffProfileService staffProfiles;
     @Autowired
+    private ntic.tlsi.gestiondoctorat2.service.CompetitionSetupService competitionSetup;
+    @Autowired
     private CandidatRepo candidatRepo;
     @Autowired
     private ntic.tlsi.gestiondoctorat2.service.CompetitionPreparationService preparationService;
@@ -79,6 +81,26 @@ public class vdController extends BaseController{
         competition.setVd(viceDean);
         conRepo.save(competition);
         return "redirect:/vdPage";
+    }
+
+    @GetMapping("/editCompetition")
+    @PreAuthorize("hasRole('ROLE_VD')")
+    public String editCompetition(@RequestParam("id") Long id, Model model,
+                                  Authentication authentication) {
+        model.addAttribute("infoConcour", competitionSetup.editForm(id, authentication.getName()));
+        return "InfoConcourEdit";
+    }
+
+    @PostMapping("/saveEditedCompetition")
+    @PreAuthorize("hasRole('ROLE_VD')")
+    public String saveEditedCompetition(
+            @Valid @ModelAttribute("infoConcour") CompetitionEditForm form,
+            BindingResult bindingResult, Authentication authentication) {
+        // Even invalid submissions must not disclose or permit foreign/locked competitions.
+        competitionSetup.editForm(form.getId(), authentication.getName());
+        if (bindingResult.hasErrors()) return "InfoConcourEdit";
+        competitionSetup.update(form, authentication.getName());
+        return "redirect:/vd/enrollmentCodes?competitionId=" + form.getId();
     }
 
     @GetMapping("/getCandidatsCode")

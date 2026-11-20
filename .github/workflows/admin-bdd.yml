@@ -50,8 +50,9 @@ jobs:
 
       - name: Java unit and integration tests
         run: |
-          chmod +x ./mvnw
-          ./mvnw -B test
+          # Use preinstalled Maven on GitHub-hosted Ubuntu runners to avoid
+          # wrapper distribution downloads being rate-limited (HTTP 429).
+          mvn -B test
 
       - name: Install E2E dependencies
         working-directory: e2e
