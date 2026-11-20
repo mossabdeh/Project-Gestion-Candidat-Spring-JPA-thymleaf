@@ -137,65 +137,38 @@ public class CfdController extends BaseController{
         return "redirect:/cfd/enrollmentPapers?competitionId=" + competitionId;
     }
 
+    /**
+     * Old Candidate-wide paper initialization is retired. New submissions must
+     * use the selected competition's enrollment-scoped preparation endpoints.
+     */
     @PostMapping("/initCopie")
+    @PreAuthorize("hasRole('ROLE_CFD')")
     public String initializeCopies() {
-        preparationService.initializePapers();
-        return "redirect:/cfdPage";
+        throw retiredPreparation();
     }
 
     @PostMapping("/InitCorrection")
+    @PreAuthorize("hasRole('ROLE_CFD')")
     public String InitCorrection() {
-        preparationService.initializeCorrections();
-        return "redirect:/cfdPage";
+        throw retiredPreparation();
     }
 
     @GetMapping("/getCorrectionCopie")
-    public String getCorrectionCopie(Model model,
-                                     @RequestParam(name = "page", defaultValue = "0") int page,
-                                     @RequestParam(name = "size", defaultValue = "5") int size,
-                                     @RequestParam(name = "keyword", defaultValue = "") String keyword){
-
-
-        Page<Copie> copiePage = copieRepo.findAll(PageRequest.of(page, size));
-        model.addAttribute("copies", copiePage.getContent());
-        model.addAttribute("pages", new int[copiePage.getTotalPages()]);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("keyword", keyword);
-
-        return "cfdCheckCorrection"; // Replace "correctionPage" with the actual name of your correction page view
+    @PreAuthorize("hasRole('ROLE_CFD')")
+    public String getCorrectionCopie() {
+        return "redirect:/cfd/enrollmentPapers";
     }
 
     @PostMapping("/ThirdCorrectionCheck")
+    @PreAuthorize("hasRole('ROLE_CFD')")
     public String thirdCorrectionCheck() {
-        List<Copie> copies = copieRepo.findAll();
+        throw retiredPreparation();
+    }
 
-        for (Copie copie : copies) {
-            if (copie.getCorrections().size() < 2) continue;
-            Correction correction1 = copie.getCorrections().get(0);
-            Correction correction2 = copie.getCorrections().get(1);
-            if (correction1.getNote() == null || correction2.getNote() == null) continue;
-            double note1 = correction1.getNote();
-            double note2 = correction2.getNote();
-
-            if (Math.abs(note1 - note2) >= 3.0 || Math.abs(note2 - note1) >= 3.0) {
-                List<Enseignant> enseignants = enseignantRepo.findBySpecialite(copie.getMatier());
-
-                for (Enseignant enseignant : enseignants) {
-                    if (enseignant != correction1.getEnseignant() && enseignant != correction2.getEnseignant()) {
-                        Correction correction3 = new Correction();
-                        correction3.setCopie(copie);
-                        correction3.setEnseignant(enseignant);
-
-                        copie.getCorrections().add(correction3);
-                        copieRepo.save(copie);
-                        correctionRepo.save(correction3);
-                        break;  // Stop after assigning the third teacher
-                    }
-                }
-            }
-        }
-
-        return "redirect:/cfd/getCorrectionCopie";
+    private org.springframework.web.server.ResponseStatusException retiredPreparation() {
+        return new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.GONE,
+                "Legacy paper and correction preparation is retired; use /cfd/enrollmentPapers");
     }
 
     @GetMapping("/ResultatCandidats")
