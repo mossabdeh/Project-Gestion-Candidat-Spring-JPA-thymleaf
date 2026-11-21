@@ -4,9 +4,11 @@ import ntic.tlsi.gestiondoctorat2.entities.*;
 import ntic.tlsi.gestiondoctorat2.repo.*;
 import ntic.tlsi.gestiondoctorat2.service.EnrollmentExamPreparationService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.Date;
 import java.util.UUID;
@@ -16,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** Real separate transactions exercise the competition-row lock, not a shared test transaction. */
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class EnrollmentPreparationConcurrencyTests {
     @Autowired EnrollmentExamPreparationService preparation;
     @Autowired InfoConRepo competitions;
@@ -26,14 +27,41 @@ class EnrollmentPreparationConcurrencyTests {
     @Autowired EnrollmentExamCorrectionRepo corrections;
     @Autowired EnseignantRepo teachers;
 
+    private Long competitionId;
+    private Long candidateId;
+    private final List<Long> teacherIds = new ArrayList<>();
+
+    /** This test commits real worker transactions, so explicit cleanup is mandatory. */
+    @AfterEach
+    void removeCommittedFixtures() {
+        if (competitionId != null) {
+            for (EnrollmentExamPaper paper : papers.findByEnrollment_Competition_IdOrderByIdAsc(competitionId)) {
+                corrections.deleteAll(corrections.findByPaper_Id(paper.getId()));
+                corrections.flush();
+                papers.delete(paper);
+            }
+            papers.flush();
+            enrollments.deleteAll(enrollments.findByCompetition_IdOrderByIdAsc(competitionId));
+            enrollments.flush();
+            competitions.deleteById(competitionId);
+            competitions.flush();
+        }
+        for (Long teacherId : teacherIds) teachers.deleteById(teacherId);
+        teachers.flush();
+        if (candidateId != null) candidates.deleteById(candidateId);
+        candidates.flush();
+    }
+
     @Test
     void parallelPreparationRequestsNeverCreateDuplicatePapersOrAssignments() throws Exception {
         InfoConcour competition = competitions.saveAndFlush(
                 new InfoConcour(2, "Concurrent CFD", Matier.ALGO, Matier.EDL, new Date()));
+        competitionId = competition.getId();
         String id = UUID.randomUUID().toString();
         Candidat candidate = candidates.saveAndFlush(new Candidat(
                 "concurrent-candidate-" + id, "test-password-12345", id + "@example.test",
                 "Concurrent", "Candidate", Role.CANDIDAT, new Date(), null, 0));
+        candidateId = candidate.getId();
         CompetitionEnrollment enrolled = new CompetitionEnrollment(competition, candidate);
         enrolled.assignAnonymousCode("0000991");
         enrollments.saveAndFlush(enrolled);
@@ -44,9 +72,10 @@ class EnrollmentPreparationConcurrencyTests {
         for (Matier subject : new Matier[]{Matier.ALGO, Matier.EDL}) {
             for (int i = 0; i < 2; i++) {
                 String token = UUID.randomUUID().toString();
-                teachers.saveAndFlush(new Enseignant("concurrent-teacher-" + token,
+                Enseignant teacher = teachers.saveAndFlush(new Enseignant("concurrent-teacher-" + token,
                         "test-password-12345", token + "@example.test",
                         "Qualified", "Teacher", Role.ENSEIGNANT, "MCA", subject));
+                teacherIds.add(teacher.getId());
             }
         }
         assertEquals(4, runConcurrently(() -> preparation.initializeCorrections(competition.getId())));
