@@ -128,6 +128,15 @@ public class EnrollmentExamPreparationService {
                     throw conflict("Invalid existing teacher assignment");
                 }
             }
+            long eligibleCount = qualified.get(paper.getSubject()).stream()
+                    .filter(teacher -> ExaminerEligibility.canMark(teacher, paper))
+                    .count();
+            if (eligibleCount < 2 || assigned.size() < 2
+                    && assigned.size() + qualified.get(paper.getSubject()).stream()
+                    .filter(teacher -> ExaminerEligibility.canMark(teacher, paper)
+                            && !assigned.contains(teacher.getId())).count() < 2) {
+                throw conflict("Two qualified conflict-free examiners are required for each paper");
+            }
             assignedByPaper.put(paper.getId(), assigned);
         }
 
@@ -139,11 +148,6 @@ public class EnrollmentExamPreparationService {
                     corrections.save(new EnrollmentExamCorrection(paper, teacher));
                     created++;
                 }
-            }
-        }
-        for (EnrollmentExamPaper paper : eligible) {
-            if (assignedByPaper.get(paper.getId()).size() < 2) {
-                throw conflict("Two qualified conflict-free examiners are required for each paper");
             }
         }
         if (created > 0) competition.advanceTo(CompetitionPhase.PREPARATION);
