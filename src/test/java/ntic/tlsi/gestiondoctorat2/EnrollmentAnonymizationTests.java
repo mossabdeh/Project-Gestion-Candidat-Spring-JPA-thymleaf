@@ -152,6 +152,41 @@ class EnrollmentAnonymizationTests {
     }
 
     @Test
+    @WithMockUser(username = "vice-dean", roles = "VD")
+    void legacyCodeEndpointCannotAssignUnregisteredCandidate() throws Exception {
+        Candidat unregistered = candidate();
+        long before = enrollments.count();
+        mvc.perform(post("/vd/generateCodes").with(csrf())
+                        .param("selectedCandidates", unregistered.getId().toString()))
+                .andExpect(status().isGone());
+        assertNull(candidates.findCandidatOptionalById(unregistered.getId()).orElseThrow().getCode());
+        assertEquals(before, enrollments.count());
+    }
+
+    @Test
+    @WithMockUser(username = "vice-dean", roles = "VD")
+    void legacyCodePageRedirectsToCompetitionScopedAnonymization() throws Exception {
+        mvc.perform(get("/vd/getCandidatsCode"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/vd/enrollmentCodes"));
+    }
+
+    @Test
+    @WithMockUser(username = "vice-dean", roles = "VD")
+    void legacyCodeWriteRequiresCsrf() throws Exception {
+        mvc.perform(post("/vd/generateCodes").param("selectedCandidates", "1"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "regular-candidate", roles = "CANDIDAT")
+    void candidateCannotAccessRetiredLegacyCodePage() throws Exception {
+        mvc.perform(get("/vd/getCandidatsCode")).andExpect(status().isForbidden());
+        mvc.perform(post("/vd/generateCodes").with(csrf())
+                        .param("selectedCandidates", "1")).andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser(username = "regular-candidate", roles = "CANDIDAT")
     void candidateCannotReadOrAllocateRegistrationCodes() throws Exception {
         InfoConcour comp = competition(false);
