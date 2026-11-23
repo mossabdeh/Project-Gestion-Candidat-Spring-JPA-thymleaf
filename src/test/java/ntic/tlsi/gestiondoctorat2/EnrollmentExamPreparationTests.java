@@ -82,6 +82,51 @@ class EnrollmentExamPreparationTests {
     }
 
     @Test
+    void examinerSharingCandidateEmailIsSkippedDuringAllocation() {
+        InfoConcour comp = competition(false);
+        Candidat candidate = candidate();
+        CompetitionEnrollment enrollment = registration(comp, candidate, "0000371");
+        preparation.initializePapers(comp.getId());
+        Enseignant conflicted = teacher(Matier.ALGO);
+        conflicted.setEmail(candidate.getEmail());
+        teachers.saveAndFlush(conflicted);
+        Enseignant first = teacher(Matier.ALGO);
+        Enseignant second = teacher(Matier.ALGO);
+        teacher(Matier.EDL);
+        teacher(Matier.EDL);
+
+        assertEquals(4, preparation.initializeCorrections(comp.getId()));
+        EnrollmentExamPaper algoPaper = papers.findByEnrollment_Id(enrollment.getId()).stream()
+                .filter(paper -> paper.getSubject() == Matier.ALGO).findFirst().orElseThrow();
+        var allocated = corrections.findByPaper_Id(algoPaper.getId());
+        assertEquals(2, allocated.size());
+        assertTrue(allocated.stream().noneMatch(mark -> mark.getTeacher().getId().equals(conflicted.getId())));
+        assertEquals(java.util.Set.of(first.getId(), second.getId()),
+                allocated.stream().map(mark -> mark.getTeacher().getId())
+                        .collect(java.util.stream.Collectors.toSet()));
+    }
+
+    @Test
+    void conflictsCannotCausePartialInitialAssignments() {
+        InfoConcour comp = competition(false);
+        Candidat candidate = candidate();
+        registration(comp, candidate, "0000372");
+        preparation.initializePapers(comp.getId());
+        Enseignant conflicted = teacher(Matier.ALGO);
+        conflicted.setEmail(candidate.getEmail());
+        teachers.saveAndFlush(conflicted);
+        teacher(Matier.ALGO);
+        teacher(Matier.EDL);
+        teacher(Matier.EDL);
+
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> preparation.initializeCorrections(comp.getId())).getStatusCode());
+        assertTrue(papers.findByEnrollment_Competition_IdOrderByIdAsc(comp.getId()).stream()
+                .allMatch(paper -> corrections.findByPaper_Id(paper.getId()).isEmpty()));
+    }
+
+    @Test
     void missingCodeAndMissingTeacherRejectIncompleteSetup() {
         InfoConcour comp = competition(false);
         enrollments.saveAndFlush(new CompetitionEnrollment(comp, candidate()));
