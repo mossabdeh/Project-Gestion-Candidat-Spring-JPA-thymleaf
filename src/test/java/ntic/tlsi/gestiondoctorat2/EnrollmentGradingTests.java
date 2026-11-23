@@ -105,6 +105,43 @@ class EnrollmentGradingTests {
     }
 
     @Test
+    void thirdMarkerSelectionSkipsCandidateIdentityConflict() {
+        InfoConcour comp = competition(false);
+        EnrollmentExamPaper paper = paper(comp, Matier.ALGO);
+        Enseignant first = teacher(Matier.ALGO);
+        Enseignant second = teacher(Matier.ALGO);
+        Enseignant conflicted = teacher(Matier.ALGO);
+        conflicted.setEmail(paper.getEnrollment().getCandidate().getEmail());
+        teachers.saveAndFlush(conflicted);
+        Enseignant eligible = teacher(Matier.ALGO);
+        EnrollmentExamCorrection a = corrections.saveAndFlush(new EnrollmentExamCorrection(paper, first));
+        EnrollmentExamCorrection b = corrections.saveAndFlush(new EnrollmentExamCorrection(paper, second));
+        grading.recordGrade(a.getId(), first.getUsername(), 10);
+        grading.recordGrade(b.getId(), second.getUsername(), 14);
+
+        assertEquals(1, grading.assignThirdMarkers(comp.getId()));
+        assertEquals(0, grading.assignThirdMarkers(comp.getId()));
+        var marks = corrections.findByPaper_IdOrderByIdAsc(paper.getId());
+        assertEquals(3, marks.size());
+        assertEquals(eligible.getId(), marks.get(2).getTeacher().getId());
+    }
+
+    @Test
+    void conflictedTeacherCannotSubmitGradeEvenIfAlreadyAssigned() {
+        InfoConcour comp = competition(false);
+        EnrollmentExamPaper paper = paper(comp, Matier.ALGO);
+        Enseignant conflicted = teacher(Matier.ALGO);
+        conflicted.setEmail(paper.getEnrollment().getCandidate().getEmail());
+        teachers.saveAndFlush(conflicted);
+        var assignment = corrections.saveAndFlush(new EnrollmentExamCorrection(paper, conflicted));
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> grading.recordGrade(assignment.getId(), conflicted.getUsername(), 12))
+                        .getStatusCode());
+        assertNull(assignment.getGrade());
+    }
+
+    @Test
     void noThirdMarkerBelowThreePointBoundary() {
         InfoConcour comp = competition(false);
         EnrollmentExamPaper paper = paper(comp, Matier.ALGO);
