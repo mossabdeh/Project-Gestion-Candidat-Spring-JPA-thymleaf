@@ -53,8 +53,8 @@ public class EnrollmentGradingService {
         if (!correction.getTeacher().getUsername().equals(username)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This paper is not assigned to you");
         }
-        if (correction.getTeacher().getSpecialite() != correction.getPaper().getSubject()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Teacher is not qualified for this subject");
+        if (!ExaminerEligibility.canMark(correction.getTeacher(), correction.getPaper())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Teacher is not eligible to mark this paper");
         }
         correction.recordGrade(grade);
         InfoConcour competition = competitions.findById(competitionId).orElseThrow();
@@ -81,7 +81,7 @@ public class EnrollmentGradingService {
             }
             Set<Long> assigned = new HashSet<>();
             for (EnrollmentExamCorrection mark : marks) {
-                if (mark.getTeacher().getSpecialite() != paper.getSubject()
+                if (!ExaminerEligibility.canMark(mark.getTeacher(), paper)
                         || !assigned.add(mark.getTeacher().getId())) {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid marker assignment");
                 }
@@ -94,7 +94,8 @@ public class EnrollmentGradingService {
             List<Enseignant> qualified = new ArrayList<>(teachers.findAllBySpecialite(paper.getSubject()));
             qualified.sort(Comparator.comparing(Enseignant::getId));
             Enseignant third = qualified.stream()
-                    .filter(teacher -> !assigned.contains(teacher.getId()))
+                    .filter(teacher -> ExaminerEligibility.canMark(teacher, paper)
+                            && !assigned.contains(teacher.getId()))
                     .findFirst()
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT,
                             "No qualified third teacher available"));
