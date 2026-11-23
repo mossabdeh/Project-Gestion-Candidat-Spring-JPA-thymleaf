@@ -123,7 +123,7 @@ public class EnrollmentExamPreparationService {
             Set<Long> assigned = new HashSet<>();
             for (EnrollmentExamCorrection correction : corrections.findByPaper_Id(paper.getId())) {
                 Enseignant teacher = correction.getTeacher();
-                if (teacher == null || teacher.getSpecialite() != paper.getSubject()
+                if (!ExaminerEligibility.canMark(teacher, paper)
                         || !assigned.add(teacher.getId()) || assigned.size() > 3) {
                     throw conflict("Invalid existing teacher assignment");
                 }
@@ -135,10 +135,15 @@ public class EnrollmentExamPreparationService {
             Set<Long> assigned = assignedByPaper.get(paper.getId());
             for (Enseignant teacher : qualified.get(paper.getSubject())) {
                 if (assigned.size() >= 2) break;
-                if (assigned.add(teacher.getId())) {
+                if (ExaminerEligibility.canMark(teacher, paper) && assigned.add(teacher.getId())) {
                     corrections.save(new EnrollmentExamCorrection(paper, teacher));
                     created++;
                 }
+            }
+        }
+        for (EnrollmentExamPaper paper : eligible) {
+            if (assignedByPaper.get(paper.getId()).size() < 2) {
+                throw conflict("Two qualified conflict-free examiners are required for each paper");
             }
         }
         if (created > 0) competition.advanceTo(CompetitionPhase.PREPARATION);
