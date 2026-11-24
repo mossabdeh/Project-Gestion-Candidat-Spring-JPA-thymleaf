@@ -44,6 +44,9 @@ public class EnrollmentGradingService {
         if (!Double.isFinite(grade) || grade < 0 || grade > 20) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Grade must be between 0 and 20");
         }
+        if (java.math.BigDecimal.valueOf(grade).stripTrailingZeros().scale() > 2) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Grade may have at most two decimal places");
+        }
         // Lock the competition first, consistently with paper setup and code allocation.
         EnrollmentExamCorrection correction = corrections.findById(correctionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Assignment not found"));

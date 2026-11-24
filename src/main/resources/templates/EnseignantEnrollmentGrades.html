@@ -31,7 +31,7 @@
             <form method="post" class="d-flex flex-wrap align-items-center gap-2" th:action="@{/enseignant/saveEnrollmentGrade}">
               <input type="hidden" name="correctionId" th:value="${assignment.correctionId}">
               <label class="visually-hidden" th:for="|grade-${assignment.correctionId}|">Grade</label>
-              <input class="form-control" style="max-width:130px" type="number" min="0" max="20" step="any" required
+              <input class="form-control" style="max-width:130px" type="number" min="0" max="20" step="0.01" required
                      name="grade" th:id="|grade-${assignment.correctionId}|" th:value="${assignment.grade}">
               <button class="btn btn-primary" type="submit">Save grade</button>
             </form>
