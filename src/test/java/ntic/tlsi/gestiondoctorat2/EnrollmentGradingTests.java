@@ -57,6 +57,44 @@ class EnrollmentGradingTests {
     }
 
     @Test
+    void gradePrecisionIsValidatedWithoutChangingPriorGrade() {
+        InfoConcour comp = competition(false);
+        EnrollmentExamPaper paper = paper(comp, Matier.ALGO);
+        Enseignant teacher = teacher(Matier.ALGO);
+        EnrollmentExamCorrection correction = corrections.saveAndFlush(
+                new EnrollmentExamCorrection(paper, teacher));
+        grading.recordGrade(correction.getId(), teacher.getUsername(), 12.34);
+        assertEquals(12.34, correction.getGrade());
+        for (double invalid : new double[]{12.345, 0.001, 19.999}) {
+            assertEquals(org.springframework.http.HttpStatus.BAD_REQUEST,
+                    assertThrows(ResponseStatusException.class,
+                            () -> grading.recordGrade(correction.getId(), teacher.getUsername(), invalid))
+                            .getStatusCode());
+            assertEquals(12.34, correction.getGrade());
+            assertThrows(IllegalArgumentException.class, () -> correction.recordGrade(invalid));
+        }
+        grading.recordGrade(correction.getId(), teacher.getUsername(), 12.3);
+        assertEquals(12.3, correction.getGrade());
+    }
+
+    @Test
+    void publishedGradesRejectRevisionAfterValidSubmission() {
+        InfoConcour comp = competition(false);
+        EnrollmentExamPaper paper = paper(comp, Matier.ALGO);
+        Enseignant teacher = teacher(Matier.ALGO);
+        EnrollmentExamCorrection correction = corrections.saveAndFlush(
+                new EnrollmentExamCorrection(paper, teacher));
+        grading.recordGrade(correction.getId(), teacher.getUsername(), 17.25);
+        comp.setResultsPublishedAt(Instant.now());
+        competitions.flush();
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> grading.recordGrade(correction.getId(), teacher.getUsername(), 18.00))
+                            .getStatusCode());
+        assertEquals(17.25, correction.getGrade());
+    }
+
+    @Test
     void teacherCannotChangeAnotherTeachersGradeButMayGradeOlderOpenCompetition() {
         InfoConcour oldCompetition = competition(false);
         EnrollmentExamPaper paper = paper(oldCompetition, Matier.ALGO);
