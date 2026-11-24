@@ -40,6 +40,9 @@ public class EnrollmentExamCorrection {
         if (!Double.isFinite(value) || value < 0 || value > 20) {
             throw new IllegalArgumentException("Grade must be a finite number between 0 and 20");
         }
+        if (java.math.BigDecimal.valueOf(value).stripTrailingZeros().scale() > 2) {
+            throw new IllegalArgumentException("Grade may have at most two decimal places");
+        }
         this.grade = value;
     }
 }
