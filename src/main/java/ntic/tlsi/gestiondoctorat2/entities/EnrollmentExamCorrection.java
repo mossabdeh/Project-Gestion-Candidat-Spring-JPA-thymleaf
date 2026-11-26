@@ -21,6 +21,9 @@ public class EnrollmentExamCorrection {
 
     private Double grade;
 
+    @Version
+    private Long version;
+
     protected EnrollmentExamCorrection() {}
 
     public EnrollmentExamCorrection(EnrollmentExamPaper paper, Enseignant teacher) {
@@ -35,6 +38,7 @@ public class EnrollmentExamCorrection {
     public EnrollmentExamPaper getPaper() { return paper; }
     public Enseignant getTeacher() { return teacher; }
     public Double getGrade() { return grade; }
+    public Long getVersion() { return version; }
 
     public void recordGrade(double value) {
         if (!Double.isFinite(value) || value < 0 || value > 20) {
