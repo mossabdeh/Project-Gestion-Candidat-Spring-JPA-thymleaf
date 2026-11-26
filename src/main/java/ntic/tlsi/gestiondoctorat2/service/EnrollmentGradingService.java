@@ -19,6 +19,8 @@ public class EnrollmentGradingService {
     private final EnrollmentExamPaperRepo papers;
     private final EnrollmentExamCorrectionRepo corrections;
     private final EnseignantRepo teachers;
+    @jakarta.persistence.PersistenceContext
+    private jakarta.persistence.EntityManager entityManager;
 
     public EnrollmentGradingService(InfoConRepo competitions,
                                     EnrollmentExamPaperRepo papers,
@@ -36,11 +38,20 @@ public class EnrollmentGradingService {
                 .map(c -> new AssignedGrade(c.getId(), c.getPaper().getId(),
                         c.getPaper().getEnrollment().getCompetition().getId(),
                         c.getPaper().getEnrollment().getAnonymousCode(),
-                        c.getPaper().getSubject(), c.getGrade())).toList();
+                        c.getPaper().getSubject(), c.getGrade(), c.getVersion())).toList();
     }
 
     @Transactional
     public void recordGrade(Long correctionId, String username, double grade) {
+        recordGrade(correctionId, username, grade, null);
+    }
+
+    /**
+     * The browser sends the version it saw when rendering the grade form.
+     * A mismatch is a stale form, not permission to overwrite a newer mark.
+     */
+    @Transactional
+    public void recordGrade(Long correctionId, String username, double grade, Long expectedVersion) {
         if (!Double.isFinite(grade) || grade < 0 || grade > 20) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Grade must be between 0 and 20");
         }
@@ -52,6 +63,13 @@ public class EnrollmentGradingService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Assignment not found"));
         Long competitionId = correction.getPaper().getEnrollment().getCompetition().getId();
         requireEditable(competitionId);
+        // Lock order is competition first for all writes. Refresh the correction
+        // after acquiring that lock so a concurrent committed grade is observed.
+        entityManager.refresh(correction);
+        if (expectedVersion != null && !expectedVersion.equals(correction.getVersion())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "This grade was updated since you opened the form; reload before saving");
+        }
         // Check ownership AFTER lock and before any write, never trust a posted teacher ID.
         if (!correction.getTeacher().getUsername().equals(username)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This paper is not assigned to you");
@@ -123,5 +141,5 @@ public class EnrollmentGradingService {
 
     private record ThirdAssignment(EnrollmentExamPaper paper, Enseignant teacher) {}
     public record AssignedGrade(Long correctionId, Long paperId, Long competitionId,
-                                String anonymousCode, Matier subject, Double grade) {}
+                                String anonymousCode, Matier subject, Double grade, Long version) {}
 }
