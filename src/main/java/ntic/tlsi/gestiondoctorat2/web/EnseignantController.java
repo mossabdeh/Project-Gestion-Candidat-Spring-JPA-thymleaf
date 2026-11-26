@@ -58,8 +58,9 @@ public class EnseignantController extends BaseController{
     @PreAuthorize("hasRole('ROLE_ENSEIGNANT')")
     public String saveEnrollmentGrade(@RequestParam("correctionId") Long correctionId,
                                       @RequestParam("grade") double grade,
+                                      @RequestParam("version") Long version,
                                       Authentication authentication) {
-        enrollmentGrading.recordGrade(correctionId, authentication.getName(), grade);
+        enrollmentGrading.recordGrade(correctionId, authentication.getName(), grade, version);
         return "redirect:/enseignant/enrollmentGrades";
     }
 
