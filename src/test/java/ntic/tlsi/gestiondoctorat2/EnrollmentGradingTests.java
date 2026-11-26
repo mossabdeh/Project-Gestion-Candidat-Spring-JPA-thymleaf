@@ -112,6 +112,65 @@ class EnrollmentGradingTests {
     }
 
     @Test
+    void staleGradeVersionCannotOverwriteNewerGrade() {
+        InfoConcour comp = competition(false);
+        EnrollmentExamPaper paper = paper(comp, Matier.ALGO);
+        Enseignant teacher = teacher(Matier.ALGO);
+        EnrollmentExamCorrection correction = corrections.saveAndFlush(
+                new EnrollmentExamCorrection(paper, teacher));
+        Long initialVersion = correction.getVersion();
+
+        grading.recordGrade(correction.getId(), teacher.getUsername(), 13.25, initialVersion);
+        Long updatedVersion = correction.getVersion();
+        assertNotEquals(initialVersion, updatedVersion);
+        assertEquals(13.25, correction.getGrade());
+
+        assertEquals(org.springframework.http.HttpStatus.CONFLICT,
+                assertThrows(ResponseStatusException.class,
+                        () -> grading.recordGrade(correction.getId(), teacher.getUsername(), 17.5, initialVersion))
+                        .getStatusCode());
+        assertEquals(13.25, correction.getGrade());
+        grading.recordGrade(correction.getId(), teacher.getUsername(), 14.5, updatedVersion);
+        assertEquals(14.5, correction.getGrade());
+    }
+
+    @Test
+    @WithMockUser(username = "teacher-stale-test", roles = "ENSEIGNANT")
+    void staleTeacherFormIsRejectedAndFreshFormSucceeds() throws Exception {
+        InfoConcour comp = competition(false);
+        EnrollmentExamPaper paper = paper(comp, Matier.ALGO);
+        Enseignant teacher = teacher(Matier.ALGO);
+        teacher.setUsername("teacher-stale-test");
+        teachers.saveAndFlush(teacher);
+        EnrollmentExamCorrection correction = corrections.saveAndFlush(
+                new EnrollmentExamCorrection(paper, teacher));
+        String originalVersion = correction.getVersion().toString();
+
+        mvc.perform(get("/enseignant/enrollmentGrades"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "name=\"version\"")));
+
+        mvc.perform(post("/enseignant/saveEnrollmentGrade").with(csrf())
+                        .param("correctionId", correction.getId().toString())
+                        .param("grade", "11.25")
+                        .param("version", originalVersion))
+                .andExpect(status().is3xxRedirection());
+        mvc.perform(post("/enseignant/saveEnrollmentGrade").with(csrf())
+                        .param("correctionId", correction.getId().toString())
+                        .param("grade", "19.75")
+                        .param("version", originalVersion))
+                .andExpect(status().isConflict());
+        assertEquals(11.25, correction.getGrade());
+
+        mvc.perform(post("/enseignant/saveEnrollmentGrade").with(csrf())
+                        .param("correctionId", correction.getId().toString())
+                        .param("grade", "12.5"))
+                .andExpect(status().isBadRequest());
+        assertEquals(11.25, correction.getGrade());
+    }
+
+    @Test
     void publishedGradesAreReadOnly() {
         InfoConcour closed = competition(true);
         EnrollmentExamPaper paper = paper(closed, Matier.EDL);
